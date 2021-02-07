@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - .github/workflows/on-push.yaml
+      - .github/.trigger_on_push
       - Dockerfile
       - rootfs/*
       - hook/*
