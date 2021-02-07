@@ -7,7 +7,7 @@ ENV version_tcl 8.6.11
 ENV version_tcllib 1.20
 ENV version_thread 2.8.6
 ENV version_xotcl 2.3.0
-ENV version_tdom 0.9.3
+ENV version_tdom 0.9.2
 
 # * Labels
 LABEL \
