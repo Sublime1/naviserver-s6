@@ -25,7 +25,7 @@ build_dir=/usr/local/src
 #build_dir=/usr/local/src/oo2
 ns_install_dir=/usr/local/ns
 #ns_install_dir=/usr/local/oo2
-version_ns=${version_ns:-4.99.19}
+version_ns=${version_ns:-4.99.20}
 #version_ns=HEAD
 version_modules=${version_ns}
 #version_modules=HEAD
@@ -747,7 +747,12 @@ if [ $version_tdom = "GIT" ] ; then
     cd unix
 else
     #${tar} xfz tDOM-${version_tdom}.tgz
-    cd ${tdom_base}/unix
+    # if tdom version 0.9.2
+    if [ -d "${tdom_base}-src" ] ; then
+        cd ${tdom_base}-src/unix
+    else
+        cd ${tdom_base}/unix
+    fi
 fi
 ../configure --enable-threads --disable-tdomalloc --prefix=${ns_install_dir} --exec-prefix=${ns_install_dir} --with-tcl=${ns_install_dir}/lib
 ${make} install
