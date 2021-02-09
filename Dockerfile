@@ -9,7 +9,11 @@ ENV version_thread=2.8.6
 ENV version_xotcl=2.3.0
 ENV version_tdom=0.9.1
 
-# * Labels
+
+# * Arg
+ARG BUILD_DATE
+
+ # * Labels
 LABEL \
     maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
     org.opencontainers.image.created=${BUILD_DATE} \
