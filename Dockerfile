@@ -2,12 +2,12 @@
 FROM oupfiz5/ubuntu-s6:latest
 
 # * Env
-ENV version_ns 4.99.20
-ENV version_tcl 8.6.11
-ENV version_tcllib 1.20
-ENV version_thread 2.8.6
-ENV version_xotcl 2.3.0
-ENV version_tdom 0.9.2
+ENV version_ns=4.99.20
+ENV version_tcl=8.6.11
+ENV version_tcllib=1.20
+ENV version_thread=2.8.6
+ENV version_xotcl=2.3.0
+ENV version_tdom=0.9.1
 
 # * Labels
 LABEL \
@@ -23,7 +23,13 @@ LABEL \
     org.opencontainers.image.licenses="" \
     org.opencontainers.image.ref.name="" \
     org.opencontainers.image.title="Naviserver on ubuntu base docker image using s6-overlay" \
-    org.opencontainers.image.description="Naviserver on ubuntu base docker image using s6-overlay"
+    org.opencontainers.image.description="Naviserver on ubuntu base docker image using s6-overlay" \
+    custom.package.version.naviserver=${version_ns} \
+    custom.package.version.tcl=${version_tcl} \
+    custom.package.version.tcllib=${version_tcllib} \
+    custom.package.version.thread=${version_thread} \
+    custom.package.version.xotcl=${version_xotcl} \
+    custom.package.version.tdom=${version_tdom}
 
 # * Copy install scripts
 COPY rootfs/usr/local/src/scripts /usr/local/src/scripts
