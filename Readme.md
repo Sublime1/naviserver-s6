@@ -1,24 +1,24 @@
 # Table of Contents
 
--   [About](#org0a49859)
--   [Installation](#org7f9b50b)
-    -   [Download from dockerhub](#org521be96)
-    -   [Build from chiselapp (fossil)](#org5ffd18e)
-    -   [Build from github](#orgc1dee03)
--   [Configuration options](#orgd33cb78)
-    -   [General options](#orgb0aa0ed)
-    -   [Timezone](#org19690cf)
-    -   [HTTP listen port](#org577b1c9)
-    -   [Configuration file](#org1ad8906)
-    -   [Quickstart](#org91ed7ba)
--   [CI/CD](#orgaaf8e8c)
--   [Maintenance](#org859ed7f)
-    -   [Log output](#orgb8ee694)
-    -   [Shell access](#orgbe08625)
+-   [About](#org28bd921)
+-   [Installation](#orgce3d107)
+    -   [Download from dockerhub](#org1ca6cb7)
+    -   [Build from chiselapp (fossil)](#orgd5452bc)
+    -   [Build from github](#org0b3a45e)
+-   [Configuration options](#orgc68267d)
+    -   [General options](#org5ab72d3)
+    -   [Timezone](#orgba30e21)
+    -   [HTTP listen port](#orgf326d57)
+    -   [Configuration file](#orgbf56b0f)
+    -   [Quickstart](#orgfc99254)
+-   [CI/CD](#orgf19f5a2)
+-   [Maintenance](#org1ac8ecd)
+    -   [Log output](#org18374f0)
+    -   [Shell access](#org742d461)
 
 
 
-<a id="org0a49859"></a>
+<a id="org28bd921"></a>
 
 # About
 
@@ -31,12 +31,12 @@ Naviserver-S6 is self-hosting at <https://chiselapp.com/user/oupfiz5/repository/
 If you are reading this on GitHub, then you are looking at a Git mirror of the self-hosting Naviserver-S6 repository.  The purpose of that mirror is to test and exercise Fossil's ability to export a Git mirror and using Github CI/CD  (Github Actions). Nobody much uses the GitHub mirror, except to verify that the mirror logic works. If you want to know more about Naviserver-S6, visit the official self-hosting site linked above.
 
 
-<a id="org7f9b50b"></a>
+<a id="orgce3d107"></a>
 
 # Installation
 
 
-<a id="org521be96"></a>
+<a id="org1ca6cb7"></a>
 
 ## Download from dockerhub
 
@@ -44,7 +44,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker pull oupfiz5/naviserver-s6:4.99.19
 
 
-<a id="org5ffd18e"></a>
+<a id="orgd5452bc"></a>
 
 ## Build from chiselapp (fossil)
 
@@ -55,7 +55,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker build -t oupfiz5/naviserver-s6 .
 
 
-<a id="orgc1dee03"></a>
+<a id="org0b3a45e"></a>
 
 ## Build from github
 
@@ -64,12 +64,12 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker build -t oupfiz5/naviserver-s6 .
 
 
-<a id="orgd33cb78"></a>
+<a id="orgc68267d"></a>
 
 # Configuration options
 
 
-<a id="orgb0aa0ed"></a>
+<a id="org5ab72d3"></a>
 
 ## General options
 
@@ -109,7 +109,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 
 <tbody>
 <tr>
-<td class="org-left"><a href="#org1ad8906">Configuration file</a></td>
+<td class="org-left"><a href="#orgbf56b0f">Configuration file</a></td>
 <td class="org-left">nsd-config.tcl</td>
 <td class="org-left">Configuration file for Naviserver</td>
 </tr>
@@ -117,7 +117,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 </table>
 
 
-<a id="org19690cf"></a>
+<a id="orgba30e21"></a>
 
 ## Timezone
 
@@ -131,7 +131,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
            oupfiz5/naviserver-s6:latest
 
 
-<a id="org577b1c9"></a>
+<a id="orgf326d57"></a>
 
 ## HTTP listen port
 
@@ -145,7 +145,7 @@ In this case the Naviserver is accessible by URL [http://localhost:18090](http:/
            oupfiz5/naviserver-s6:latest
 
 
-<a id="org1ad8906"></a>
+<a id="orgbf56b0f"></a>
 
 ## Configuration file
 
@@ -164,7 +164,7 @@ For using own configuration file you can apply docker mount option:
            oupfiz5/naviserver-s6:latest
 
 
-<a id="org91ed7ba"></a>
+<a id="orgfc99254"></a>
 
 ## Quickstart
 
@@ -181,19 +181,19 @@ Start Naviserver using script `start.sh`:
     ./start.sh
 
 
-<a id="orgaaf8e8c"></a>
+<a id="orgf19f5a2"></a>
 
 # CI/CD
 
 For  build and push docker images we use  [Github Actions workflow](https://github.com/oupfiz5/naviserver-s6/blob/master/.github/workflows/on-push.yaml).
 
 
-<a id="org859ed7f"></a>
+<a id="org1ac8ecd"></a>
 
 # Maintenance
 
 
-<a id="orgb8ee694"></a>
+<a id="org18374f0"></a>
 
 ## Log output
 
@@ -207,7 +207,7 @@ running containers shell by starting bash using docker interactive:
            oupfiz5/naviserver-s6:latest
 
 
-<a id="orgbe08625"></a>
+<a id="org742d461"></a>
 
 ## Shell access
 
