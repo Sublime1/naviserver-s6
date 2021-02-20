@@ -1,22 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-NS=${NS:-1}
-NS_CONF=${NS_CONF:-"/usr/local/ns/conf/nsd-config.tcl"}
+# Load functions
+source /etc/naviserver/functions
 
-if (( ${NS} == 1 )) || [ "${NS}" = "true" ]; then
-    # MAP UID/GID
-    USERMAP_UID=${USERMAP_UID:-nsadmin}
-    USERMAP_GID=${USERMAP_GID:-nsadmin}
-
-    if [[ $USERMAP_UID != *[[:digit:]]* ]]; then
-        USERMAP_UID=$(id -u $USERMAP_UID)
-    fi
-
-    if [[ $USERMAP_GID != *[[:digit:]]* ]]; then
-        USERMAP_GID=$(id -g $USERMAP_GID)
-    fi
-
-    chown -R ${USERMAP_UID}:${USERMAP_GID} /usr/local/ns
-
-    exec s6-applyuidgid -u ${USERMAP_UID} -g ${USERMAP_GID} /usr/local/ns/bin/nsd -f -t ${NS_CONF}
-fi
+exec s6-applyuidgid -u $(get_usermap_uid)  -g $(get_usermap_gid) /usr/local/ns/bin/nsd -f -t ${NS_CONF}
