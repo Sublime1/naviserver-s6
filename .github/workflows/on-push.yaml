@@ -35,7 +35,7 @@ jobs:
       - name: Prepare build infrastructure
         run: |
           mkdir -p ${GITHUB_WORKSPACE}/workspaces
-          cp -rp ${GITHUB_WORKSPACE}/.tcl-buils/builds ${GITHUB_WORKSPACE}/
+          cp -rp ${GITHUB_WORKSPACE}/.tcl-build/builds ${GITHUB_WORKSPACE}/
           ls -la
 
       - name: Build images
