@@ -17,12 +17,26 @@ jobs:
     name: Build and push dockerhub
     runs-on: ubuntu-latest
     steps:
-      - name: Repo checkout
+      - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Checkout repository tcl-build
+        uses: actions/checkout@v2
+        with:
+          repository: oupfiz5/tcl-build
+          ref: master
+          token: ${{ secrets.GH_ACTION_PAT }}
+          path: .tcl-build
 
       - name: Login to DockerHub Registry
         run: |
           echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Prepare build infrastructure
+        run: |
+          mkdir -p ${GITHUB_WORKSPACE}/workspaces
+          cp -rp ${GITHUB_WORKSPACE}/.tcl-buils/builds ${GITHUB_WORKSPACE}/
+          ls -la
 
       - name: Build images
         run: |
