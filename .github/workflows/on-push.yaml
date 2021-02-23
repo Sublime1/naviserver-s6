@@ -14,29 +14,28 @@ on:
 
 jobs:
   build:
-    name: Build and push dockerhub
+    name: Build and push images to DockerHub
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repository oupfiz5/naviserver-s6
         uses: actions/checkout@v2
 
-      - name: Checkout repository tcl-build
-        uses: actions/checkout@v2
-        with:
-          repository: oupfiz5/tcl-build
-          ref: master
-          token: ${{ secrets.GH_ACTION_PAT }}
-          path: .tcl-build
+      # - name: Checkout repository oupfiz5/tcl-build
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: oupfiz5/tcl-build
+      #     ref: master
+      #     token: ${{ secrets.GH_ACTION_PAT }}
+      #     path: .tcl-build
 
       - name: Login to DockerHub Registry
         run: |
           echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-      - name: Prepare build infrastructure
-        run: |
-          mkdir -p ${GITHUB_WORKSPACE}/workspaces
-          cp -rp ${GITHUB_WORKSPACE}/.tcl-build/builds ${GITHUB_WORKSPACE}/
-          ls -la
+      # - name: Prepare build infrastructure
+      #   run: |
+      #     mkdir -p ${GITHUB_WORKSPACE}/workspaces
+      #     cp -rp ${GITHUB_WORKSPACE}/.tcl-build/builds ${GITHUB_WORKSPACE}/
 
       - name: Build images
         run: |

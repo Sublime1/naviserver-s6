@@ -1,33 +1,54 @@
+# * Arg
+ARG BUILD_DATE
+ARG NS_VERSION=4.99.20
+ARG NS_MODULES_VERSION=4.99.20
+ARG TCLLIB_VERSION=1.20
+ARG TCL_VERSION=8.6.11
+ARG TDOM_VERSION=0.9.1
+ARG THREAD_VERSION=2.8.6
+ARG XOTCL_VERSION=2.3.0
+
 # * Build Naviserver
 FROM oupfiz5/tcl-build as build
+# ** Args
+ARG NS_VERSION
+ARG NS_MODULES_VERSION
+ARG TCLLIB_VERSION
+ARG TCL_VERSION
+ARG TDOM_VERSION
+ARG THREAD_VERSION
+ARG XOTCL_VERSION
+# ** Environments
+ENV ns_version=${NS_VERSION}
+ENV ns_modules_version=${NS_MODULES_VERSION}
+ENV tcl_version=${TCL_VERSION}
+ENV tcllib_version=${TCLLIB_VERSION}
+ENV thread_version=${THREAD_VERSION}
+ENV xotcl_version=${XOTCL_VERSION}
+ENV tdom_version=${TDOM_VERSION}
+# ** Build
 WORKDIR /
 RUN mkdir /workspaces
 COPY builds /builds
-RUN /bin/bash /builds/ns-all-build.sh
+RUN  /bin/bash /builds/ns-all-build.sh
 
 # * From
 FROM oupfiz5/ubuntu-s6:latest
+# ** Args
+ARG BUILD_DATE
+ARG NS_VERSION
+ARG NS_MODULES_VERSION
+ARG TCLLIB_VERSION
+ARG TCL_VERSION
+ARG TDOM_VERSION
+ARG THREAD_VERSION
+ARG XOTCL_VERSION
+
+# ** Copy Naviserver
 WORKDIR /
 COPY --from=build /usr/local/ns /usr/local/ns/
 
-# * Arg
-ARG BUILD_DATE
-ARG VERSION_NS=4.99.20
-ARG VERSION_TCL=8.6.11
-ARG VERSION_TCLLIB=1.20
-ARG VERSION_TDOM=0.9.1
-ARG VERSION_THREAD=2.8.6
-ARG VERSION_XOTCL=2.3.0
-
-# * Env
-ENV version_ns=${VERSION_NS}
-ENV version_tcl=${VERSION_TCL}
-ENV version_tcllib=${VERSION_TCLLIB}
-ENV version_thread=${VERSION_THREAD}
-ENV version_xotcl=${VERSION_XOTCL}
-ENV version_tdom=${VERSION_TDOM}
-
-# * Labels
+# ** Labels
 LABEL \
     maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
     org.opencontainers.image.created=${BUILD_DATE} \
@@ -42,40 +63,45 @@ LABEL \
     org.opencontainers.image.ref.name="" \
     org.opencontainers.image.title="Naviserver on ubuntu base docker image using s6-overlay" \
     org.opencontainers.image.description="Naviserver on ubuntu base docker image using s6-overlay" \
-    custom.package.version.naviserver=${version_ns} \
-    custom.package.version.tcl=${version_tcl} \
-    custom.package.version.tcllib=${version_tcllib} \
-    custom.package.version.thread=${version_thread} \
-    custom.package.version.xotcl=${version_xotcl} \
-    custom.package.version.tdom=${version_tdom}
+    custom.package.version.naviserver=${NS_VERSION} \
+    custom.package.version.naviserver_modules=${NS_MODULES_VERSION} \
+    custom.package.version.tcl=${TCL_VERSION} \
+    custom.package.version.tcllib=${TCLLIB_VERSION} \
+    custom.package.version.tdom=${TDOM_VERSION} \
+    custom.package.version.thread=${THREAD_VERSION} \
+    custom.package.version.xotcl=${XOTCL_VERSION}
 
-# * Run
-RUN  export LANG=en_US.UTF-8 && export LC_ALL=en_US.UTF-8 \
-        && apt-get update \
-        && export DEBIAN_FRONTEND=noninteractive \
-        && apt-get -y install libssl-dev locales \
-        && locale-gen en_US.UTF-8 && update-locale LANG="en_US.UTF-8" && update-locale LC_ALL=en_US.UTF-8 \
-        && apt-get clean \
-        && apt-get auto-remove -y \
-        && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
-        && groupadd nsadmin \
-        && useradd -g nsadmin nsadmin
+# ** Run
+RUN  export LANG="en_US.UTF-8" \
+          && export LC_ALL="en_US.UTF-8" \
+          && apt-get update \
+          && export DEBIAN_FRONTEND=noninteractive \
+          && apt-get -y install libssl-dev locales \
+          && locale-gen en_US.UTF-8 \
+          && update-locale LANG="en_US.UTF-8" \
+          && update-locale LC_ALL="en_US.UTF-8" \
+          && apt-get clean \
+          && apt-get auto-remove -y \
+          && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
+          && groupadd nsadmin \
+          && useradd -g nsadmin nsadmin \
+          && chown -R  nsadmin:nsadmin /usr/local/ns
 
-# * Copy s6 and naviserver configurations
+# ** Copy s6 and naviserver configurations
 COPY rootfs/etc /etc/
 COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
 
-# * Expose
+# ** Expose
 EXPOSE 8080
 
-# * Environment
+# ** Environment
 Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
 
-# * Workdir
+# ** Workdir
 WORKDIR /usr/local/ns
 
-# * Entrypoint
+# ** Entrypoint
 ENTRYPOINT ["/init"]
 
-# * Cmd
+# ** Cmd
 CMD []
