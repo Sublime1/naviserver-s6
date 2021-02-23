@@ -1,6 +1,0 @@
-#!/usr/bin/with-contenv bash
-
-# Load functions
-source /etc/naviserver/functions
-
-chown -R $(get_usermap_uid):$(get_usermap_gid) /usr/local/ns/*
