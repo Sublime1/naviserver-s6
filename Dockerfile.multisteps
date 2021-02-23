@@ -1,31 +1,34 @@
 # * Arg
-ARG BUILD_DATE
-ARG NS_VERSION=4.99.20
-ARG NS_MODULES_VERSION=4.99.20
-ARG TCLLIB_VERSION=1.20
-ARG TCL_VERSION=8.6.11
-ARG TDOM_VERSION=0.9.1
-ARG THREAD_VERSION=2.8.6
-ARG XOTCL_VERSION=2.3.0
+ARG BUILD_DATE \
+    NS_VERSION=4.99.20 \
+    NS_MODULES_VERSION=4.99.20 \
+    TCLLIB_VERSION=1.20 \
+    TCL_VERSION=8.6.11 \
+    TDOM_VERSION=0.9.1 \
+    THREAD_VERSION=2.8.6 \
+    XOTCL_VERSION=2.3.0
 
 # * Build Naviserver
 FROM oupfiz5/tcl-build as build
+
 # ** Args
-ARG NS_VERSION
-ARG NS_MODULES_VERSION
-ARG TCLLIB_VERSION
-ARG TCL_VERSION
-ARG TDOM_VERSION
-ARG THREAD_VERSION
-ARG XOTCL_VERSION
+ARG NS_VERSION \
+    NS_MODULES_VERSION \
+    TCLLIB_VERSION \
+    TCL_VERSION \
+    TDOM_VERSION \
+    THREAD_VERSION \
+    XOTCL_VERSION
+
 # ** Environments
-ENV ns_version=${NS_VERSION}
-ENV ns_modules_version=${NS_MODULES_VERSION}
-ENV tcl_version=${TCL_VERSION}
-ENV tcllib_version=${TCLLIB_VERSION}
-ENV thread_version=${THREAD_VERSION}
-ENV xotcl_version=${XOTCL_VERSION}
-ENV tdom_version=${TDOM_VERSION}
+ENV ns_version=${NS_VERSION} \
+    ns_modules_version=${NS_MODULES_VERSION} \
+    tcl_version=${TCL_VERSION} \
+    tcllib_version=${TCLLIB_VERSION} \
+    thread_version=${THREAD_VERSION} \
+    xotcl_version=${XOTCL_VERSION} \
+    tdom_version=${TDOM_VERSION}
+
 # ** Build
 WORKDIR /
 RUN mkdir /workspaces
@@ -34,15 +37,16 @@ RUN  /bin/bash /builds/ns-all-build.sh
 
 # * From
 FROM oupfiz5/ubuntu-s6:latest
+
 # ** Args
-ARG BUILD_DATE
-ARG NS_VERSION
-ARG NS_MODULES_VERSION
-ARG TCLLIB_VERSION
-ARG TCL_VERSION
-ARG TDOM_VERSION
-ARG THREAD_VERSION
-ARG XOTCL_VERSION
+ARG BUILD_DATE \
+    NS_VERSION \
+    NS_MODULES_VERSION \
+    TCLLIB_VERSION \
+    TCL_VERSION \
+    TDOM_VERSION \
+    THREAD_VERSION \
+    XOTCL_VERSION
 
 # ** Copy Naviserver
 WORKDIR /
@@ -72,20 +76,20 @@ LABEL \
     custom.package.version.xotcl=${XOTCL_VERSION}
 
 # ** Run
-RUN  export LANG="en_US.UTF-8" \
-          && export LC_ALL="en_US.UTF-8" \
-          && apt-get update \
-          && export DEBIAN_FRONTEND=noninteractive \
-          && apt-get -y install libssl-dev locales \
-          && locale-gen en_US.UTF-8 \
-          && update-locale LANG="en_US.UTF-8" \
-          && update-locale LC_ALL="en_US.UTF-8" \
-          && apt-get clean \
-          && apt-get auto-remove -y \
-          && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
-          && groupadd nsadmin \
-          && useradd -g nsadmin nsadmin \
-          && chown -R  nsadmin:nsadmin /usr/local/ns
+RUN export LANG="en_US.UTF-8" \
+    && export LC_ALL="en_US.UTF-8" \
+    && apt-get update \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install libssl-dev locales \
+    && locale-gen en_US.UTF-8 \
+    && update-locale LANG="en_US.UTF-8" \
+    && update-locale LC_ALL="en_US.UTF-8" \
+    && apt-get clean \
+    && apt-get auto-remove -y \
+    && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
+    && groupadd nsadmin \
+    && useradd -g nsadmin nsadmin \
+    && chown -R  nsadmin:nsadmin /usr/local/ns
 
 # ** Copy s6 and naviserver configurations
 COPY rootfs/etc /etc/
