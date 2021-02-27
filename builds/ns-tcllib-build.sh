@@ -12,7 +12,7 @@ fi
 
 mkdir -p /workspaces/logs
 echo "Running the autoconf configure in /workspaces/${package_directory}"
-cd /workspaces/${package_directory} || exit1
+cd /workspaces/${package_directory} || exit 1
 echo "Building tcllib"
 > /workspaces/logs/${package_directory}.log
 ./configure --prefix=${ns_install_dir} 2>&1 | tee -a /workspaces/logs/${package_directory}.log
