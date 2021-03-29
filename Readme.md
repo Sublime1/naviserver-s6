@@ -1,27 +1,27 @@
 # Table of Contents
 
--   [About](#org6ee0c23)
--   [Installation](#org6f69339)
-    -   [Download from dockerhub](#org49435c4)
-    -   [Build from chiselapp (fossil)](#org780c1ba)
-    -   [Build from github](#org956199c)
-    -   [Contfiguration](#org291789d)
-        -   [Build arguments](#org6d3e37c)
-        -   [Example of build](#org7985e38)
--   [Configuration options](#org86a85fa)
-    -   [General options](#org80ee8ed)
-    -   [Timezone](#org8dbaa1c)
-    -   [HTTP listen port](#org58eeab7)
-    -   [Configuration file](#org83315ed)
--   [Quickstart](#orgf287517)
--   [CI/CD](#orgac0e9eb)
--   [Maintenance](#org5138870)
-    -   [Log output](#org842882c)
-    -   [Shell access](#orgd8e0af2)
+-   [About](#org79055b2)
+-   [Installation](#org45eb5f3)
+    -   [Download from dockerhub](#org76233ae)
+    -   [Build from chiselapp (fossil)](#org32c19cd)
+    -   [Build from github](#org3211a9a)
+    -   [Contfiguration](#org8d12d3e)
+        -   [Build arguments](#org026f581)
+        -   [Example of build](#orgf3fec94)
+-   [Configuration options](#org08ca74f)
+    -   [General options](#orgc9a6aeb)
+    -   [Timezone](#org9135a41)
+    -   [HTTP listen port](#orgd6ca7a3)
+    -   [Configuration file](#orge55b172)
+-   [Quickstart](#org98d4045)
+-   [CI/CD](#org80b3161)
+-   [Maintenance](#org0097451)
+    -   [Log output](#orgf3856ae)
+    -   [Shell access](#orgeaba81b)
 
 
 
-<a id="org6ee0c23"></a>
+<a id="org79055b2"></a>
 
 # About
 
@@ -32,12 +32,12 @@ Naviserver-S6 is self-hosting at <https://chiselapp.com/user/oupfiz5/repository/
 If you are reading this on GitHub, then you are looking at a Git mirror of the self-hosting Naviserver-S6 repository.  The purpose of that mirror is to test and exercise Fossil's ability to export a Git mirror and using Github CI/CD  (Github Actions). Nobody much uses the GitHub mirror, except to verify that the mirror logic works. If you want to know more about Naviserver-S6, visit the official self-hosting site linked above.
 
 
-<a id="org6f69339"></a>
+<a id="org45eb5f3"></a>
 
 # Installation
 
 
-<a id="org49435c4"></a>
+<a id="org76233ae"></a>
 
 ## Download from dockerhub
 
@@ -45,7 +45,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker pull oupfiz5/naviserver-s6:4.99.20
 
 
-<a id="org780c1ba"></a>
+<a id="org32c19cd"></a>
 
 ## Build from chiselapp (fossil)
 
@@ -65,7 +65,7 @@ Build image using multi steps  (by means of docker oupfiz5/tcl-build):
 In both cases will get naviserver docker image. But mulit steps image will have smaller size.
 
 
-<a id="org956199c"></a>
+<a id="org3211a9a"></a>
 
 ## Build from github
 
@@ -84,12 +84,12 @@ Multi steps build image (using build docker oupfiz5/tcl-build):
 In both cases will get naviserver docker image. But mulit steps image will have smaller size.
 
 
-<a id="org291789d"></a>
+<a id="org8d12d3e"></a>
 
 ## Contfiguration
 
 
-<a id="org6d3e37c"></a>
+<a id="org026f581"></a>
 
 ### Build arguments
 
@@ -115,7 +115,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 <tr>
 <td class="org-left">BUILD_DATE</td>
 <td class="org-right">none</td>
-<td class="org-left">Set build date for label   <code>org.opencontainers.image.created</code></td>
+<td class="org-left">Set build date for label</td>
 </tr>
 </tbody>
 
@@ -177,7 +177,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 </table>
 
 
-<a id="org7985e38"></a>
+<a id="orgf3fec94"></a>
 
 ### Example of build
 
@@ -190,12 +190,12 @@ In both cases will get naviserver docker image. But mulit steps image will have 
              ../.
 
 
-<a id="org86a85fa"></a>
+<a id="org08ca74f"></a>
 
 # Configuration options
 
 
-<a id="org80ee8ed"></a>
+<a id="orgc9a6aeb"></a>
 
 ## General options
 
@@ -235,7 +235,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 
 <tbody>
 <tr>
-<td class="org-left"><a href="#org83315ed">Configuration file</a></td>
+<td class="org-left"><a href="#orge55b172">Configuration file</a></td>
 <td class="org-left">nsd-config.tcl</td>
 <td class="org-left">Configuration file for Naviserver</td>
 </tr>
@@ -243,7 +243,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 </table>
 
 
-<a id="org8dbaa1c"></a>
+<a id="org9135a41"></a>
 
 ## Timezone
 
@@ -257,7 +257,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
            oupfiz5/naviserver-s6:latest
 
 
-<a id="org58eeab7"></a>
+<a id="orgd6ca7a3"></a>
 
 ## HTTP listen port
 
@@ -270,7 +270,7 @@ Set the http listen port for the container `-p 127.0.0.1:18090:8080`.  In this c
            oupfiz5/naviserver-s6:latest
 
 
-<a id="org83315ed"></a>
+<a id="orge55b172"></a>
 
 ## Configuration file
 
@@ -280,15 +280,15 @@ The default configuration file is `rootfs/usr/local/ns/conf/nsd-config.tcl`.  Fo
 2.  Put it to some directory (for example `rootfs/usr/local/ns/conf/test`)
 3.  Mount the the directory from item 2 as `/usr/local/ns/conf`
 
-    docker run -itd \
-           --restart always \
-           --name=naviserver-s6  \
-           -p 127.0.0.1:8090:8080 \
-           --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf/test,destination=/usr/local/ns/conf \
-           oupfiz5/naviserver-s6:latest
+        docker run -itd \
+               --restart always \
+               --name=naviserver-s6  \
+               -p 127.0.0.1:8090:8080 \
+               --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf/test,destination=/usr/local/ns/conf \
+               oupfiz5/naviserver-s6:latest
 
 
-<a id="orgf287517"></a>
+<a id="org98d4045"></a>
 
 # Quickstart
 
@@ -307,19 +307,19 @@ Start Naviserver using script `start.sh`:
 After start open the naviserver will be accessible by url `http://localhost:8090`
 
 
-<a id="orgac0e9eb"></a>
+<a id="org80b3161"></a>
 
 # CI/CD
 
 For  build and push docker images we use  [Github Actions workflow](https://github.com/oupfiz5/naviserver-s6/blob/master/.github/workflows/on-push.yaml).
 
 
-<a id="org5138870"></a>
+<a id="org0097451"></a>
 
 # Maintenance
 
 
-<a id="org842882c"></a>
+<a id="orgf3856ae"></a>
 
 ## Log output
 
@@ -331,7 +331,7 @@ For debugging and maintenance purposes you may want access the output log. If yo
            oupfiz5/naviserver-s6:latest
 
 
-<a id="orgd8e0af2"></a>
+<a id="orgeaba81b"></a>
 
 ## Shell access
 
