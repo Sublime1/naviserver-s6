@@ -3,8 +3,8 @@ FROM oupfiz5/ubuntu-s6:latest
 
 # * Arg
 ARG BUILD_DATE \
-    NS_VERSION=4.99.20 \
-    NS_MODULES_VERSION=4.99.20 \
+    NS_VERSION=4.99.21 \
+    NS_MODULES_VERSION=4.99.21 \
     TCLLIB_VERSION=1.20 \
     TCL_VERSION=8.6.11 \
     TDOM_VERSION=0.9.1 \
