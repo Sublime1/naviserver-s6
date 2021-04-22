@@ -1,3 +1,12 @@
 #!/bin/bash
-docker push oupfiz5/naviserver-s6:4.99.21
-docker push oupfiz5/naviserver-s6:latest
+set -a; source ../VERSION ; set +a;
+
+if [[ ${BRANCH} == 'dev' ]]; then
+    TAG_PREFIX='dev-'
+else
+    TAG_PREFIX=''
+fi
+
+
+docker push oupfiz5/naviserver-s6:${TAG_PREFIX}${VERSION:-undefine}
+docker push oupfiz5/naviserver-s6:${TAG_PREFIX}latest
