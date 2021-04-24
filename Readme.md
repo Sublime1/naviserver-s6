@@ -1,31 +1,27 @@
 # Table of Contents
 
--   [About](#orgdf89c1c)
--   [Installation](#org0cea3cb)
-    -   [Download from dockerhub](#orga973954)
-    -   [Build from chiselapp (fossil)](#org32fe412)
-    -   [Build from github](#org503bea5)
-    -   [Contfiguration](#org79bfeb4)
-        -   [Build arguments](#org41e3dca)
-        -   [Example of build](#org8f7085b)
--   [Configuration options](#org8d4a08a)
-    -   [General options](#org5ab9ce0)
-    -   [Timezone](#org2ec2220)
-    -   [HTTP listen port](#orgccfcf88)
-    -   [Configuration file](#org005db5d)
--   [Quickstart](#orgd33bc0a)
--   [CI/CD](#org73bbaf7)
--   [Maintenance](#org6a33506)
-    -   [Log output](#org706045a)
-    -   [Shell access](#orge016c0e)
--   [Manage](#org09b93eb)
-    -   [Fossil. New branch](#org536fa11)
-    -   [Fossil. Merge branch (dev -> trunk)](#org4ed35ca)
-    -   [Fossil. Commit + Git export](#orge9ddcdc)
+-   [About](#org4ade958)
+-   [Installation](#org602b2bd)
+    -   [Download from dockerhub](#orgb964648)
+    -   [Build from chiselapp (fossil)](#orgbe08cda)
+    -   [Build from github](#org7749f10)
+    -   [Contfiguration](#org9413874)
+        -   [Build arguments](#orga7ac894)
+        -   [Example of build](#org7e854af)
+-   [Configuration options](#orgc031556)
+    -   [General options](#orgf73508b)
+    -   [Timezone](#orgc7c8256)
+    -   [HTTP listen port](#orgee60521)
+    -   [Configuration file](#orgc0f2a41)
+-   [Quickstart](#org05da3e9)
+-   [CI/CD](#orgbbfa16a)
+-   [Maintenance](#org34cef6a)
+    -   [Log output](#orgd7d4845)
+    -   [Shell access](#orgfeba604)
 
 
 
-<a id="orgdf89c1c"></a>
+<a id="org4ade958"></a>
 
 # About
 
@@ -36,12 +32,12 @@ Naviserver-S6 is self-hosting at <https://chiselapp.com/user/oupfiz5/repository/
 If you are reading this on GitHub, then you are looking at a Git mirror of the self-hosting Naviserver-S6 repository.  The purpose of that mirror is to test and exercise Fossil's ability to export a Git mirror and using Github CI/CD  (Github Actions). Nobody much uses the GitHub mirror, except to verify that the mirror logic works. If you want to know more about Naviserver-S6, visit the official self-hosting site linked above.
 
 
-<a id="org0cea3cb"></a>
+<a id="org602b2bd"></a>
 
 # Installation
 
 
-<a id="orga973954"></a>
+<a id="orgb964648"></a>
 
 ## Download from dockerhub
 
@@ -49,7 +45,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
     docker pull oupfiz5/naviserver-s6:4.99.21
 
 
-<a id="org32fe412"></a>
+<a id="orgbe08cda"></a>
 
 ## Build from chiselapp (fossil)
 
@@ -69,7 +65,7 @@ Build image using multi steps  (by means of docker oupfiz5/tcl-build):
 In both cases will get naviserver docker image. But mulit steps image will have smaller size.
 
 
-<a id="org503bea5"></a>
+<a id="org7749f10"></a>
 
 ## Build from github
 
@@ -88,12 +84,12 @@ Multi steps build image (using build docker oupfiz5/tcl-build):
 In both cases will get naviserver docker image. But mulit steps image will have smaller size.
 
 
-<a id="org79bfeb4"></a>
+<a id="org9413874"></a>
 
 ## Contfiguration
 
 
-<a id="org41e3dca"></a>
+<a id="orga7ac894"></a>
 
 ### Build arguments
 
@@ -181,7 +177,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 </table>
 
 
-<a id="org8f7085b"></a>
+<a id="org7e854af"></a>
 
 ### Example of build
 
@@ -194,12 +190,12 @@ In both cases will get naviserver docker image. But mulit steps image will have 
              ../.
 
 
-<a id="org8d4a08a"></a>
+<a id="orgc031556"></a>
 
 # Configuration options
 
 
-<a id="org5ab9ce0"></a>
+<a id="orgf73508b"></a>
 
 ## General options
 
@@ -239,7 +235,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 
 <tbody>
 <tr>
-<td class="org-left"><a href="#org005db5d">Configuration file</a></td>
+<td class="org-left"><a href="#orgc0f2a41">Configuration file</a></td>
 <td class="org-left">nsd-config.tcl</td>
 <td class="org-left">Configuration file for Naviserver</td>
 </tr>
@@ -247,7 +243,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 </table>
 
 
-<a id="org2ec2220"></a>
+<a id="orgc7c8256"></a>
 
 ## Timezone
 
@@ -261,7 +257,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
            oupfiz5/naviserver-s6:latest
 
 
-<a id="orgccfcf88"></a>
+<a id="orgee60521"></a>
 
 ## HTTP listen port
 
@@ -274,7 +270,7 @@ Set the http listen port for the container `-p 127.0.0.1:18090:8080`.  In this c
            oupfiz5/naviserver-s6:latest
 
 
-<a id="org005db5d"></a>
+<a id="orgc0f2a41"></a>
 
 ## Configuration file
 
@@ -292,7 +288,7 @@ The default configuration file is `rootfs/usr/local/ns/conf/nsd-config.tcl`.  Fo
                oupfiz5/naviserver-s6:latest
 
 
-<a id="orgd33bc0a"></a>
+<a id="org05da3e9"></a>
 
 # Quickstart
 
@@ -311,19 +307,19 @@ Start Naviserver using script `start.sh`:
 After start open the naviserver will be accessible by url `http://localhost:8090`
 
 
-<a id="org73bbaf7"></a>
+<a id="orgbbfa16a"></a>
 
 # CI/CD
 
 For  build and push docker images we use  [Github Actions workflow](https://github.com/oupfiz5/naviserver-s6/blob/master/.github/workflows/on-push.yaml).
 
 
-<a id="org6a33506"></a>
+<a id="org34cef6a"></a>
 
 # Maintenance
 
 
-<a id="org706045a"></a>
+<a id="orgd7d4845"></a>
 
 ## Log output
 
@@ -335,60 +331,10 @@ For debugging and maintenance purposes you may want access the output log. If yo
            oupfiz5/naviserver-s6:latest
 
 
-<a id="orge016c0e"></a>
+<a id="orgfeba604"></a>
 
 ## Shell access
 
 For debugging and maintenance purposes you may want access the containers shell. If you are using Docker version 1.3.0 or higher you can access a running containers shell by starting bash using docker exec:
 
     docker exec -it naviserver-s6 /bin/bash
-
-
-<a id="org09b93eb"></a>
-
-# Manage
-
-
-<a id="org536fa11"></a>
-
-## Fossil. New branch
-
-    # set -a; source ./VERSION ; set +a;
-
-    date
-    echo "Branch is $(fossil branch current)"
-    BRANCH_NANE=dev
-    echo "fossil create new branch ${BRANCH_NANE}"
-    fossil commit -m "Initial commit" --branch ${BRANCH_NANE}
-
-
-<a id="org4ed35ca"></a>
-
-## Fossil. Merge branch (dev -> trunk)
-
-    # set -a; source ./VERSION ; set +a;
-
-    date
-    echo "Branch is $(fossil branch current)"
-    BRANCH_NANE=trunk
-    echo "fossil checkout branch ${BRANCH_NANE}"
-    fossil checkout ${BRANCH_NANE}
-    fossil merge dev
-
-
-<a id="orge9ddcdc"></a>
-
-## Fossil. Commit + Git export
-
-Fill commit mesage above:
-
-    ci: updated image
-
-    date
-    echo "Branch is $(fossil branch current)"
-    echo ""
-    echo "fossil commit -m ..."
-    fossil commit -m "ci: updated image"
-    echo ""
-    echo "fossil git export ..."
-    fossil git export
