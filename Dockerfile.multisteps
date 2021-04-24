@@ -1,100 +1,108 @@
 # * Arg
-  # ARG BUILD_DATE \
-  #     NS_VERSION=4.99.21 \
-  #     NS_MODULES_VERSION=4.99.21 \
-  #     TCLLIB_VERSION=1.20 \
-  #     TCL_VERSION=8.6.11 \
-  #     TDOM_VERSION=0.9.1 \
-  #     XOTCL_VERSION=2.3.0
+# ARG BUILD_DATE \
+#    VERSION
+#     NS_VERSION=4.99.21 \
+#     NS_MODULES_VERSION=4.99.21 \
+#     TCLLIB_VERSION=1.20 \
+#     TCL_VERSION=8.6.11 \
+#     TDOM_VERSION=0.9.1 \
+#     XOTCL_VERSION=2.3.0
 
-  # * Build Naviserver
-  FROM oupfiz5/tcl-build as build
+# * Build Naviserver
+FROM oupfiz5/tcl-build as build
 
-  # ** Args
-  ARG BUILD_DATE \
-      NS_VERSION \
-      NS_MODULES_VERSION \
-      TCLLIB_VERSION \
-      TCL_VERSION \
-      TDOM_VERSION \
-      XOTCL_VERSION \
-      VERSION
+# ** Args
+ARG NS_VERSION \
+    NS_MODULES_VERSION \
+    TCLLIB_VERSION \
+    TCL_VERSION \
+    TDOM_VERSION \
+    XOTCL_VERSION
 
-  # ** Environments
-  ENV NS_VERSION=${NS_VERSION} \
-      NS_MODULES_VERSION=${NS_MODULES_VERSION} \
-      TCL_VERSION=${TCL_VERSION} \
-      TCLLIB_VERSION=${TCLLIB_VERSION} \
-      XOTCL_VERSION=${XOTCL_VERSION} \
-      TDOM_VERSION=${TDOM_VERSION}
+# ** Environments
+ENV NS_VERSION="${NS_VERSION}" \
+    NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+    TCLLIB_VERSION="${TCLLIB_VERSION}" \
+    TCL_VERSION="${TCL_VERSION}" \
+    TDOM_VERSION="${TDOM_VERSION}" \
+    XOTCL_VERSION="${XOTCL_VERSION}"
 
-  # ** Build
-  WORKDIR /
-  RUN mkdir /workspaces
-  COPY builds /builds
-  RUN  /bin/bash /builds/all-build.sh
+# ** Build
+WORKDIR /
+RUN mkdir /workspaces
+COPY builds /builds
+RUN  /bin/bash /builds/all-build.sh
 
-  # * From
-  FROM oupfiz5/ubuntu-s6:latest
+# * From
+FROM oupfiz5/ubuntu-s6:latest
 
-  # ** Copy Naviserver
-  WORKDIR /
-  COPY --from=build /usr/local/ns /usr/local/ns/
+# ** Arguments
+ARG BUILD_DATE \
+    VERSION \
+    NS_VERSION \
+    NS_MODULES_VERSION \
+    TCLLIB_VERSION \
+    TCL_VERSION \
+    TDOM_VERSION \
+    XOTCL_VERSION
 
-  # ** Labels
-  LABEL \
-      maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
-      org.opencontainers.image.created=${BUILD_DATE} \
-      org.opencontainers.image.authors="Oupfiz V (Five)" \
-      org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/home" \
-      org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/wiki" \
-      org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/brlist" \
-      org.opencontainers.image.version="0.0.1d" \
-      org.opencontainers.image.revision="" \
-      org.opencontainers.image.vendor="" \
-      org.opencontainers.image.licenses="" \
-      org.opencontainers.image.ref.name="" \
-      org.opencontainers.image.title="Naviserver on ubuntu base docker image using s6-overlay" \
-      org.opencontainers.image.description="Naviserver on ubuntu base docker image using s6-overlay" \
-      custom.package.version.naviserver=${VERSION}
-#      custom.package.version.naviserver_modules=${NS_MODULES_VERSION} \
-#      custom.package.version.tcl=${TCL_VERSION} \
-#      custom.package.version.tcllib=${TCLLIB_VERSION} \
-#      custom.package.version.tdom=${TDOM_VERSION} \
-#      custom.package.version.thread=${THREAD_VERSION} \
-#      custom.package.version.xotcl=${XOTCL_VERSION}
+# ** Copy Naviserver
+WORKDIR /
+COPY --from=build /usr/local/ns /usr/local/ns/
 
-  # ** Run
-  RUN export LANG="en_US.UTF-8" \
-      && export LC_ALL="en_US.UTF-8" \
-      && apt-get update \
-      && export DEBIAN_FRONTEND=noninteractive \
-      && apt-get -y install libssl-dev locales libpq-dev postgresql-client wget \
-      && locale-gen en_US.UTF-8 \
-      && update-locale LANG="en_US.UTF-8" \
-      && update-locale LC_ALL="en_US.UTF-8" \
-      && apt-get clean \
-      && apt-get auto-remove -y \
-      && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
-      && groupadd nsadmin \
-      && useradd -g nsadmin nsadmin \
-      && chown -R  nsadmin:nsadmin /usr/local/ns
+# ** Labels
+LABEL \
+    maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
+    org.opencontainers.image.created="${BUILD_DATE}" \
+    org.opencontainers.image.authors="Oupfiz V (Five)" \
+    org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/home" \
+    org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/wiki" \
+    org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/brlist" \
+    org.opencontainers.image.version="0.0.1d" \
+    org.opencontainers.image.revision="" \
+    org.opencontainers.image.vendor="" \
+    org.opencontainers.image.licenses="" \
+    org.opencontainers.image.ref.name="" \
+    org.opencontainers.image.title="NaviServer on ubuntu base docker image using s6-overlay" \
+    org.opencontainers.image.description="NaviServer on ubuntu base docker image using s6-overlay" \
+    custom.package.version.naviserver="${NS_VERSION}" \
+    custom.package.version.naviserver_modules="${NS_MODULES_VERSION}" \
+    custom.package.version.tcl="${TCL_VERSION}" \
+    custom.package.version.tcllib="${TCLLIB_VERSION}" \
+    custom.package.version.tdom="${TDOM_VERSION}" \
+    custom.package.version.xotcl="${XOTCL_VERSION}"
 
-  # ** Copy s6 and naviserver configurations
-  COPY rootfs/etc /etc/
-  COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
+# ** Run
+RUN export LANG="en_US.UTF-8" \
+    && export LC_ALL="en_US.UTF-8" \
+    && apt-get update \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install libssl-dev locales libpq-dev postgresql-client wget \
+    && locale-gen en_US.UTF-8 \
+    && update-locale LANG="en_US.UTF-8" \
+    && update-locale LC_ALL="en_US.UTF-8" \
+    && apt-get clean \
+    && apt-get auto-remove -y \
+    && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
+    && groupadd nsadmin \
+    && useradd -g nsadmin nsadmin \
+    && chown -R  nsadmin:nsadmin /usr/local/ns
 
-  # ** Expose
-  EXPOSE 8080
+# ** Copy s6 and naviserver configurations
+COPY rootfs/etc /etc/
+COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
 
-  # ** Environment
-  Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
+# ** Expose
+EXPOSE 8080
 
-  # ** Workdir
-  WORKDIR /usr/local/ns
+# ** Environment
+Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
 
-  # ** Entrypoint
-  ENTRYPOINT ["/init"]
+# ** Workdir
+WORKDIR /usr/local/ns
 
-  # ** Cmd
-  CMD []
+# ** Entrypoint
+ENTRYPOINT ["/init"]
+
+# ** Cmd
+CMD []
