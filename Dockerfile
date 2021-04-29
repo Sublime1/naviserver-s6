@@ -14,9 +14,9 @@ ARG BUILD_DATE \
 # * Env
 ENV version_ns=${NS_VERSION} \
     version_modules=${NS_VERSION_MODULES} \
+    version_thread=${THREAD_VERSION} \
     version_tcl=${TCL_VERSION} \
     version_tcllib=${TCLLIB_VERSION} \
-    version_thread=${THREAD_VERSION} \
     version_xotcl=${XOTCL_VERSION} \
     version_tdom=${TDOM_VERSION}
 
@@ -33,14 +33,14 @@ LABEL \
     org.opencontainers.image.vendor="" \
     org.opencontainers.image.licenses="" \
     org.opencontainers.image.ref.name="" \
-    org.opencontainers.image.title="Naviserver on ubuntu base docker image using s6-overlay" \
-    org.opencontainers.image.description="Naviserver on ubuntu base docker image using s6-overlay" \
+    org.opencontainers.image.title="NaviServer on ubuntu base docker image using s6-overlay" \
+    org.opencontainers.image.description="NaviServer on ubuntu base docker image using s6-overlay" \
     custom.package.version.naviserver=${NS_VERSION} \
     custom.package.version.naviserver_modules=${NS_MODULES_VERSION} \
+    custom.package.version.thread=${THREAD_VERSION} \
     custom.package.version.tcl=${TCL_VERSION} \
     custom.package.version.tcllib=${TCLLIB_VERSION} \
     custom.package.version.tdom=${VERSION_TDOM} \
-    custom.package.version.thread=${THREAD_VERSION} \
     custom.package.version.xotcl=${XOTCL_VERSION}
 
 # * Copy install scripts

@@ -14,17 +14,21 @@ FROM oupfiz5/tcl-build as build
 # ** Args
 ARG NS_VERSION \
     NS_MODULES_VERSION \
+    RL_JSON_VERSION \
     TCLLIB_VERSION \
     TCL_VERSION \
     TDOM_VERSION \
+    THREAD_VERSION \
     XOTCL_VERSION
 
 # ** Environments
 ENV NS_VERSION="${NS_VERSION}" \
     NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+    RL_JSON_VERSION_VERSION="${RL_JSON_VERSION_VERSION}" \
     TCLLIB_VERSION="${TCLLIB_VERSION}" \
     TCL_VERSION="${TCL_VERSION}" \
     TDOM_VERSION="${TDOM_VERSION}" \
+    THREAD_VERSION="${THREAD_VERSION}" \
     XOTCL_VERSION="${XOTCL_VERSION}"
 
 # ** Build
@@ -41,9 +45,11 @@ ARG BUILD_DATE \
     VERSION \
     NS_VERSION \
     NS_MODULES_VERSION \
+    RL_JSON_VERSION \
     TCLLIB_VERSION \
     TCL_VERSION \
     TDOM_VERSION \
+    THREAD_VERSION \
     XOTCL_VERSION
 
 # ** Copy Naviserver
@@ -67,9 +73,11 @@ LABEL \
     org.opencontainers.image.description="NaviServer on ubuntu base docker image using s6-overlay" \
     custom.package.version.naviserver="${NS_VERSION}" \
     custom.package.version.naviserver_modules="${NS_MODULES_VERSION}" \
+    custom.package.version.rl_json_version="${RL_JSON_VERSION}" \
     custom.package.version.tcl="${TCL_VERSION}" \
     custom.package.version.tcllib="${TCLLIB_VERSION}" \
     custom.package.version.tdom="${TDOM_VERSION}" \
+    custom.package.version.thread="${THREAD_VERSION}" \
     custom.package.version.xotcl="${XOTCL_VERSION}"
 
 # ** Run
