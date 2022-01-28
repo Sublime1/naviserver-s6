@@ -1095,28 +1095,28 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: rootfs-etc-naviserver-functions
 :END:
 #+begin_src sh :shebang ""
-  # shellcheck shell=bash
   #!/usr/bin/with-contenv bash
+  # shellcheck shell=bash
 
-    set -e
+  set -e
 
-    source /etc/naviserver/env-defaults
+  source /etc/naviserver/env-defaults
 
-    # Check if provided UID by user is numerical
-    get_usermap_uid() {
-    USERMAP_UID="${USERMAP_UID:-$NS_USER}"
-    if [[ USERMAP_UID != *[[:digit:]]* ]]; then
-        echo "$(id -u $USERMAP_UID)"
-    fi
-    }
+  # Check if provided UID by user is numerical
+  get_usermap_uid() {
+      USERMAP_UID="${USERMAP_UID:-$NS_USER}"
+      if [[ USERMAP_UID != *[[:digit:]]* ]]; then
+          echo "$(id -u $USERMAP_UID)"
+      fi
+  }
 
-    # Check if provided GID by user is numerical
-    get_usermap_gid() {
-    USERMAP_GID="${USERMAP_GID:-$NS_GROUP}"
-    if [[ USERMAP_GID != *[[:digit:]]* ]]; then
-        echo "$(id -g $USERMAP_GID)"
-    fi
-    }
+  # Check if provided GID by user is numerical
+  get_usermap_gid() {
+      USERMAP_GID="${USERMAP_GID:-$NS_GROUP}"
+      if [[ USERMAP_GID != *[[:digit:]]* ]]; then
+          echo "$(id -g $USERMAP_GID)"
+      fi
+  }
 #+end_src
 ** rootfs/usr/local/src/scripts/install-ns.sh :code:
 :PROPERTIES:
@@ -2301,5 +2301,5 @@ CIS-DI-0001
 :END:
 
 # Local Variables:
-# after-save-hook: (lambda nil (when (org-md-export-to-markdown) (rename-file "core.md" (concat (file-name-directory (mapconcat 'identity (split-string  buffer-file-name "org/") "")) "/" "Readme.md" )  t )))
+#after-save-hook: (lambda nil (when (org-md-export-to-markdown) (rename-file "core.md" (concat (file-name-directory (mapconcat 'identity (split-string  buffer-file-name "org/") "")) "/" "Readme.md" )  t )))
 # End:
