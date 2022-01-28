@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1091
 set -a; source ../VERSION ; set +a;
 
 if [[ ${BRANCH} == 'dev' ]]; then
@@ -7,5 +8,4 @@ else
     TAG_PREFIX=''
 fi
 
-docker push oupfiz5/naviserver-s6:${TAG_PREFIX}${VERSION:-undefine}
-docker push oupfiz5/naviserver-s6:${TAG_PREFIX}latest
+docker push oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}"

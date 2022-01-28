@@ -9,7 +9,7 @@
 #     XOTCL_VERSION=2.3.0
 
 # * Build Naviserver
-FROM oupfiz5/tcl-build as build
+FROM oupfiz5/tcl-build:22.01 as build
 
 # ** Args
 ARG NS_VERSION \
@@ -38,7 +38,7 @@ COPY builds /builds
 RUN  /bin/bash /builds/all-build.sh
 
 # * From
-FROM oupfiz5/ubuntu-s6:latest
+FROM oupfiz5/ubuntu-s6:20.04-3.0.0.0-1
 
 # ** Arguments
 ARG BUILD_DATE \
