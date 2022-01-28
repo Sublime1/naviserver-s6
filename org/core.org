@@ -792,26 +792,27 @@ VERSION='4.99.23'
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-finish
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
-#!/usr/bin/execlineb -S1
+  #!/usr/bin/execlineb -S1
 
-# only tell s6 to bring down the entire container, if it isn't already doing so
-# http://skarnet.org/software/s6/s6-supervise.html
-if { s6-test ${1} -ne 0 }
-if { s6-test ${1} -ne 256 }
+  # only tell s6 to bring down the entire container, if it isn't already doing so
+  # http://skarnet.org/software/s6/s6-supervise.html
+  if { s6-test ${1} -ne 0 }
+  if { s6-test ${1} -ne 256 }
 
-s6-svscanctl -t /var/run/s6/services
+  s6-svscanctl -t /var/run/s6/services
 #+end_src
 ** rootfs/etc/services.d/naviserver/run :code:
 :PROPERTIES:
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-run
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
+  # shellcheck shell=bash
   #!/usr/bin/with-contenv bash
 
   # Load functions
   source /etc/naviserver/functions
 
-  exec s6-applyuidgid -u $(get_usermap_uid)  -g $(get_usermap_gid) /usr/local/ns/bin/nsd -f -t ${NS_CONF}
+  exec s6-applyuidgid -u "$(get_usermap_uid)"  -g "$(get_usermap_gid)" /usr/local/ns/bin/nsd -f -t "${NS_CONF}"
 #+end_src
 ** rootfs/usr/local/ns/conf/nsd-config.tcl :code:
 :PROPERTIES:
@@ -1091,27 +1092,28 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: rootfs-etc-naviserver-functions
 :END:
 #+begin_src sh :shebang ""
+  # shellcheck shell=bash
   #!/usr/bin/with-contenv bash
 
-  set -e
+    set -e
 
-  source /etc/naviserver/env-defaults
+    source /etc/naviserver/env-defaults
 
-  # Check if provided UID by user is numerical
-  get_usermap_uid() {
-  USERMAP_UID=${USERMAP_UID:-$NS_USER}
-  if [[ USERMAP_UID != *[[:digit:]]* ]]; then
-      echo $(id -u $USERMAP_UID)
-  fi
-  }
+    # Check if provided UID by user is numerical
+    get_usermap_uid() {
+    USERMAP_UID="${USERMAP_UID:-$NS_USER}"
+    if [[ USERMAP_UID != *[[:digit:]]* ]]; then
+        echo "$(id -u $USERMAP_UID)"
+    fi
+    }
 
-  # Check if provided GID by user is numerical
-  get_usermap_gid() {
-  USERMAP_GID=${USERMAP_GID:-$NS_GROUP}
-  if [[ USERMAP_GID != *[[:digit:]]* ]]; then
-      echo $(id -g $USERMAP_GID)
-  fi
-  }
+    # Check if provided GID by user is numerical
+    get_usermap_gid() {
+    USERMAP_GID="${USERMAP_GID:-$NS_GROUP}"
+    if [[ USERMAP_GID != *[[:digit:]]* ]]; then
+        echo "$(id -g $USERMAP_GID)"
+    fi
+    }
 #+end_src
 ** rootfs/usr/local/src/scripts/install-ns.sh :code:
 :PROPERTIES:
@@ -1902,6 +1904,7 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: builds-env-vars-sh
 :END:
 #+begin_src sh
+  # shellcheck shell=sh
   export PREFIX="${PREFIX:-/usr/local/ns}"
 
   # * Versions
