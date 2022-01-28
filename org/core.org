@@ -806,10 +806,12 @@ VERSION='4.99.23'
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-run
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
-  # shellcheck shell=bash
   #!/usr/bin/with-contenv bash
+  # shellcheck shell=bash
+
 
   # Load functions
+  # shellcheck disable=SC1091
   source /etc/naviserver/functions
 
   exec s6-applyuidgid -u "$(get_usermap_uid)"  -g "$(get_usermap_gid)" /usr/local/ns/bin/nsd -f -t "${NS_CONF}"
@@ -1082,10 +1084,11 @@ set ::env(LANG) en_US.UTF-8
 :END:
 #+begin_src sh :shebang ""
   #!/usr/bin/with-contenv bash
+  # shellcheck shell=bash
 
-  export NS_USER=${NS_USER:-nsadmin}
-  export NS_GROUP=${NS_GROUP:-nsadmin}
-  export NS_CONF=${NS_CONF:-"/usr/local/ns/conf/nsd-config.tcl"}
+  export NS_USER="${NS_USER:-nsadmin}"
+  export NS_GROUP="${NS_GROUP:-nsadmin}"
+  export NS_CONF="${NS_CONF:-/usr/local/ns/conf/nsd-config.tcl}"
 #+end_src
 ** rootfs/etc/naviserver/functions :code:
 :PROPERTIES:
@@ -1904,7 +1907,7 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: builds-env-vars-sh
 :END:
 #+begin_src sh
-  # shellcheck shell=sh
+  # shellcheck shell=bash
   export PREFIX="${PREFIX:-/usr/local/ns}"
 
   # * Versions
@@ -1933,6 +1936,7 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: builds-all-build-sh
 :END:
 #+begin_src sh
+  # shellcheck shell=bash
   sh /builds/tcl-build.sh
   sh /builds/tcllib-build.sh
   sh /builds/ns-build.sh

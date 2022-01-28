@@ -1,7 +1,9 @@
-# shellcheck shell=bash
 #!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
 
 # Load functions
+# shellcheck disable=SC1091
 source /etc/naviserver/functions
 
 exec s6-applyuidgid -u "$(get_usermap_uid)"  -g "$(get_usermap_gid)" /usr/local/ns/bin/nsd -f -t "${NS_CONF}"

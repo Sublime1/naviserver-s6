@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck shell=bash
 sh /builds/tcl-build.sh
 sh /builds/tcllib-build.sh
 sh /builds/ns-build.sh

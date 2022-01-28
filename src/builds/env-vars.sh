@@ -1,5 +1,5 @@
 #!/bin/bash
-# shellcheck shell=sh
+# shellcheck shell=bash
 export PREFIX="${PREFIX:-/usr/local/ns}"
 
 # * Versions

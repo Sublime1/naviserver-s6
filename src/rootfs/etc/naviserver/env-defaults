@@ -1,5 +1,6 @@
 #!/usr/bin/with-contenv bash
+# shellcheck shell=bash
 
-export NS_USER=${NS_USER:-nsadmin}
-export NS_GROUP=${NS_GROUP:-nsadmin}
-export NS_CONF=${NS_CONF:-"/usr/local/ns/conf/nsd-config.tcl"}
+export NS_USER="${NS_USER:-nsadmin}"
+export NS_GROUP="${NS_GROUP:-nsadmin}"
+export NS_CONF="${NS_CONF:-/usr/local/ns/conf/nsd-config.tcl}"
