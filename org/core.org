@@ -701,6 +701,7 @@ VERSION='4.99.23'
 :CUSTOM_ID: hook-build-sh
 :END:
 #+begin_src sh
+  # shellcheck disable=SC1091
   set -a; source ../VERSION ; set +a;
 
   if [[ ${BRANCH} == 'dev' ]]; then
@@ -710,12 +711,11 @@ VERSION='4.99.23'
   fi
 
   docker build \
-         --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
          --build-arg VERSION="${VERSION}" \
-         -t oupfiz5/naviserver-s6:${TAG_PREFIX}${VERSION:-undefine} \
-         -t oupfiz5/naviserver-s6:${TAG_PREFIX}latest \
+         -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
          -f ../Dockerfile \
-          ../.
+         ../.
 #+end_src
 
 ** hook/build-msteps.sh :code:
@@ -723,6 +723,7 @@ VERSION='4.99.23'
 :CUSTOM_ID: hook-build-msteps-sh
 :END:
 #+begin_src sh
+  # shellcheck disable=SC1091
   set -a; source ../VERSION ; set +a;
   source ../builds/env-vars.sh
 
@@ -733,26 +734,26 @@ VERSION='4.99.23'
   fi
 
   docker build --no-cache \
-        --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-        --build-arg VERSION="${VERSION}" \
-        --build-arg NS_VERSION="${NS_VERSION}" \
-        --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
-        --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
-        --build-arg TCLLIB_VERSION="${TCLLIB_VERSION}" \
-        --build-arg TCL_VERSION="${TCL_VERSION}" \
-        --build-arg TDOM_VERSION="${TDOM_VERSION}" \
-        --build-arg THREAD_VERSION="${THREAD_VERSION}" \
-        --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
-        -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
-        -t oupfiz5/naviserver-s6:"${TAG_PREFIX}latest" \
-        -f ../Dockerfile.multisteps \
-        ../.
+         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+         --build-arg VERSION="${VERSION}" \
+         --build-arg NS_VERSION="${NS_VERSION}" \
+         --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+         --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
+         --build-arg TCLLIB_VERSION="${TCLLIB_VERSION}" \
+         --build-arg TCL_VERSION="${TCL_VERSION}" \
+         --build-arg TDOM_VERSION="${TDOM_VERSION}" \
+         --build-arg THREAD_VERSION="${THREAD_VERSION}" \
+         --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
+         -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
+         -f ../Dockerfile.multisteps \
+         ../.
 #+end_src
 ** hook/push.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: hook-push-sh
 :END:
-#+begin_src sh :dir ../../naviserver-s6/hook/
+#+begin_src sh :results output pp :noweb strip-export :dir ../src/hook
+  # shellcheck disable=SC1091
   set -a; source ../VERSION ; set +a;
 
   if [[ ${BRANCH} == 'dev' ]]; then
@@ -761,8 +762,7 @@ VERSION='4.99.23'
       TAG_PREFIX=''
   fi
 
-  docker push oupfiz5/naviserver-s6:${TAG_PREFIX}${VERSION:-undefine}
-  docker push oupfiz5/naviserver-s6:${TAG_PREFIX}latest
+  docker push oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}"
 #+end_src
 
 ** rootfs/etc/cont-init.d/00-map-uid-gid :code:tangleno:
