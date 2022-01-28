@@ -590,7 +590,7 @@ VERSION='4.99.23'
   #     XOTCL_VERSION=2.3.0
 
   # * Build Naviserver
-  FROM oupfiz5/tcl-build as build
+  FROM oupfiz5/tcl-build:22.01 as build
 
   # ** Args
   ARG NS_VERSION \
@@ -619,7 +619,7 @@ VERSION='4.99.23'
   RUN  /bin/bash /builds/all-build.sh
 
   # * From
-  FROM oupfiz5/ubuntu-s6:latest
+  FROM oupfiz5/ubuntu-s6:20.04-3.0.0.0-1
 
   # ** Arguments
   ARG BUILD_DATE \
@@ -2288,14 +2288,11 @@ CIS-DI-0001
     exit $?
 #+end_src
 
-#+RESULTS:
-: Test Dockerfile - Пт 16 июл 2021 00:36:29 MSK
-
 * Local hooks :noexport:
 :PROPERTIES:
 :CUSTOM_ID: local-hooks
 :END:
 
 # Local Variables:
-# after-save-hook: (lambda nil (when (org-md-export-to-markdown) (rename-file "core.md" (concat (file-name-directory (mapconcat 'identity (split-string  buffer-file-name "org/") "")) "src/" "Readme.md" )  t )))
+# after-save-hook: (lambda nil (when (org-md-export-to-markdown) (rename-file "core.md" (concat (file-name-directory (mapconcat 'identity (split-string  buffer-file-name "org/") "")) "/" "Readme.md" )  t )))
 # End:
