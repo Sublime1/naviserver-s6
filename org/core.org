@@ -139,9 +139,9 @@ In both cases will get naviserver docker image. But mulit steps image will have 
  |-------------------+---------+----------------------------------------|
  | BUILD_DATE        |    none | Set build date for label               |
  |-------------------+---------+----------------------------------------|
- | NS_VERSION        | 4.99.21 | Define version for Naviserver          |
+ | NS_VERSION        | 4.99.23 | Define version for Naviserver          |
  |-------------------+---------+----------------------------------------|
- | NS_MODULE_VERSION | 4.99.21 | Define version for Naviserver  modules |
+ | NS_MODULE_VERSION | 4.99.23 | Define version for Naviserver  modules |
  |-------------------+---------+----------------------------------------|
  | TCL_VERSION       |  8.6.11 | Define version for  tcl                |
  |-------------------+---------+----------------------------------------|
@@ -160,7 +160,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
          --build-arg NS_VERSION=4.99.21 \
          --build-arg TCL_VERSION=8.6.11 \
-         -t oupfiz5/naviserver-s6:4.99.21 \
+         -t oupfiz5/naviserver-s6:4.99.23 \
          -f ../Dockerfile.multisteps \
           ../.
 #+end_example
@@ -390,7 +390,7 @@ VERSION='4.99.23'
         - '.github/workflows/*'
         - '.github/*'
         - 'src/Dockerfile'
-        - 'src/rootfs/*'
+        - 'src/rootfs/**'
         - 'src/hook/*'
         - 'src/*.sh'
         - 'tests/**'
@@ -402,7 +402,7 @@ VERSION='4.99.23'
         - '.github/workflows/*'
         - '.github/*'
         - 'src/Dockerfile'
-        - 'src/rootfs/*'
+        - 'src/rootfs/**'
         - 'src/hook/*'
         - 'src/*.sh'
         - 'tests/**'
@@ -413,8 +413,8 @@ VERSION='4.99.23'
 
   # * Environments
   env:
-    CONTAINER_NAME: "ubuntu-s6"
-    IMAGE_NAME: "ubuntu-s6"
+    CONTAINER_NAME: "naviserver-s6"
+    IMAGE_NAME: "naviserver-s6"
     IMAGE_TAG: "${{ github.sha }}"
     REPOSITORY: "oupfiz5"
 
@@ -508,6 +508,7 @@ VERSION='4.99.23'
       version_tdom=${TDOM_VERSION}
 
   # * Labels
+  # hadolint ignore=DL3048
   LABEL \
       maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
       org.opencontainers.image.created=${BUILD_DATE} \
@@ -537,9 +538,10 @@ VERSION='4.99.23'
   WORKDIR /usr/local/src
 
   # * Run
+  # hadolint ignore=DL3003,DL3008,DL4006
   RUN export LANG=en_US.UTF-8 && export LC_ALL=en_US.UTF-8 \
-      && apt-get update && apt-get install curl wget gnupg apt-utils tzdata bash -y \
-      && apt-get install make gcc zlib1g-dev zip unzip openssl libssl-dev libpq-dev postgresql-client locales -y \
+      && apt-get update && apt-get --no-install-recommends install curl wget gnupg apt-utils tzdata bash -y \
+      && apt-get --no-install-recommends install make gcc zlib1g-dev zip unzip openssl libssl-dev libpq-dev postgresql-client locales -y \
       && locale-gen en_US.UTF-8 && update-locale LANG="en_US.UTF-8" && update-locale LC_ALL=en_US.UTF-8 \
       && apt-get clean \
       && scripts/install-ns.sh build \
@@ -582,8 +584,8 @@ VERSION='4.99.23'
   # * Arg
   # ARG BUILD_DATE \
   #    VERSION
-  #     NS_VERSION=4.99.21 \
-  #     NS_MODULES_VERSION=4.99.21 \
+  #     NS_VERSION=4.99.23 \
+  #     NS_MODULES_VERSION=4.99.23 \
   #     TCLLIB_VERSION=1.20 \
   #     TCL_VERSION=8.6.11 \
   #     TDOM_VERSION=0.9.1 \
@@ -638,6 +640,7 @@ VERSION='4.99.23'
   COPY --from=build /usr/local/ns /usr/local/ns/
 
   # ** Labels
+  # hadolint ignore=DL3048
   LABEL \
       maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
       org.opencontainers.image.created="${BUILD_DATE}" \
@@ -662,11 +665,12 @@ VERSION='4.99.23'
       custom.package.version.xotcl="${XOTCL_VERSION}"
 
   # ** Run
+  # hadolint ignore=DL3008
   RUN export LANG="en_US.UTF-8" \
       && export LC_ALL="en_US.UTF-8" \
       && apt-get update \
       && export DEBIAN_FRONTEND=noninteractive \
-      && apt-get -y install libssl-dev locales libpq-dev postgresql-client wget \
+      && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev postgresql-client wget \
       && locale-gen en_US.UTF-8 \
       && update-locale LANG="en_US.UTF-8" \
       && update-locale LC_ALL="en_US.UTF-8" \
@@ -807,11 +811,8 @@ VERSION='4.99.23'
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
   #!/usr/bin/with-contenv bash
-  # shellcheck shell=bash
-
 
   # Load functions
-  # shellcheck disable=SC1091
   source /etc/naviserver/functions
 
   exec s6-applyuidgid -u "$(get_usermap_uid)"  -g "$(get_usermap_gid)" /usr/local/ns/bin/nsd -f -t "${NS_CONF}"
@@ -1083,9 +1084,6 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: rootfs-etc-naviserver-env-defaults
 :END:
 #+begin_src sh :shebang ""
-  #!/usr/bin/with-contenv bash
-  # shellcheck shell=bash
-
   export NS_USER="${NS_USER:-nsadmin}"
   export NS_GROUP="${NS_GROUP:-nsadmin}"
   export NS_CONF="${NS_CONF:-/usr/local/ns/conf/nsd-config.tcl}"
@@ -1096,7 +1094,6 @@ set ::env(LANG) en_US.UTF-8
 :END:
 #+begin_src sh :shebang ""
   #!/usr/bin/with-contenv bash
-  # shellcheck shell=bash
 
   set -e
 
@@ -1150,9 +1147,9 @@ set ::env(LANG) en_US.UTF-8
   #build_dir=/usr/local/src/oo2
   ns_install_dir=/usr/local/ns
   #ns_install_dir=/usr/local/oo2
-  version_ns=${version_ns:-4.99.21}
+  version_ns=${version_ns:-4.99.23}
   #version_ns=HEAD
-  version_modules=${version_modules:-4.99.21}
+  version_modules=${version_modules:-4.99.23}
   #version_modules=HEAD
   #version_tcl=8.5.19
   version_tcl=${version_tcl:-8.6.11}
@@ -1911,9 +1908,9 @@ set ::env(LANG) en_US.UTF-8
   export PREFIX="${PREFIX:-/usr/local/ns}"
 
   # * Versions
-  export NS_VERSION="${NS_VERSION:-4.99.21}"
-  export NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.21}"
-  export RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.0}"
+  export NS_VERSION="${NS_VERSION:-4.99.23}"
+  export NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.23}"
+  export RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.1}"
   export TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
   export THREAD_VERSION="${THREAD_VERSION:-2.8.6}"
   export TCL_VERSION="${TCL_VERSION:-8.6.11}"
@@ -1994,7 +1991,7 @@ load '.bats-battery/bats-support/load.bash'
 :PROPERTIES:
 :CUSTOM_ID: 01-shellchecks-bats
 :END:
-#+begin_src bats :results output pp :noweb strip-export
+#+begin_src bats :results output pp :noweb strip-export :dir ../
 
   setup() {
       targets=()
@@ -2002,7 +1999,6 @@ load '.bats-battery/bats-support/load.bash'
           targets+=("$REPLY")
       done < <(
           find \
-              ../src/rootfs/etc \
               ../src/hook \
               ../src/builds \
               -type f ! -iname ".gitignore" \
@@ -2023,10 +2019,6 @@ load '.bats-battery/bats-support/load.bash'
 #+end_src
 
 #+RESULTS:
-: 1..2
-: ok 1 Check shell files
-: /tmp/babel-5WGsj2
-: ok 2 Check VERSION file
 
 ** 02.dockerfile_check.bats :test:
 :PROPERTIES:
@@ -2036,6 +2028,11 @@ load '.bats-battery/bats-support/load.bash'
 
   @test "Check Dockerfile" {
         run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile
+        assert_success
+  }
+
+  @test "Check Dockerfile.multisteps" {
+        run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile.multisteps
         assert_success
   }
 
@@ -2139,16 +2136,6 @@ load '.bats-battery/bats-support/load.bash'
 
 #+end_src
 
-#+RESULTS:
-: 1..7
-: ok 1 Verify container run
-: ok 2 Verify state status container - running
-: ok 3 Verify state running container - true
-: ok 4 Verify state restarting container - false
-: ok 5 Verify state error container - <empty>
-: ok 6 Verify restart count container - 0
-: ok 7 Verify container stop
-
 ** 05.builds_check.bats :test:
 :PROPERTIES:
 :CUSTOM_ID: 05-builds-check-bats
@@ -2157,7 +2144,6 @@ load '.bats-battery/bats-support/load.bash'
 
   setup() {
       . ./common_conf.bash
-      WORKSPACES="${BATS_TMPDIR}"/workspaces
   }
 
   @test "Remove container" {
@@ -2166,22 +2152,13 @@ load '.bats-battery/bats-support/load.bash'
       assert_success
   }
 
-  @test "Run tcl-build container" {
-      mkdir -p "${WORKSPACES}"
-      # echo "${WORKSPACES}" >&3
+  @test "Run naviserver-s6 container" {
       run docker run -itd \
-             -v ${WORKSPACES}:/workspaces \
-             -v $(pwd)/../src/builds:/builds \
-             --name="${CONTAINER_NAME}" \
-             "${IMAGE}"
-      assert_success
-  }
-
-  @test "Build all" {
-      sleep 5
-      run docker exec \
-          "${CONTAINER_NAME}" \
-          bash /builds/all-build.sh
+       --restart always \
+       --name="${CONTAINER_NAME}" \
+       --name=naviserver-s6 \
+       -p 127.0.0.1:8090:8080 \
+       "${IMAGE}"
       assert_success
   }
 
@@ -2192,11 +2169,6 @@ load '.bats-battery/bats-support/load.bash'
 
   @test "Container remove" {
       run docker container rm "${CONTAINER_NAME}"
-      assert_success
-  }
-
-  @test "Remove temporary directory (workspaces)" {
-      run rm -rf "${WORKSPACES}"
       assert_success
   }
 

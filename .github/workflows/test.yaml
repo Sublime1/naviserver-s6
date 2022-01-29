@@ -8,7 +8,7 @@ on:
       - '.github/workflows/*'
       - '.github/*'
       - 'src/Dockerfile'
-      - 'src/rootfs/*'
+      - 'src/rootfs/**'
       - 'src/hook/*'
       - 'src/*.sh'
       - 'tests/**'
@@ -20,7 +20,7 @@ on:
       - '.github/workflows/*'
       - '.github/*'
       - 'src/Dockerfile'
-      - 'src/rootfs/*'
+      - 'src/rootfs/**'
       - 'src/hook/*'
       - 'src/*.sh'
       - 'tests/**'
@@ -31,8 +31,8 @@ on:
 
 # * Environments
 env:
-  CONTAINER_NAME: "ubuntu-s6"
-  IMAGE_NAME: "ubuntu-s6"
+  CONTAINER_NAME: "naviserver-s6"
+  IMAGE_NAME: "naviserver-s6"
   IMAGE_TAG: "${{ github.sha }}"
   REPOSITORY: "oupfiz5"
 

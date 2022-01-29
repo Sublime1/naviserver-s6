@@ -3,7 +3,6 @@ load './helpers.bash'
 
 setup() {
     . ./common_conf.bash
-    WORKSPACES="${BATS_TMPDIR}"/workspaces
 }
 
 @test "Remove container" {
@@ -12,22 +11,13 @@ setup() {
     assert_success
 }
 
-@test "Run tcl-build container" {
-    mkdir -p "${WORKSPACES}"
-    # echo "${WORKSPACES}" >&3
+@test "Run naviserver-s6 container" {
     run docker run -itd \
-           -v ${WORKSPACES}:/workspaces \
-           -v $(pwd)/../src/builds:/builds \
-           --name="${CONTAINER_NAME}" \
-           "${IMAGE}"
-    assert_success
-}
-
-@test "Build all" {
-    sleep 5
-    run docker exec \
-        "${CONTAINER_NAME}" \
-        bash /builds/all-build.sh
+     --restart always \
+     --name="${CONTAINER_NAME}" \
+     --name=naviserver-s6 \
+     -p 127.0.0.1:8090:8080 \
+     "${IMAGE}"
     assert_success
 }
 
@@ -38,10 +28,5 @@ setup() {
 
 @test "Container remove" {
     run docker container rm "${CONTAINER_NAME}"
-    assert_success
-}
-
-@test "Remove temporary directory (workspaces)" {
-    run rm -rf "${WORKSPACES}"
     assert_success
 }
