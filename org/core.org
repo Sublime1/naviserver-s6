@@ -467,7 +467,7 @@ VERSION='4.99.23'
 :CUSTOM_ID: ----github--trigger-on-push
 :END:
 #+begin_src sh :shebang ""
-  Trigger:6
+  Trigger:7
 #+end_src
 ** ../.gitignore :code:
 :PROPERTIES:
