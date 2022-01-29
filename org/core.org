@@ -706,16 +706,12 @@ VERSION='4.99.23'
   # shellcheck disable=SC1091
   set -a; source ../VERSION ; set +a;
 
-  if [[ ${BRANCH} == 'dev' ]]; then
-      TAG_PREFIX='dev-'
-  else
-      TAG_PREFIX=""
-  fi
+  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}"
 
   docker build \
          --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
          --build-arg VERSION="${VERSION}" \
-         -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
+         -t "${IMAGE}" \
          -f ../Dockerfile \
          ../.
 #+end_src
@@ -729,11 +725,7 @@ VERSION='4.99.23'
   set -a; source ../VERSION ; set +a;
   source ../builds/env-vars.sh
 
-  if [[ ${BRANCH} == 'dev' ]]; then
-      TAG_PREFIX='dev-'
-  else
-      TAG_PREFIX=""
-  fi
+  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}}"
 
   docker build --no-cache \
          --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
@@ -746,7 +738,7 @@ VERSION='4.99.23'
          --build-arg TDOM_VERSION="${TDOM_VERSION}" \
          --build-arg THREAD_VERSION="${THREAD_VERSION}" \
          --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
-         -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
+         -t "${IMAGE}" \
          -f ../Dockerfile.multisteps \
          ../.
 #+end_src
@@ -758,13 +750,9 @@ VERSION='4.99.23'
   # shellcheck disable=SC1091
   set -a; source ../VERSION ; set +a;
 
-  if [[ ${BRANCH} == 'dev' ]]; then
-      TAG_PREFIX='dev-'
-  else
-      TAG_PREFIX=''
-  fi
+  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}}"
 
-  docker push oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}"
+  docker push "${IMAGE}"
 #+end_src
 
 ** rootfs/etc/cont-init.d/00-map-uid-gid :code:tangleno:

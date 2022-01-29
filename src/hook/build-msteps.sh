@@ -3,11 +3,7 @@
 set -a; source ../VERSION ; set +a;
 source ../builds/env-vars.sh
 
-if [[ ${BRANCH} == 'dev' ]]; then
-    TAG_PREFIX='dev-'
-else
-    TAG_PREFIX=""
-fi
+IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}}"
 
 docker build --no-cache \
        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
@@ -20,6 +16,6 @@ docker build --no-cache \
        --build-arg TDOM_VERSION="${TDOM_VERSION}" \
        --build-arg THREAD_VERSION="${THREAD_VERSION}" \
        --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
-       -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
+       -t "${IMAGE}" \
        -f ../Dockerfile.multisteps \
        ../.
