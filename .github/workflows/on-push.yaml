@@ -47,3 +47,10 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/src/hook
           ./push.sh
+
+      - name: Push images (test)
+        run: |
+          set -a; source ../VERSION ; set +a;
+          IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}"
+          echo "IMAGE=${IMAGE}"
+          docker push "${IMAGE}"
