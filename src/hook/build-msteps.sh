@@ -3,7 +3,7 @@
 set -a; source ../VERSION ; set +a;
 source ../builds/env-vars.sh
 
-IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}"
+IMAGE="${IMAGE:-oupfiz5/naviserver-s6:$VERSION}"
 
 docker build --no-cache \
        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
