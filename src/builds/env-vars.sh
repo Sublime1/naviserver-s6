@@ -1,10 +1,11 @@
 #!/bin/bash
+# shellcheck shell=bash
 export PREFIX="${PREFIX:-/usr/local/ns}"
 
 # * Versions
-export NS_VERSION="${NS_VERSION:-4.99.21}"
-export NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.21}"
-export RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.0}"
+export NS_VERSION="${NS_VERSION:-4.99.23}"
+export NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.23}"
+export RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.1}"
 export TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
 export THREAD_VERSION="${THREAD_VERSION:-2.8.6}"
 export TCL_VERSION="${TCL_VERSION:-8.6.11}"

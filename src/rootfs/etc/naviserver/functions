@@ -6,16 +6,16 @@ source /etc/naviserver/env-defaults
 
 # Check if provided UID by user is numerical
 get_usermap_uid() {
-USERMAP_UID=${USERMAP_UID:-$NS_USER}
-if [[ USERMAP_UID != *[[:digit:]]* ]]; then
-    echo $(id -u $USERMAP_UID)
-fi
+    USERMAP_UID="${USERMAP_UID:-$NS_USER}"
+    if [[ USERMAP_UID != *[[:digit:]]* ]]; then
+        echo "$(id -u $USERMAP_UID)"
+    fi
 }
 
 # Check if provided GID by user is numerical
 get_usermap_gid() {
-USERMAP_GID=${USERMAP_GID:-$NS_GROUP}
-if [[ USERMAP_GID != *[[:digit:]]* ]]; then
-    echo $(id -g $USERMAP_GID)
-fi
+    USERMAP_GID="${USERMAP_GID:-$NS_GROUP}"
+    if [[ USERMAP_GID != *[[:digit:]]* ]]; then
+        echo "$(id -g $USERMAP_GID)"
+    fi
 }

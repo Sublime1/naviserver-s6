@@ -41,7 +41,7 @@ jobs:
       - name: Build images
         run: |
           cd ${GITHUB_WORKSPACE}/src/hook
-          ./build.sh
+          ./build-msteps.sh
 
       - name: Push images
         run: |

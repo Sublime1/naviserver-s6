@@ -1,15 +1,15 @@
 # * Arg
 # ARG BUILD_DATE \
 #    VERSION
-#     NS_VERSION=4.99.21 \
-#     NS_MODULES_VERSION=4.99.21 \
+#     NS_VERSION=4.99.23 \
+#     NS_MODULES_VERSION=4.99.23 \
 #     TCLLIB_VERSION=1.20 \
 #     TCL_VERSION=8.6.11 \
 #     TDOM_VERSION=0.9.1 \
 #     XOTCL_VERSION=2.3.0
 
 # * Build Naviserver
-FROM oupfiz5/tcl-build as build
+FROM oupfiz5/tcl-build:22.01 as build
 
 # ** Args
 ARG NS_VERSION \
@@ -38,7 +38,7 @@ COPY builds /builds
 RUN  /bin/bash /builds/all-build.sh
 
 # * From
-FROM oupfiz5/ubuntu-s6:latest
+FROM oupfiz5/ubuntu-s6:20.04-3.0.0.0-1
 
 # ** Arguments
 ARG BUILD_DATE \
@@ -57,6 +57,7 @@ WORKDIR /
 COPY --from=build /usr/local/ns /usr/local/ns/
 
 # ** Labels
+# hadolint ignore=DL3048
 LABEL \
     maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
     org.opencontainers.image.created="${BUILD_DATE}" \
@@ -81,11 +82,12 @@ LABEL \
     custom.package.version.xotcl="${XOTCL_VERSION}"
 
 # ** Run
+# hadolint ignore=DL3008
 RUN export LANG="en_US.UTF-8" \
     && export LC_ALL="en_US.UTF-8" \
     && apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install libssl-dev locales libpq-dev postgresql-client wget \
+    && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev postgresql-client wget \
     && locale-gen en_US.UTF-8 \
     && update-locale LANG="en_US.UTF-8" \
     && update-locale LC_ALL="en_US.UTF-8" \

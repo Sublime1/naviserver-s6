@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1091
 set -a; source ../VERSION ; set +a;
 
 if [[ ${BRANCH} == 'dev' ]]; then
@@ -8,9 +9,8 @@ else
 fi
 
 docker build \
-       --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+       --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
        --build-arg VERSION="${VERSION}" \
-       -t oupfiz5/naviserver-s6:${TAG_PREFIX}${VERSION:-undefine} \
-       -t oupfiz5/naviserver-s6:${TAG_PREFIX}latest \
+       -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
        -f ../Dockerfile \
-        ../.
+       ../.

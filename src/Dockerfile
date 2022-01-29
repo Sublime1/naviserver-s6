@@ -21,6 +21,7 @@ ENV version_ns=${NS_VERSION} \
     version_tdom=${TDOM_VERSION}
 
 # * Labels
+# hadolint ignore=DL3048
 LABEL \
     maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
     org.opencontainers.image.created=${BUILD_DATE} \
@@ -50,9 +51,10 @@ COPY rootfs/usr/local/src/scripts /usr/local/src/scripts
 WORKDIR /usr/local/src
 
 # * Run
+# hadolint ignore=DL3003,DL3008,DL4006
 RUN export LANG=en_US.UTF-8 && export LC_ALL=en_US.UTF-8 \
-    && apt-get update && apt-get install curl wget gnupg apt-utils tzdata bash -y \
-    && apt-get install make gcc zlib1g-dev zip unzip openssl libssl-dev libpq-dev postgresql-client locales -y \
+    && apt-get update && apt-get --no-install-recommends install curl wget gnupg apt-utils tzdata bash -y \
+    && apt-get --no-install-recommends install make gcc zlib1g-dev zip unzip openssl libssl-dev libpq-dev postgresql-client locales -y \
     && locale-gen en_US.UTF-8 && update-locale LANG="en_US.UTF-8" && update-locale LC_ALL=en_US.UTF-8 \
     && apt-get clean \
     && scripts/install-ns.sh build \

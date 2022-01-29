@@ -139,9 +139,9 @@ In both cases will get naviserver docker image. But mulit steps image will have 
  |-------------------+---------+----------------------------------------|
  | BUILD_DATE        |    none | Set build date for label               |
  |-------------------+---------+----------------------------------------|
- | NS_VERSION        | 4.99.21 | Define version for Naviserver          |
+ | NS_VERSION        | 4.99.23 | Define version for Naviserver          |
  |-------------------+---------+----------------------------------------|
- | NS_MODULE_VERSION | 4.99.21 | Define version for Naviserver  modules |
+ | NS_MODULE_VERSION | 4.99.23 | Define version for Naviserver  modules |
  |-------------------+---------+----------------------------------------|
  | TCL_VERSION       |  8.6.11 | Define version for  tcl                |
  |-------------------+---------+----------------------------------------|
@@ -160,7 +160,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
          --build-arg NS_VERSION=4.99.21 \
          --build-arg TCL_VERSION=8.6.11 \
-         -t oupfiz5/naviserver-s6:4.99.21 \
+         -t oupfiz5/naviserver-s6:4.99.23 \
          -f ../Dockerfile.multisteps \
           ../.
 #+end_example
@@ -368,7 +368,7 @@ VERSION='4.99.23'
         - name: Build images
           run: |
             cd ${GITHUB_WORKSPACE}/src/hook
-            ./build.sh
+            ./build-msteps.sh
 
         - name: Push images
           run: |
@@ -390,7 +390,7 @@ VERSION='4.99.23'
         - '.github/workflows/*'
         - '.github/*'
         - 'src/Dockerfile'
-        - 'src/rootfs/*'
+        - 'src/rootfs/**'
         - 'src/hook/*'
         - 'src/*.sh'
         - 'tests/**'
@@ -402,7 +402,7 @@ VERSION='4.99.23'
         - '.github/workflows/*'
         - '.github/*'
         - 'src/Dockerfile'
-        - 'src/rootfs/*'
+        - 'src/rootfs/**'
         - 'src/hook/*'
         - 'src/*.sh'
         - 'tests/**'
@@ -413,8 +413,8 @@ VERSION='4.99.23'
 
   # * Environments
   env:
-    CONTAINER_NAME: "ubuntu-s6"
-    IMAGE_NAME: "ubuntu-s6"
+    CONTAINER_NAME: "naviserver-s6"
+    IMAGE_NAME: "naviserver-s6"
     IMAGE_TAG: "${{ github.sha }}"
     REPOSITORY: "oupfiz5"
 
@@ -446,10 +446,8 @@ VERSION='4.99.23'
             export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
             docker build \
             --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-            --build-arg S6_OVERLAY_VERSION="${S6_OVERLAY_VERSION}" \
-            --build-arg UBUNTU_VERSION="${UBUNTU_VERSION}" \
             -t "${IMAGE}" \
-            -f ./Dockerfile \
+            -f ./Dockerfile.multisteps \
             .
 
         - name: Check docker image (dockle)
@@ -469,7 +467,7 @@ VERSION='4.99.23'
 :CUSTOM_ID: ----github--trigger-on-push
 :END:
 #+begin_src sh :shebang ""
-  Trigger:4
+  Trigger:7
 #+end_src
 ** ../.gitignore :code:
 :PROPERTIES:
@@ -508,6 +506,7 @@ VERSION='4.99.23'
       version_tdom=${TDOM_VERSION}
 
   # * Labels
+  # hadolint ignore=DL3048
   LABEL \
       maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
       org.opencontainers.image.created=${BUILD_DATE} \
@@ -537,9 +536,10 @@ VERSION='4.99.23'
   WORKDIR /usr/local/src
 
   # * Run
+  # hadolint ignore=DL3003,DL3008,DL4006
   RUN export LANG=en_US.UTF-8 && export LC_ALL=en_US.UTF-8 \
-      && apt-get update && apt-get install curl wget gnupg apt-utils tzdata bash -y \
-      && apt-get install make gcc zlib1g-dev zip unzip openssl libssl-dev libpq-dev postgresql-client locales -y \
+      && apt-get update && apt-get --no-install-recommends install curl wget gnupg apt-utils tzdata bash -y \
+      && apt-get --no-install-recommends install make gcc zlib1g-dev zip unzip openssl libssl-dev libpq-dev postgresql-client locales -y \
       && locale-gen en_US.UTF-8 && update-locale LANG="en_US.UTF-8" && update-locale LC_ALL=en_US.UTF-8 \
       && apt-get clean \
       && scripts/install-ns.sh build \
@@ -582,15 +582,15 @@ VERSION='4.99.23'
   # * Arg
   # ARG BUILD_DATE \
   #    VERSION
-  #     NS_VERSION=4.99.21 \
-  #     NS_MODULES_VERSION=4.99.21 \
+  #     NS_VERSION=4.99.23 \
+  #     NS_MODULES_VERSION=4.99.23 \
   #     TCLLIB_VERSION=1.20 \
   #     TCL_VERSION=8.6.11 \
   #     TDOM_VERSION=0.9.1 \
   #     XOTCL_VERSION=2.3.0
 
   # * Build Naviserver
-  FROM oupfiz5/tcl-build as build
+  FROM oupfiz5/tcl-build:22.01 as build
 
   # ** Args
   ARG NS_VERSION \
@@ -619,7 +619,7 @@ VERSION='4.99.23'
   RUN  /bin/bash /builds/all-build.sh
 
   # * From
-  FROM oupfiz5/ubuntu-s6:latest
+  FROM oupfiz5/ubuntu-s6:20.04-3.0.0.0-1
 
   # ** Arguments
   ARG BUILD_DATE \
@@ -638,6 +638,7 @@ VERSION='4.99.23'
   COPY --from=build /usr/local/ns /usr/local/ns/
 
   # ** Labels
+  # hadolint ignore=DL3048
   LABEL \
       maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
       org.opencontainers.image.created="${BUILD_DATE}" \
@@ -662,11 +663,12 @@ VERSION='4.99.23'
       custom.package.version.xotcl="${XOTCL_VERSION}"
 
   # ** Run
+  # hadolint ignore=DL3008
   RUN export LANG="en_US.UTF-8" \
       && export LC_ALL="en_US.UTF-8" \
       && apt-get update \
       && export DEBIAN_FRONTEND=noninteractive \
-      && apt-get -y install libssl-dev locales libpq-dev postgresql-client wget \
+      && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev postgresql-client wget \
       && locale-gen en_US.UTF-8 \
       && update-locale LANG="en_US.UTF-8" \
       && update-locale LC_ALL="en_US.UTF-8" \
@@ -701,6 +703,7 @@ VERSION='4.99.23'
 :CUSTOM_ID: hook-build-sh
 :END:
 #+begin_src sh
+  # shellcheck disable=SC1091
   set -a; source ../VERSION ; set +a;
 
   if [[ ${BRANCH} == 'dev' ]]; then
@@ -710,12 +713,11 @@ VERSION='4.99.23'
   fi
 
   docker build \
-         --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
          --build-arg VERSION="${VERSION}" \
-         -t oupfiz5/naviserver-s6:${TAG_PREFIX}${VERSION:-undefine} \
-         -t oupfiz5/naviserver-s6:${TAG_PREFIX}latest \
+         -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
          -f ../Dockerfile \
-          ../.
+         ../.
 #+end_src
 
 ** hook/build-msteps.sh :code:
@@ -723,6 +725,7 @@ VERSION='4.99.23'
 :CUSTOM_ID: hook-build-msteps-sh
 :END:
 #+begin_src sh
+  # shellcheck disable=SC1091
   set -a; source ../VERSION ; set +a;
   source ../builds/env-vars.sh
 
@@ -733,26 +736,26 @@ VERSION='4.99.23'
   fi
 
   docker build --no-cache \
-        --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-        --build-arg VERSION="${VERSION}" \
-        --build-arg NS_VERSION="${NS_VERSION}" \
-        --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
-        --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
-        --build-arg TCLLIB_VERSION="${TCLLIB_VERSION}" \
-        --build-arg TCL_VERSION="${TCL_VERSION}" \
-        --build-arg TDOM_VERSION="${TDOM_VERSION}" \
-        --build-arg THREAD_VERSION="${THREAD_VERSION}" \
-        --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
-        -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
-        -t oupfiz5/naviserver-s6:"${TAG_PREFIX}latest" \
-        -f ../Dockerfile.multisteps \
-        ../.
+         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+         --build-arg VERSION="${VERSION}" \
+         --build-arg NS_VERSION="${NS_VERSION}" \
+         --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+         --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
+         --build-arg TCLLIB_VERSION="${TCLLIB_VERSION}" \
+         --build-arg TCL_VERSION="${TCL_VERSION}" \
+         --build-arg TDOM_VERSION="${TDOM_VERSION}" \
+         --build-arg THREAD_VERSION="${THREAD_VERSION}" \
+         --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
+         -t oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}" \
+         -f ../Dockerfile.multisteps \
+         ../.
 #+end_src
 ** hook/push.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: hook-push-sh
 :END:
-#+begin_src sh :dir ../../naviserver-s6/hook/
+#+begin_src sh :results output pp :noweb strip-export :dir ../src/hook
+  # shellcheck disable=SC1091
   set -a; source ../VERSION ; set +a;
 
   if [[ ${BRANCH} == 'dev' ]]; then
@@ -761,8 +764,7 @@ VERSION='4.99.23'
       TAG_PREFIX=''
   fi
 
-  docker push oupfiz5/naviserver-s6:${TAG_PREFIX}${VERSION:-undefine}
-  docker push oupfiz5/naviserver-s6:${TAG_PREFIX}latest
+  docker push oupfiz5/naviserver-s6:"${TAG_PREFIX}${VERSION:-undefine}"
 #+end_src
 
 ** rootfs/etc/cont-init.d/00-map-uid-gid :code:tangleno:
@@ -792,14 +794,14 @@ VERSION='4.99.23'
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-finish
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
-#!/usr/bin/execlineb -S1
+  #!/usr/bin/execlineb -S1
 
-# only tell s6 to bring down the entire container, if it isn't already doing so
-# http://skarnet.org/software/s6/s6-supervise.html
-if { s6-test ${1} -ne 0 }
-if { s6-test ${1} -ne 256 }
+  # only tell s6 to bring down the entire container, if it isn't already doing so
+  # http://skarnet.org/software/s6/s6-supervise.html
+  if { s6-test ${1} -ne 0 }
+  if { s6-test ${1} -ne 256 }
 
-s6-svscanctl -t /var/run/s6/services
+  s6-svscanctl -t /var/run/s6/services
 #+end_src
 ** rootfs/etc/services.d/naviserver/run :code:
 :PROPERTIES:
@@ -811,7 +813,7 @@ s6-svscanctl -t /var/run/s6/services
   # Load functions
   source /etc/naviserver/functions
 
-  exec s6-applyuidgid -u $(get_usermap_uid)  -g $(get_usermap_gid) /usr/local/ns/bin/nsd -f -t ${NS_CONF}
+  exec s6-applyuidgid -u "$(get_usermap_uid)"  -g "$(get_usermap_gid)" /usr/local/ns/bin/nsd -f -t "${NS_CONF}"
 #+end_src
 ** rootfs/usr/local/ns/conf/nsd-config.tcl :code:
 :PROPERTIES:
@@ -1080,11 +1082,9 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: rootfs-etc-naviserver-env-defaults
 :END:
 #+begin_src sh :shebang ""
-  #!/usr/bin/with-contenv bash
-
-  export NS_USER=${NS_USER:-nsadmin}
-  export NS_GROUP=${NS_GROUP:-nsadmin}
-  export NS_CONF=${NS_CONF:-"/usr/local/ns/conf/nsd-config.tcl"}
+  export NS_USER="${NS_USER:-nsadmin}"
+  export NS_GROUP="${NS_GROUP:-nsadmin}"
+  export NS_CONF="${NS_CONF:-/usr/local/ns/conf/nsd-config.tcl}"
 #+end_src
 ** rootfs/etc/naviserver/functions :code:
 :PROPERTIES:
@@ -1099,18 +1099,18 @@ set ::env(LANG) en_US.UTF-8
 
   # Check if provided UID by user is numerical
   get_usermap_uid() {
-  USERMAP_UID=${USERMAP_UID:-$NS_USER}
-  if [[ USERMAP_UID != *[[:digit:]]* ]]; then
-      echo $(id -u $USERMAP_UID)
-  fi
+      USERMAP_UID="${USERMAP_UID:-$NS_USER}"
+      if [[ USERMAP_UID != *[[:digit:]]* ]]; then
+          echo "$(id -u $USERMAP_UID)"
+      fi
   }
 
   # Check if provided GID by user is numerical
   get_usermap_gid() {
-  USERMAP_GID=${USERMAP_GID:-$NS_GROUP}
-  if [[ USERMAP_GID != *[[:digit:]]* ]]; then
-      echo $(id -g $USERMAP_GID)
-  fi
+      USERMAP_GID="${USERMAP_GID:-$NS_GROUP}"
+      if [[ USERMAP_GID != *[[:digit:]]* ]]; then
+          echo "$(id -g $USERMAP_GID)"
+      fi
   }
 #+end_src
 ** rootfs/usr/local/src/scripts/install-ns.sh :code:
@@ -1145,9 +1145,9 @@ set ::env(LANG) en_US.UTF-8
   #build_dir=/usr/local/src/oo2
   ns_install_dir=/usr/local/ns
   #ns_install_dir=/usr/local/oo2
-  version_ns=${version_ns:-4.99.21}
+  version_ns=${version_ns:-4.99.23}
   #version_ns=HEAD
-  version_modules=${version_modules:-4.99.21}
+  version_modules=${version_modules:-4.99.23}
   #version_modules=HEAD
   #version_tcl=8.5.19
   version_tcl=${version_tcl:-8.6.11}
@@ -1902,12 +1902,13 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: builds-env-vars-sh
 :END:
 #+begin_src sh
+  # shellcheck shell=bash
   export PREFIX="${PREFIX:-/usr/local/ns}"
 
   # * Versions
-  export NS_VERSION="${NS_VERSION:-4.99.21}"
-  export NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.21}"
-  export RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.0}"
+  export NS_VERSION="${NS_VERSION:-4.99.23}"
+  export NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.23}"
+  export RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.1}"
   export TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
   export THREAD_VERSION="${THREAD_VERSION:-2.8.6}"
   export TCL_VERSION="${TCL_VERSION:-8.6.11}"
@@ -1930,6 +1931,7 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: builds-all-build-sh
 :END:
 #+begin_src sh
+  # shellcheck shell=bash
   sh /builds/tcl-build.sh
   sh /builds/tcllib-build.sh
   sh /builds/ns-build.sh
@@ -1977,17 +1979,17 @@ load '.bats-battery/bats-support/load.bash'
 :END:
 #+begin_src sh :shebang "" :results output pp :noweb strip-export :tangle-mode (identity #o644)
   # * Common variables
-  IMG='tcl-build'
-  export IMAGE="${IMAGE:-oupfiz5/$IMG:latest}"
+  IMG='naviserver-s6'
+  export IMAGE="${IMAGE:-oupfiz5/$IMG:4.99.23}"
   export CONTAINER_NAME="${CONTAINER_NAME:-$IMG}"
-  export IMAGE="${IMAGE:-oupfiz5/$IMG:latest}"
+  export IMAGE="${IMAGE:-oupfiz5/$IMG:4.99.23}"
 #+end_src
 
 ** 01.shellchecks.bats :test:
 :PROPERTIES:
 :CUSTOM_ID: 01-shellchecks-bats
 :END:
-#+begin_src bats :results output pp :noweb strip-export
+#+begin_src bats :results output pp :noweb strip-export :dir ../
 
   setup() {
       targets=()
@@ -1995,7 +1997,6 @@ load '.bats-battery/bats-support/load.bash'
           targets+=("$REPLY")
       done < <(
           find \
-              ../src/rootfs/etc \
               ../src/hook \
               ../src/builds \
               -type f ! -iname ".gitignore" \
@@ -2016,10 +2017,6 @@ load '.bats-battery/bats-support/load.bash'
 #+end_src
 
 #+RESULTS:
-: 1..2
-: ok 1 Check shell files
-: /tmp/babel-5WGsj2
-: ok 2 Check VERSION file
 
 ** 02.dockerfile_check.bats :test:
 :PROPERTIES:
@@ -2029,6 +2026,11 @@ load '.bats-battery/bats-support/load.bash'
 
   @test "Check Dockerfile" {
         run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile
+        assert_success
+  }
+
+  @test "Check Dockerfile.multisteps" {
+        run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile.multisteps
         assert_success
   }
 
@@ -2081,39 +2083,44 @@ load '.bats-battery/bats-support/load.bash'
   }
 
   @test "Verify container run" {
-        run docker run -d --rm --name="${CONTAINER_NAME}" "${IMAGE}"
-        assert_success
+      run docker run -itd \
+       --restart always \
+       --name="${CONTAINER_NAME}" \
+       --name=naviserver-s6 \
+       -p 127.0.0.1:8090:8080 \
+       "${IMAGE}"
+      assert_success
   }
 
   @test "Verify state status container - running" {
-        sleep 5
-        run docker inspect --format 'result={{ .State.Status }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=running'
+      sleep 5
+      run docker inspect --format 'result={{ .State.Status }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=running'
   }
 
   @test "Verify state running container - true" {
-        run docker inspect --format 'result={{ .State.Running }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=true'
+      run docker inspect --format 'result={{ .State.Running }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=true'
   }
 
   @test "Verify state restarting container - false" {
-        run docker inspect --format 'result={{ .State.Restarting }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=false'
+      run docker inspect --format 'result={{ .State.Restarting }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=false'
   }
 
   @test "Verify state error container - <empty>" {
-        run docker inspect --format 'result={{ .State.Error }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result='
+      run docker inspect --format 'result={{ .State.Error }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result='
   }
 
   @test "Verify restart count container - 0" {
-        run docker inspect --format 'result={{ .RestartCount }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=0'
+      run docker inspect --format 'result={{ .RestartCount }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=0'
   }
 
   # @test "Verify AppArmor Profile - if applicable" {
@@ -2126,70 +2133,12 @@ load '.bats-battery/bats-support/load.bash'
   # }
 
   @test "Verify container stop" {
-        run docker container stop "${CONTAINER_NAME}"
-        assert_success
-  }
-
-#+end_src
-
-#+RESULTS:
-: 1..7
-: ok 1 Verify container run
-: ok 2 Verify state status container - running
-: ok 3 Verify state running container - true
-: ok 4 Verify state restarting container - false
-: ok 5 Verify state error container - <empty>
-: ok 6 Verify restart count container - 0
-: ok 7 Verify container stop
-
-** 05.builds_check.bats :test:
-:PROPERTIES:
-:CUSTOM_ID: 05-builds-check-bats
-:END:
-#+begin_src bats :results output pp :noweb strip-export
-
-  setup() {
-      . ./common_conf.bash
-      WORKSPACES="${BATS_TMPDIR}"/workspaces
-  }
-
-  @test "Remove container" {
-      skip
-      run docker container rm "${CONTAINER_NAME}" || true
-      assert_success
-  }
-
-  @test "Run tcl-build container" {
-      mkdir -p "${WORKSPACES}"
-      # echo "${WORKSPACES}" >&3
-      run docker run -itd \
-             -v ${WORKSPACES}:/workspaces \
-             -v $(pwd)/../src/builds:/builds \
-             --name="${CONTAINER_NAME}" \
-             "${IMAGE}"
-      assert_success
-  }
-
-  @test "Build all" {
-      sleep 5
-      run docker exec \
-          "${CONTAINER_NAME}" \
-          bash /builds/all-build.sh
-      assert_success
-  }
-
-  @test "Container stop" {
       run docker container stop "${CONTAINER_NAME}"
       assert_success
   }
 
-  @test "Container remove" {
-      run docker container rm "${CONTAINER_NAME}"
-      assert_success
-  }
-
-  @test "Remove temporary directory (workspaces)" {
-      run rm -rf "${WORKSPACES}"
+  @test "Remove container" {
+      run docker container rm "${CONTAINER_NAME}" || true
       assert_success
   }
 
@@ -2288,14 +2237,11 @@ CIS-DI-0001
     exit $?
 #+end_src
 
-#+RESULTS:
-: Test Dockerfile - Пт 16 июл 2021 00:36:29 MSK
-
 * Local hooks :noexport:
 :PROPERTIES:
 :CUSTOM_ID: local-hooks
 :END:
 
 # Local Variables:
-# after-save-hook: (lambda nil (when (org-md-export-to-markdown) (rename-file "core.md" (concat (file-name-directory (mapconcat 'identity (split-string  buffer-file-name "org/") "")) "src/" "Readme.md" )  t )))
+#after-save-hook: (lambda nil (when (org-md-export-to-markdown) (rename-file "core.md" (concat (file-name-directory (mapconcat 'identity (split-string  buffer-file-name "org/") "")) "/" "Readme.md" )  t )))
 # End:
