@@ -79,9 +79,3 @@ jobs:
           cd ${GITHUB_WORKSPACE}/tests
           export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
           .bats-battery/bats-core/bin/bats 04.container_check.bats
-
-      - name: Check docker container
-        run: |
-          cd ${GITHUB_WORKSPACE}/tests
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-          .bats-battery/bats-core/bin/bats 04.container_check.bats

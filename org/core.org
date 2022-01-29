@@ -368,7 +368,7 @@ VERSION='4.99.23'
         - name: Build images
           run: |
             cd ${GITHUB_WORKSPACE}/src/hook
-            ./build.sh
+            ./build-msteps.sh
 
         - name: Push images
           run: |
@@ -455,12 +455,6 @@ VERSION='4.99.23'
             cd ${GITHUB_WORKSPACE}/tests
             export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
             .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-
-        - name: Check docker container
-          run: |
-            cd ${GITHUB_WORKSPACE}/tests
-            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-            .bats-battery/bats-core/bin/bats 04.container_check.bats
 
         - name: Check docker container
           run: |
@@ -1986,9 +1980,9 @@ load '.bats-battery/bats-support/load.bash'
 #+begin_src sh :shebang "" :results output pp :noweb strip-export :tangle-mode (identity #o644)
   # * Common variables
   IMG='naviserver-s6'
-  export IMAGE="${IMAGE:-oupfiz5/$IMG:latest}"
+  export IMAGE="${IMAGE:-oupfiz5/$IMG:4.99.23}"
   export CONTAINER_NAME="${CONTAINER_NAME:-$IMG}"
-  export IMAGE="${IMAGE:-oupfiz5/$IMG:latest}"
+  export IMAGE="${IMAGE:-oupfiz5/$IMG:4.99.23}"
 #+end_src
 
 ** 01.shellchecks.bats :test:
@@ -2099,34 +2093,34 @@ load '.bats-battery/bats-support/load.bash'
   }
 
   @test "Verify state status container - running" {
-        sleep 5
-        run docker inspect --format 'result={{ .State.Status }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=running'
+      sleep 5
+      run docker inspect --format 'result={{ .State.Status }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=running'
   }
 
   @test "Verify state running container - true" {
-        run docker inspect --format 'result={{ .State.Running }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=true'
+      run docker inspect --format 'result={{ .State.Running }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=true'
   }
 
   @test "Verify state restarting container - false" {
-        run docker inspect --format 'result={{ .State.Restarting }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=false'
+      run docker inspect --format 'result={{ .State.Restarting }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=false'
   }
 
   @test "Verify state error container - <empty>" {
-        run docker inspect --format 'result={{ .State.Error }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result='
+      run docker inspect --format 'result={{ .State.Error }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result='
   }
 
   @test "Verify restart count container - 0" {
-        run docker inspect --format 'result={{ .RestartCount }}' "${CONTAINER_NAME}"
-        assert_success
-        assert_output 'result=0'
+      run docker inspect --format 'result={{ .RestartCount }}' "${CONTAINER_NAME}"
+      assert_success
+      assert_output 'result=0'
   }
 
   # @test "Verify AppArmor Profile - if applicable" {
@@ -2139,8 +2133,13 @@ load '.bats-battery/bats-support/load.bash'
   # }
 
   @test "Verify container stop" {
-        run docker container stop "${CONTAINER_NAME}"
-        assert_success
+      run docker container stop "${CONTAINER_NAME}"
+      assert_success
+  }
+
+  @test "Remove container" {
+      run docker container rm "${CONTAINER_NAME}" || true
+      assert_success
   }
 
 #+end_src
