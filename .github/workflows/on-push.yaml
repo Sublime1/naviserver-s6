@@ -50,6 +50,7 @@ jobs:
 
       - name: Push images (test)
         run: |
+          cd ${GITHUB_WORKSPACE}/src/hook
           set -a; source ../VERSION ; set +a;
           IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}}"
           echo "IMAGE=${IMAGE}"
