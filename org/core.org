@@ -287,6 +287,7 @@ docker exec -it naviserver-s6 /bin/bash
 #+begin_src sh :shebang ""
   NS_IMAGE_TAG='4.99.23'
   S6_UBUNTU_TAG='20.04-3.0.0.2'
+  TCL_BUILD_IMAGE_TAG='22.01'
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
@@ -590,7 +591,8 @@ docker exec -it naviserver-s6 /bin/bash
   #     XOTCL_VERSION=2.3.0
 
   # * Build Naviserver
-  FROM oupfiz5/tcl-build:22.01 as build
+  ARG TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
+    FROM oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG} as build
 
   # ** Args
   ARG NS_VERSION \
@@ -620,7 +622,7 @@ docker exec -it naviserver-s6 /bin/bash
 
   # * From
   ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
-  FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
+    FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
 
   # ** Arguments
   ARG BUILD_DATE \
