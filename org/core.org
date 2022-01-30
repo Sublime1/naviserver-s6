@@ -237,7 +237,7 @@ docker run -itd \
        --restart always \
        --name=naviserver-s6 \
        -p 127.0.0.1:8090:8080 \
-       oupfiz5/naviserver-s6:latest
+       oupfiz5/naviserver-s6:4.99.23
 #+END_SRC
 
 Start Naviserver using script =start.sh=:
@@ -280,12 +280,13 @@ docker exec -it naviserver-s6 /bin/bash
 :PROPERTIES:
 :CUSTOM_ID: code
 :END:
-** VERSION :code:
+** VERSIONS :code:
 :PROPERTIES:
-:CUSTOM_ID: version
+:CUSTOM_ID: versions
 :END:
 #+begin_src sh :shebang ""
-VERSION='4.99.23'
+  NS_IMAGE_TAG='4.99.23'
+  S6_UBUNTU_TAG='20.04-3.0.0.2'
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
@@ -325,55 +326,56 @@ VERSION='4.99.23'
 :CUSTOM_ID: ----github-workflows-on-push-yaml
 :END:
 #+begin_src yaml :shebang ""
-  name: Build and push docker images
+    name: Build and push docker images
 
-  on:
-    push:
-      branches:
-        - master
-        - main
-      paths:
-        - '.github/workflows/*'
-        - '.github/*'
-        - 'src/Dockerfile'
-        - 'src/rootfs/*'
-        - 'src/hook/*'
-        - 'src/*.sh'
-        - 'tests/**'
-    pull_request:
-      branches:
-        - master
-        - main
-      paths:
-        - '.github/workflows/*'
-        - '.github/*'
-        - 'src/Dockerfile'
-        - 'src/rootfs/*'
-        - 'src/hook/*'
-        - 'src/*.sh'
-        - 'tests/**'
+    on:
+      push:
+        branches:
+          - master
+          - main
+        paths:
+          - '.github/workflows/*'
+          - '.github/*'
+          - 'src/Dockerfile'
+          - 'src/rootfs/*'
+          - 'src/hook/*'
+          - 'src/*.sh'
+          - 'src/VERSIONS'
+          - 'tests/**'
+      pull_request:
+        branches:
+          - master
+          - main
+        paths:
+          - '.github/workflows/*'
+          - '.github/*'
+          - 'src/Dockerfile'
+          - 'src/rootfs/*'
+          - 'src/hook/*'
+          - 'src/*.sh'
+          - 'tests/**'
+          - 'src/VERSIONS'
+    jobs:
+      build:
+        name: Build and push image to dockerhub
+        runs-on: ubuntu-latest
+        steps:
+          - name: Repo checkout
+            uses: actions/checkout@v2
 
-  jobs:
-    build:
-      name: Build and push image to dockerhub
-      runs-on: ubuntu-latest
-      steps:
-        - name: Repo checkout
-          uses: actions/checkout@v2
+          - name: Login to DockerHub Registry
+            run: |
+              echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-        - name: Login to DockerHub Registry
-          run: |
-            echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          - name: Build images
+            run: |
+              cd ${GITHUB_WORKSPACE}/src/hook
+              ./build-msteps.sh
 
-        - name: Build images
-          run: |
-            cd ${GITHUB_WORKSPACE}/src/hook
-            ./build-msteps.sh
-
-        - name: Push images
-          run: |
-            cd ${GITHUB_WORKSPACE}/src/hook
-            ./push.sh
+          - name: Push images
+            run: |
+              cd ${GITHUB_WORKSPACE}/src/hook
+              ./push.sh
 #+end_src
 ** ../.github/workflows/test.yaml :code:
 :PROPERTIES:
@@ -394,6 +396,7 @@ VERSION='4.99.23'
         - 'src/hook/*'
         - 'src/*.sh'
         - 'tests/**'
+        - 'src/VERSIONS'
       branches-ignore:
         - 'master'
         - 'main'
@@ -406,6 +409,7 @@ VERSION='4.99.23'
         - 'src/hook/*'
         - 'src/*.sh'
         - 'tests/**'
+        - 'src/VERSIONS'
       branches-ignore:
         - 'master'
         - 'main'
@@ -441,14 +445,9 @@ VERSION='4.99.23'
 
         - name: Build image
           run: |
-            cd ${GITHUB_WORKSPACE}/src
-            set -a; source VERSION ; set +a;
+            cd ${GITHUB_WORKSPACE}/src/hooks
             export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-            docker build \
-            --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-            -t "${IMAGE}" \
-            -f ./Dockerfile.multisteps \
-            .
+            ./build-msteps.sh
 
         - name: Check docker image (dockle)
           run: |
@@ -484,7 +483,8 @@ VERSION='4.99.23'
 :END:
 #+begin_src sh :shebang ""
   # * From
-  FROM oupfiz5/ubuntu-s6:20.04-3.0.0.0-1
+  ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
+  FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
 
   # * Arg
   ARG BUILD_DATE \
@@ -619,7 +619,8 @@ VERSION='4.99.23'
   RUN  /bin/bash /builds/all-build.sh
 
   # * From
-  FROM oupfiz5/ubuntu-s6:20.04-3.0.0.0-1
+  ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
+  FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
 
   # ** Arguments
   ARG BUILD_DATE \
@@ -704,13 +705,13 @@ VERSION='4.99.23'
 :END:
 #+begin_src sh
   # shellcheck disable=SC1091
-  set -a; source ../VERSION ; set +a;
+  set -a; source ../VERSIONS ; set +a;
 
-  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}}"
+  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
 
   docker build \
          --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-         --build-arg VERSION="${VERSION}" \
+         --build-arg VERSION="${NS_IMAGE_TAG}" \
          -t "${IMAGE}" \
          -f ../Dockerfile \
          ../.
@@ -722,14 +723,14 @@ VERSION='4.99.23'
 :END:
 #+begin_src sh
   # shellcheck disable=SC1091
-  set -a; source ../VERSION ; set +a;
+  set -a; source ../VERSIONS ; set +a;
   source ../builds/env-vars.sh
 
-  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}}"
+  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
 
   docker build --no-cache \
          --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-         --build-arg VERSION="${VERSION}" \
+         --build-arg VERSION="${NS_IMAGE_TAG}" \
          --build-arg NS_VERSION="${NS_VERSION}" \
          --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
          --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
@@ -748,9 +749,9 @@ VERSION='4.99.23'
 :END:
 #+begin_src sh :results output pp :noweb strip-export :dir ../src/hook
   # shellcheck disable=SC1091
-  set -a; source ../VERSION ; set +a;
+  set -a; source ../VERSIONS ; set +a;
 
-  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}}"
+  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
 
   docker push "${IMAGE}"
 #+end_src
@@ -782,11 +783,9 @@ VERSION='4.99.23'
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-finish
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
-    #!/usr/bin/execlineb -S0
-
+    #!/command/execlineb -S1
     if { s6-test ${1} -ne 0 -a ${1} -ne 256 }
     /run/s6/basedir/bin/halt
-
 #+end_src
 ** rootfs/etc/services.d/naviserver/run :code:
 :PROPERTIES:
