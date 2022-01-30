@@ -12,6 +12,7 @@ on:
       - 'src/hook/*'
       - 'src/*.sh'
       - 'tests/**'
+      - 'src/VERSIONS'
     branches-ignore:
       - 'master'
       - 'main'
@@ -24,6 +25,7 @@ on:
       - 'src/hook/*'
       - 'src/*.sh'
       - 'tests/**'
+      - 'src/VERSIONS'
     branches-ignore:
       - 'master'
       - 'main'
@@ -59,14 +61,9 @@ jobs:
 
       - name: Build image
         run: |
-          cd ${GITHUB_WORKSPACE}/src
-          set -a; source VERSION ; set +a;
+          cd ${GITHUB_WORKSPACE}/src/hooks
           export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-          docker build \
-          --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-          -t "${IMAGE}" \
-          -f ./Dockerfile.multisteps \
-          .
+          ./build-msteps.sh
 
       - name: Check docker image (dockle)
         run: |
