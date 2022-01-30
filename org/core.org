@@ -445,7 +445,7 @@ docker exec -it naviserver-s6 /bin/bash
 
         - name: Build image
           run: |
-            cd ${GITHUB_WORKSPACE}/src/hooks
+            cd ${GITHUB_WORKSPACE}/src/hook
             export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
             ./build-msteps.sh
 
