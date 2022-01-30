@@ -706,7 +706,7 @@ VERSION='4.99.23'
   # shellcheck disable=SC1091
   set -a; source ../VERSION ; set +a;
 
-  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}"
+  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${VERSION}}"
 
   docker build \
          --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
@@ -782,14 +782,11 @@ VERSION='4.99.23'
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-finish
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
-  #!/usr/bin/execlineb -S1
+    #!/usr/bin/execlineb -S0
 
-  # only tell s6 to bring down the entire container, if it isn't already doing so
-  # http://skarnet.org/software/s6/s6-supervise.html
-  if { s6-test ${1} -ne 0 }
-  if { s6-test ${1} -ne 256 }
+    if { s6-test ${1} -ne 0 -a ${1} -ne 256 }
+    /run/s6/basedir/bin/halt
 
-  s6-svscanctl -t /var/run/s6/services
 #+end_src
 ** rootfs/etc/services.d/naviserver/run :code:
 :PROPERTIES:
