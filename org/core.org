@@ -287,6 +287,7 @@ docker exec -it naviserver-s6 /bin/bash
 #+begin_src sh :shebang ""
   NS_IMAGE_TAG='4.99.23'
   S6_UBUNTU_TAG='20.04-3.0.0.2'
+  TCL_BUILD_IMAGE_TAG='22.01'
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
@@ -336,7 +337,7 @@ docker exec -it naviserver-s6 /bin/bash
         paths:
           - '.github/workflows/*'
           - '.github/*'
-          - 'src/Dockerfile'
+          - 'src/Dockerfile*'
           - 'src/rootfs/*'
           - 'src/hook/*'
           - 'src/*.sh'
@@ -391,7 +392,7 @@ docker exec -it naviserver-s6 /bin/bash
       paths:
         - '.github/workflows/*'
         - '.github/*'
-        - 'src/Dockerfile'
+        - 'src/Dockerfile*'
         - 'src/rootfs/**'
         - 'src/hook/*'
         - 'src/*.sh'
@@ -445,7 +446,7 @@ docker exec -it naviserver-s6 /bin/bash
 
         - name: Build image
           run: |
-            cd ${GITHUB_WORKSPACE}/src/hooks
+            cd ${GITHUB_WORKSPACE}/src/hook
             export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
             ./build-msteps.sh
 
@@ -590,7 +591,8 @@ docker exec -it naviserver-s6 /bin/bash
   #     XOTCL_VERSION=2.3.0
 
   # * Build Naviserver
-  FROM oupfiz5/tcl-build:22.01 as build
+  ARG TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
+    FROM oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG} as build
 
   # ** Args
   ARG NS_VERSION \
@@ -620,7 +622,7 @@ docker exec -it naviserver-s6 /bin/bash
 
   # * From
   ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
-  FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
+    FROM oupfiz5/ubuntu-s6:20.04-3.0.0.2
 
   # ** Arguments
   ARG BUILD_DATE \
@@ -1994,7 +1996,7 @@ load '.bats-battery/bats-support/load.bash'
   }
 
   @test "Check VERSION file" {
-        run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSION
+        run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSIONS
         assert_success
   }
 
