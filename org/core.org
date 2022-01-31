@@ -796,6 +796,7 @@ docker exec -it naviserver-s6 /bin/bash
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
   #!/command/execlineb -S0
+  if -t { s6-test ${1} -ne 0 -a ${1} -ne 256 }
   foreground { redirfd -w 1 /run/s6-linux-init-container-results/exitcode echo 0 }
   /run/s6/basedir/bin/halt
 #+end_src
