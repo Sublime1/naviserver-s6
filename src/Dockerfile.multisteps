@@ -117,4 +117,4 @@ WORKDIR /usr/local/ns
 ENTRYPOINT ["/init"]
 
 # ** Cmd
-CMD [ "/usr/local/ns/bin/nsd", "-f", "-u","nsadmin","-g","nsadmin","-t", "/usr/local/ns/conf/nsd-config.tcl"]
+# CMD [ "/usr/local/ns/bin/nsd", "-f", "-u","nsadmin","-g","nsadmin","-t", "/usr/local/ns/conf/nsd-config.tcl"]

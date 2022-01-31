@@ -699,7 +699,7 @@ docker exec -it naviserver-s6 /bin/bash
   ENTRYPOINT ["/init"]
 
   # ** Cmd
-  CMD [ "/usr/local/ns/bin/nsd", "-f", "-u","nsadmin","-g","nsadmin","-t", "/usr/local/ns/conf/nsd-config.tcl"]
+  # CMD [ "/usr/local/ns/bin/nsd", "-f", "-u","nsadmin","-g","nsadmin","-t", "/usr/local/ns/conf/nsd-config.tcl"]
 #+end_src
 ** hook/build.sh :code:
 :PROPERTIES:
@@ -790,9 +790,8 @@ docker exec -it naviserver-s6 /bin/bash
     if { s6-test ${1} -ne 0 -a ${1} -ne 256 }
     /run/s6/basedir/bin/halt
 #+end_src
-** rootfs/etc/services.d/naviserver/finish :code:tangleno:
+** rootfs/etc/services.d/naviserver/finish :code:
 :PROPERTIES:
-:header-args:sh: :tangle no
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-finish
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
@@ -801,9 +800,8 @@ docker exec -it naviserver-s6 /bin/bash
   foreground { redirfd -w 1 /run/s6-linux-init-container-results/exitcode echo 0 }
   /run/s6/basedir/bin/halt
 #+end_src
-** rootfs/etc/services.d/naviserver/run :code:tangleno:
+** rootfs/etc/services.d/naviserver/run :code:
 :PROPERTIES:
-:header-args:sh: :tangle no
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-run
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
