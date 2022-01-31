@@ -338,7 +338,7 @@ docker exec -it naviserver-s6 /bin/bash
           - '.github/workflows/*'
           - '.github/*'
           - 'src/Dockerfile*'
-          - 'src/rootfs/*'
+          - 'src/rootfs/**'
           - 'src/hook/*'
           - 'src/*.sh'
           - 'src/VERSIONS'
@@ -351,7 +351,7 @@ docker exec -it naviserver-s6 /bin/bash
           - '.github/workflows/*'
           - '.github/*'
           - 'src/Dockerfile'
-          - 'src/rootfs/*'
+          - 'src/rootfs/**'
           - 'src/hook/*'
           - 'src/*.sh'
           - 'tests/**'
@@ -780,14 +780,25 @@ docker exec -it naviserver-s6 /bin/bash
 /usr/local/ns true nsadmin:nsadmin 0755 2755
 #+end_src
 
-** rootfs/etc/services.d/naviserver/finish :code:
+** rootfs/etc/services.d/naviserver/finish :code:tangleno:
 :PROPERTIES:
+:header-args:sh: :tangle no
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-finish
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
     #!/command/execlineb -S1
     if { s6-test ${1} -ne 0 -a ${1} -ne 256 }
     /run/s6/basedir/bin/halt
+#+end_src
+** rootfs/etc/services.d/naviserver/finish :code:
+:PROPERTIES:
+:CUSTOM_ID: rootfs-etc-services-d-naviserver-finish
+:END:
+#+begin_src sh :shebang "" :tangle-mode (identity #o755)
+  #!/command/execlineb -S0
+  if -t { s6-test ${1} -ne 0 -a ${1} -ne 256 }
+  foreground { redirfd -w 1 /run/s6-linux-init-container-results/exitcode echo 0 }
+  /run/s6/basedir/bin/halt
 #+end_src
 ** rootfs/etc/services.d/naviserver/run :code:
 :PROPERTIES:
@@ -1935,11 +1946,15 @@ set ::env(LANG) en_US.UTF-8
 :END:
 #+name: start.sh
 #+begin_src sh
-docker run -itd \
-       --restart always \
-       --name=naviserver-s6 \
-       -p 127.0.0.1:8090:8080 \
-       oupfiz5/naviserver-s6:latest
+  set -a; source ./VERSIONS ; set +a;
+
+  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
+
+  docker run -itd \
+         --restart always \
+         --name=naviserver-s6 \
+         -p 127.0.0.1:8090:8080 \
+         ${IMAGE}
 #+end_src
        --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf,destination=/usr/local/ns/conf \
 * Tests :test:noexport:
