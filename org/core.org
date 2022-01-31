@@ -569,10 +569,10 @@ docker exec -it naviserver-s6 /bin/bash
   WORKDIR /usr/local/ns
 
   # * Entrypoint
-  ENTRYPOINT ["/init"]
+  ENTRYPOINT ["/usr/local/ns/bin/nsd"]
 
   # * Cmd
-  CMD ["/usr/local/ns/bin/nsd", "-f", "-u","nsadmin","-g","nsadmin","-t", "${NS_CONF}"]
+  CMD ["-f", "-u","nsadmin","-g","nsadmin","-t", "${NS_CONF}"]
 #+end_src
 
 ** Dockerfile.multisteps :code:
