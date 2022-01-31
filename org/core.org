@@ -699,7 +699,7 @@ docker exec -it naviserver-s6 /bin/bash
   ENTRYPOINT ["/init"]
 
   # ** Cmd
-  CMD []
+  CMD ["/usr/local/ns/bin/nsd", "-f", "-u","nsadmin","-g","nsadmin","-t", "${NS_CONF}"]
 #+end_src
 ** hook/build.sh :code:
 :PROPERTIES:
