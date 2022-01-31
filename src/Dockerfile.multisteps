@@ -114,7 +114,7 @@ Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
 WORKDIR /usr/local/ns
 
 # ** Entrypoint
-ENTRYPOINT ["/init"]
+ENTRYPOINT ["/usr/local/ns/bin/nsd"]
 
 # ** Cmd
-CMD ["/usr/local/ns/bin/nsd", "-f", "-u","nsadmin","-g","nsadmin","-t", "${NS_CONF}"]
+CMD [ "-f", "-u","nsadmin","-g","nsadmin","-t", "/usr/local/ns/conf/nsd-config.tcl"]
