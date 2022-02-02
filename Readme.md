@@ -8,7 +8,7 @@
     -   [Download from dockerhub](#download-from-dockerhub)
     -   [Build from chiselapp (fossil)](#build-from-chiselapp--fossil-)
     -   [Build from github](#build-from-github)
-    -   [Contfiguration](#contfiguration)
+    -   [Configuration](#configuration)
         -   [Build arguments](#build-arguments)
         -   [Example of build](#example-of-build)
 -   [Configuration options](#configuration-options)
@@ -56,12 +56,12 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 
 They are using for testing and scanning:
 
-1.  [BATS](https://github.com/bats-core)
-2.  [Shellcheck](https://github.com/koalaman/shellcheck/)
+1.  [Bats](https://github.com/bats-core)
+2.  [Shellcheck](https://www.shellcheck.net/)
 3.  [Hadolynt](https://github.com/hadolint/hadolint)
 4.  [Dockle](https://github.com/goodwithtech/dockle)
-5.  Snyk (todo)
-6.  Trivy (todo)
+5.  Snyk - not necessarily
+6.  Trivy - not necessarily
 
 
 <a id="installation"></a>
@@ -73,8 +73,7 @@ They are using for testing and scanning:
 
 ## Download from dockerhub
 
-    docker pull oupfiz5/naviserver-s6:latest
-    docker pull oupfiz5/naviserver-s6:4.99.21
+    docker pull oupfiz5/naviserver-s6:4.99.23
 
 
 <a id="build-from-chiselapp--fossil-"></a>
@@ -116,9 +115,9 @@ Multi steps build image (using build docker oupfiz5/tcl-build):
 In both cases will get naviserver docker image. But mulit steps image will have smaller size.
 
 
-<a id="contfiguration"></a>
+<a id="configuration"></a>
 
-## Contfiguration
+## Configuration
 
 
 <a id="build-arguments"></a>
@@ -154,7 +153,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 <tbody>
 <tr>
 <td class="org-left">NS_VERSION</td>
-<td class="org-right">4.99.21</td>
+<td class="org-right">4.99.23</td>
 <td class="org-left">Define version for Naviserver</td>
 </tr>
 </tbody>
@@ -162,7 +161,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 <tbody>
 <tr>
 <td class="org-left">NS_MODULE_VERSION</td>
-<td class="org-right">4.99.21</td>
+<td class="org-right">4.99.23</td>
 <td class="org-left">Define version for Naviserver  modules</td>
 </tr>
 </tbody>
@@ -207,9 +206,9 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 
     docker build --no-cache \
             --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-            --build-arg NS_VERSION=4.99.21 \
+            --build-arg NS_VERSION=4.99.23 \
             --build-arg TCL_VERSION=8.6.11 \
-            -t oupfiz5/naviserver-s6:4.99.21 \
+            -t oupfiz5/naviserver-s6:4.99.23 \
             -f ../Dockerfile.multisteps \
              ../.
 
@@ -278,7 +277,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
            --name=naviserver-s6 \
            --env 'TZ=Europe/Moscow' \
            -p 127.0.0.1:8090:8080 \
-           oupfiz5/naviserver-s6:latest
+           oupfiz5/naviserver-s6:4.99.23
 
 
 <a id="http-listen-port"></a>
@@ -291,7 +290,7 @@ Set the http listen port for the container `-p 127.0.0.1:18090:8080`.  In this c
            --restart always \
            --name=naviserver-s6 \
            -p 127.0.0.1:18090:8080 \
-           oupfiz5/naviserver-s6:latest
+           oupfiz5/naviserver-s6:4.99.23
 
 
 <a id="configuration-file"></a>
@@ -309,7 +308,7 @@ The default configuration file is `rootfs/usr/local/ns/conf/nsd-config.tcl`.  Fo
                --name=naviserver-s6  \
                -p 127.0.0.1:8090:8080 \
                --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf/test,destination=/usr/local/ns/conf \
-               oupfiz5/naviserver-s6:latest
+               oupfiz5/naviserver-s6:4.99.23
 
 
 <a id="quickstart"></a>
@@ -322,7 +321,7 @@ Start Naviserver using CLI:
            --restart always \
            --name=naviserver-s6 \
            -p 127.0.0.1:8090:8080 \
-           oupfiz5/naviserver-s6:latest
+           oupfiz5/naviserver-s6:4.99.23
 
 Start Naviserver using script `start.sh`:
 
