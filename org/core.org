@@ -32,7 +32,7 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
   - [[#download-from-dockerhub][Download from dockerhub]]
   - [[#build-from-chiselapp-fossil][Build from chiselapp (fossil)]]
   - [[#build-from-github][Build from github]]
-  - [[#contfiguration][Contfiguration]]
+  - [[#configuration][Configuration]]
     - [[#build-arguments][Build arguments]]
     - [[#example-of-build][Example of build]]
 - [[#configuration-options][Configuration options]]
@@ -63,12 +63,12 @@ If you are reading this on GitHub, then you are looking at a Git mirror of the s
 :CUSTOM_ID: third-party-tools
 :END:
 They are using for testing and scanning:
-1. [[https://github.com/bats-core][BATS]]
-2. [[https://github.com/koalaman/shellcheck/][Shellcheck]]
+1. [[https://github.com/bats-core][Bats]]
+2. [[https://www.shellcheck.net/][Shellcheck]]
 3. [[https://github.com/hadolint/hadolint][Hadolynt]]
 4. [[https://github.com/goodwithtech/dockle][Dockle]]
-5. Snyk (todo)
-6. Trivy (todo)
+5. Snyk - not necessarily
+6. Trivy - not necessarily
 * Installation
 :PROPERTIES:
 :CUSTOM_ID: installation
@@ -78,8 +78,7 @@ They are using for testing and scanning:
 :CUSTOM_ID: download-from-dockerhub
 :END:
  #+begin_example
- docker pull oupfiz5/naviserver-s6:latest
- docker pull oupfiz5/naviserver-s6:4.99.21
+ docker pull oupfiz5/naviserver-s6:4.99.23
  #+end_example
 
 ** Build from chiselapp (fossil)
@@ -126,9 +125,9 @@ docker build -t oupfiz5/naviserver-s6 -f ./Dockerfile.multisteps .
 #+end_example
 
 In both cases will get naviserver docker image. But mulit steps image will have smaller size.
-** Contfiguration
+** Configuration
 :PROPERTIES:
-:CUSTOM_ID: contfiguration
+:CUSTOM_ID: configuration
 :END:
 *** Build arguments
 :PROPERTIES:
@@ -158,7 +157,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 #+begin_example
  docker build --no-cache \
          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-         --build-arg NS_VERSION=4.99.21 \
+         --build-arg NS_VERSION=4.99.23 \
          --build-arg TCL_VERSION=8.6.11 \
          -t oupfiz5/naviserver-s6:4.99.23 \
          -f ../Dockerfile.multisteps \
@@ -174,7 +173,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 :CUSTOM_ID: general-options
 :END:
  |--------------------+----------------+-------------------------------------|
- |      Option  | Default        | Description                         |
+ | Option             | Default        | Description                         |
  |--------------------+----------------+-------------------------------------|
  | TZ                 | UTC            | Set timezone, example Europe/Moscow |
  |--------------------+----------------+-------------------------------------|
@@ -194,7 +193,7 @@ docker run -itd \
        --name=naviserver-s6 \
        --env 'TZ=Europe/Moscow' \
        -p 127.0.0.1:8090:8080 \
-       oupfiz5/naviserver-s6:latest
+       oupfiz5/naviserver-s6:4.99.23
 #+end_example
 
 ** HTTP listen port
@@ -208,7 +207,7 @@ docker run -itd \
        --restart always \
        --name=naviserver-s6 \
        -p 127.0.0.1:18090:8080 \
-       oupfiz5/naviserver-s6:latest
+       oupfiz5/naviserver-s6:4.99.23
 #+end_example
 ** Configuration file
 :PROPERTIES:
@@ -224,7 +223,7 @@ docker run -itd \
        --name=naviserver-s6  \
        -p 127.0.0.1:8090:8080 \
        --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf/test,destination=/usr/local/ns/conf \
-       oupfiz5/naviserver-s6:latest
+       oupfiz5/naviserver-s6:4.99.23
 #+end_example
 
 * Quickstart
@@ -327,56 +326,82 @@ docker exec -it naviserver-s6 /bin/bash
 :CUSTOM_ID: ----github-workflows-on-push-yaml
 :END:
 #+begin_src yaml :shebang ""
-    name: Build and push docker images
+  name: Build and push docker images
 
-    on:
-      push:
-        branches:
-          - master
-          - main
-        paths:
-          - '.github/workflows/*'
-          - '.github/*'
-          - 'src/Dockerfile*'
-          - 'src/rootfs/**'
-          - 'src/hook/*'
-          - 'src/*.sh'
-          - 'src/VERSIONS'
-          - 'tests/**'
-      pull_request:
-        branches:
-          - master
-          - main
-        paths:
-          - '.github/workflows/*'
-          - '.github/*'
-          - 'src/Dockerfile'
-          - 'src/rootfs/**'
-          - 'src/hook/*'
-          - 'src/*.sh'
-          - 'tests/**'
-          - 'src/VERSIONS'
-    jobs:
-      build:
-        name: Build and push image to dockerhub
-        runs-on: ubuntu-latest
-        steps:
-          - name: Repo checkout
-            uses: actions/checkout@v2
+  on:
+    push:
+      branches:
+        - master
+        - main
+      paths:
+        - '.github/workflows/*'
+        - '.github/*'
+        - 'src/Dockerfile*'
+        - 'src/rootfs/**'
+        - 'src/hook/*'
+        - 'src/*.sh'
+        - 'src/VERSIONS'
+        - 'tests/**'
+    pull_request:
+      branches:
+        - master
+        - main
+      paths:
+        - '.github/workflows/*'
+        - '.github/*'
+        - 'src/Dockerfile'
+        - 'src/rootfs/**'
+        - 'src/hook/*'
+        - 'src/*.sh'
+        - 'tests/**'
+        - 'src/VERSIONS'
+  jobs:
+    build:
+      name: Build and push image to dockerhub
+      runs-on: ubuntu-latest
+      steps:
+        - name: Repo checkout
+          uses: actions/checkout@v2
 
-          - name: Login to DockerHub Registry
-            run: |
-              echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        - name: Login to DockerHub Registry
+          run: |
+            echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-          - name: Build images
-            run: |
-              cd ${GITHUB_WORKSPACE}/src/hook
-              ./build-msteps.sh
+        - name: Naviserver+S6. Build and push image.
+          run: |
+            echo "::group::Prepare environment"
+            set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
+            export DOCKERFILE="Dockerfile.s6.multisteps"
+            export IMAGE_NAME="naviserver-s6"
+            export IMAGE_TAG="${NS_IMAGE_TAG}"
+            export REPOSITORY="oupfiz5"
+            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+            cd ${GITHUB_WORKSPACE}/src/hook
+            echo "::endgroup::"
+            echo "::group::Build image"
+            ./build.sh
+            echo "::endgroup::"
+            echo "::group::Push image"
+            ./push.sh
+            echo "::endgroup::"
 
-          - name: Push images
-            run: |
-              cd ${GITHUB_WORKSPACE}/src/hook
-              ./push.sh
+        - name: Naviserver. Build and push image.
+          run: |
+            echo "::group::Prepare environment"
+            set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
+            export DOCKERFILE="Dockerfile.multisteps"
+            export IMAGE_NAME="naviserver"
+            export IMAGE_TAG="${NS_IMAGE_TAG}"
+            export REPOSITORY="oupfiz5"
+            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+            cd ${GITHUB_WORKSPACE}/src/hook
+            echo "::endgroup::"
+            echo "::group::Build image"
+            ./build.sh
+            echo "::endgroup::"
+            echo "::group::Push image"
+            ./push.sh
+            echo "::endgroup::"
 #+end_src
 ** ../.github/workflows/test.yaml :code:
 :PROPERTIES:
@@ -426,7 +451,7 @@ docker exec -it naviserver-s6 /bin/bash
   # * Jobs
   jobs:
     checks:
-      name: Checks
+      name: Tests and Checks
       runs-on: ubuntu-20.04
       steps:
         - name: Repo checkout
@@ -444,23 +469,49 @@ docker exec -it naviserver-s6 /bin/bash
             cd ${GITHUB_WORKSPACE}/tests
             .bats-battery/bats-core/bin/bats 02.dockerfile_check.bats
 
-        - name: Build image
+        - name: Naviserver+S6. Build. Check image and container.
           run: |
+            echo "::group::Build image"
+            export CONTAINER_NAME="naviserver-s6"
+            export DOCKERFILE="Dockerfile.s6.multisteps"
+            export IMAGE_NAME="naviserver-s6"
+            export IMAGE_TAG="${{ github.sha }}"
+            export REPOSITORY="oupfiz5"
+            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
             cd ${GITHUB_WORKSPACE}/src/hook
-            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-            ./build-msteps.sh
+            ./build.sh
+            echo "::endgroup::"
 
-        - name: Check docker image (dockle)
-          run: |
+            echo "::group::Check image and container"
             cd ${GITHUB_WORKSPACE}/tests
-            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+            echo "Check docker image (dockle)"
             .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-
-        - name: Check docker container
-          run: |
-            cd ${GITHUB_WORKSPACE}/tests
-            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+            echo "Check docker container"
             .bats-battery/bats-core/bin/bats 04.container_check.bats
+            echo "::endgroup::"
+
+        - name: Naviserver. Build. Check image and container.
+          run: |
+            echo "::group::Build image"
+            export CONTAINER_NAME="naviserver"
+            export DOCKERFILE="Dockerfile.multisteps"
+            export IMAGE_NAME="naviserver"
+            export IMAGE_TAG="${{ github.sha }}"
+            export REPOSITORY="oupfiz5"
+            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+
+            echo "Build image"
+            cd ${GITHUB_WORKSPACE}/src/hook
+            ./build.sh
+            echo "::endgroup::"
+
+            echo "::group::Check image and container"
+            cd ${GITHUB_WORKSPACE}/tests
+            echo "Check docker image (dockle)"
+            .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
+            echo "Check docker container"
+            .bats-battery/bats-core/bin/bats 04.container_check.bats
+            echo "::endgroup::"
 #+end_src
 ** ../.github/.trigger_on_push :code:
 :PROPERTIES:
@@ -575,21 +626,11 @@ docker exec -it naviserver-s6 /bin/bash
   CMD ["-f", "-u","nsadmin","-g","nsadmin","-t", "${NS_CONF}"]
 #+end_src
 
-** Dockerfile.multisteps :code:
+** Dockerfile.s6.multisteps :code:
 :PROPERTIES:
-:CUSTOM_ID: dockerfile-multisteps
+:CUSTOM_ID: dockerfile-s6-multisteps
 :END:
 #+begin_src sh :shebang ""
-  # * Arg
-  # ARG BUILD_DATE \
-  #    VERSION
-  #     NS_VERSION=4.99.23 \
-  #     NS_MODULES_VERSION=4.99.23 \
-  #     TCLLIB_VERSION=1.20 \
-  #     TCL_VERSION=8.6.11 \
-  #     TDOM_VERSION=0.9.1 \
-  #     XOTCL_VERSION=2.3.0
-
   # * Build Naviserver
   ARG TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
     FROM oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG} as build
@@ -696,6 +737,120 @@ docker exec -it naviserver-s6 /bin/bash
   WORKDIR /usr/local/ns
 
   # ** Entrypoint
+  ENTRYPOINT ["/init"]
+
+  # ** Cmd
+  CMD []
+#+end_src
+** Dockerfile.multisteps :code:
+:PROPERTIES:
+:CUSTOM_ID: dockerfile-multisteps
+:END:
+#+begin_src sh :shebang ""
+  # * Build Naviserver
+  ARG TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
+    FROM oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG} as build
+
+  # ** Args
+  ARG NS_VERSION \
+      NS_MODULES_VERSION \
+      RL_JSON_VERSION \
+      TCLLIB_VERSION \
+      TCL_VERSION \
+      TDOM_VERSION \
+      THREAD_VERSION \
+      XOTCL_VERSION
+
+  # ** Environments
+  ENV NS_VERSION="${NS_VERSION}" \
+      NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+      RL_JSON_VERSION_VERSION="${RL_JSON_VERSION_VERSION}" \
+      TCLLIB_VERSION="${TCLLIB_VERSION}" \
+      TCL_VERSION="${TCL_VERSION}" \
+      TDOM_VERSION="${TDOM_VERSION}" \
+      THREAD_VERSION="${THREAD_VERSION}" \
+      XOTCL_VERSION="${XOTCL_VERSION}"
+
+  # ** Build
+  WORKDIR /
+  RUN mkdir /workspaces
+  COPY builds /builds
+  RUN  /bin/bash /builds/all-build.sh
+
+  # * From
+  FROM ubuntu:20.04
+
+  # ** Arguments
+  ARG BUILD_DATE \
+      VERSION \
+      NS_VERSION \
+      NS_MODULES_VERSION \
+      RL_JSON_VERSION \
+      TCLLIB_VERSION \
+      TCL_VERSION \
+      TDOM_VERSION \
+      THREAD_VERSION \
+      XOTCL_VERSION
+
+  # ** Copy Naviserver
+  WORKDIR /
+  COPY --from=build /usr/local/ns /usr/local/ns/
+
+  # ** Labels
+  # hadolint ignore=DL3048
+  LABEL \
+      maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.authors="Oupfiz V (Five)" \
+      org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/home" \
+      org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/wiki" \
+      org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/brlist" \
+      org.opencontainers.image.version="0.0.1d" \
+      org.opencontainers.image.revision="" \
+      org.opencontainers.image.vendor="" \
+      org.opencontainers.image.licenses="" \
+      org.opencontainers.image.ref.name="" \
+      org.opencontainers.image.title="NaviServer on ubuntu base docker image" \
+      org.opencontainers.image.description="NaviServer on ubuntu base docker image" \
+      custom.package.version.naviserver="${NS_VERSION}" \
+      custom.package.version.naviserver_modules="${NS_MODULES_VERSION}" \
+      custom.package.version.rl_json_version="${RL_JSON_VERSION}" \
+      custom.package.version.tcl="${TCL_VERSION}" \
+      custom.package.version.tcllib="${TCLLIB_VERSION}" \
+      custom.package.version.tdom="${TDOM_VERSION}" \
+      custom.package.version.thread="${THREAD_VERSION}" \
+      custom.package.version.xotcl="${XOTCL_VERSION}"
+
+  # ** Run
+  # hadolint ignore=DL3008
+  RUN export LANG="en_US.UTF-8" \
+      && export LC_ALL="en_US.UTF-8" \
+      && apt-get update \
+      && export DEBIAN_FRONTEND=noninteractive \
+      && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev postgresql-client wget \
+      && locale-gen en_US.UTF-8 \
+      && update-locale LANG="en_US.UTF-8" \
+      && update-locale LC_ALL="en_US.UTF-8" \
+      && apt-get clean \
+      && apt-get auto-remove -y \
+      && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
+      && groupadd nsadmin \
+      && useradd -g nsadmin nsadmin \
+      && chown -R  nsadmin:nsadmin /usr/local/ns
+
+  # ** Copy naviserver configurations
+  COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
+
+  # ** Expose
+  EXPOSE 8080
+
+  # ** Environment
+  Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
+
+  # ** Workdir
+  WORKDIR /usr/local/ns
+
+  # ** Entrypoint
   ENTRYPOINT ["/usr/local/ns/bin/nsd"]
 
   # ** Cmd
@@ -708,27 +863,10 @@ docker exec -it naviserver-s6 /bin/bash
 #+begin_src sh
   # shellcheck disable=SC1091
   set -a; source ../VERSIONS ; set +a;
-
-  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
-
-  docker build \
-         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-         --build-arg VERSION="${NS_IMAGE_TAG}" \
-         -t "${IMAGE}" \
-         -f ../Dockerfile \
-         ../.
-#+end_src
-
-** hook/build-msteps.sh :code:
-:PROPERTIES:
-:CUSTOM_ID: hook-build-msteps-sh
-:END:
-#+begin_src sh
-  # shellcheck disable=SC1091
-  set -a; source ../VERSIONS ; set +a;
   source ../builds/env-vars.sh
 
   IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
+  DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
   docker build --no-cache \
          --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
@@ -742,7 +880,7 @@ docker exec -it naviserver-s6 /bin/bash
          --build-arg THREAD_VERSION="${THREAD_VERSION}" \
          --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
          -t "${IMAGE}" \
-         -f ../Dockerfile.multisteps \
+         -f ../"${DOCKERFILE}" \
          ../.
 #+end_src
 ** hook/push.sh :code:
@@ -790,9 +928,8 @@ docker exec -it naviserver-s6 /bin/bash
     if { s6-test ${1} -ne 0 -a ${1} -ne 256 }
     /run/s6/basedir/bin/halt
 #+end_src
-** rootfs/etc/services.d/naviserver/finish :code:tangleno:
+** rootfs/etc/services.d/naviserver/finish :code:
 :PROPERTIES:
-:header-args:sh: :tangle no
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-finish
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
@@ -801,9 +938,8 @@ docker exec -it naviserver-s6 /bin/bash
   foreground { redirfd -w 1 /run/s6-linux-init-container-results/exitcode echo 0 }
   /run/s6/basedir/bin/halt
 #+end_src
-** rootfs/etc/services.d/naviserver/run :code:tangleno:
+** rootfs/etc/services.d/naviserver/run :code:
 :PROPERTIES:
-:header-args:sh: :tangle no
 :CUSTOM_ID: rootfs-etc-services-d-naviserver-run
 :END:
 #+begin_src sh :shebang "" :tangle-mode (identity #o755)
@@ -2012,7 +2148,7 @@ load '.bats-battery/bats-support/load.bash'
         assert_success
   }
 
-  @test "Check VERSION file" {
+  @test "Check VERSIONS file" {
         run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSIONS
         assert_success
   }
@@ -2037,11 +2173,13 @@ load '.bats-battery/bats-support/load.bash'
         assert_success
   }
 
+  @test "Check Dockerfile.s6.multisteps" {
+        run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile.s6.multisteps
+        assert_success
+  }
+
 #+end_src
 
-#+RESULTS:
-: 1..1
-: ok 1 Check Dockerfile
 ** 03.docker_image_check.bats :test:
 :PROPERTIES:
 :CUSTOM_ID: 03-docker-image-check-bats
@@ -2089,7 +2227,6 @@ load '.bats-battery/bats-support/load.bash'
       run docker run -itd \
        --restart always \
        --name="${CONTAINER_NAME}" \
-       --name=naviserver-s6 \
        -p 127.0.0.1:8090:8080 \
        "${IMAGE}"
       assert_success

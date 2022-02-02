@@ -41,7 +41,7 @@ env:
 # * Jobs
 jobs:
   checks:
-    name: Checks
+    name: Tests and Checks
     runs-on: ubuntu-20.04
     steps:
       - name: Repo checkout
@@ -59,20 +59,46 @@ jobs:
           cd ${GITHUB_WORKSPACE}/tests
           .bats-battery/bats-core/bin/bats 02.dockerfile_check.bats
 
-      - name: Build image
+      - name: Naviserver+S6. Build. Check image and container.
         run: |
+          echo "::group::Build image"
+          export CONTAINER_NAME="naviserver-s6"
+          export DOCKERFILE="Dockerfile.s6.multisteps"
+          export IMAGE_NAME="naviserver-s6"
+          export IMAGE_TAG="${{ github.sha }}"
+          export REPOSITORY="oupfiz5"
+          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
           cd ${GITHUB_WORKSPACE}/src/hook
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-          ./build-msteps.sh
+          ./build.sh
+          echo "::endgroup::"
 
-      - name: Check docker image (dockle)
-        run: |
+          echo "::group::Check image and container"
           cd ${GITHUB_WORKSPACE}/tests
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          echo "Check docker image (dockle)"
           .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-
-      - name: Check docker container
-        run: |
-          cd ${GITHUB_WORKSPACE}/tests
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          echo "Check docker container"
           .bats-battery/bats-core/bin/bats 04.container_check.bats
+          echo "::endgroup::"
+
+      - name: Naviserver. Build. Check image and container.
+        run: |
+          echo "::group::Build image"
+          export CONTAINER_NAME="naviserver"
+          export DOCKERFILE="Dockerfile.multisteps"
+          export IMAGE_NAME="naviserver"
+          export IMAGE_TAG="${{ github.sha }}"
+          export REPOSITORY="oupfiz5"
+          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+
+          echo "Build image"
+          cd ${GITHUB_WORKSPACE}/src/hook
+          ./build.sh
+          echo "::endgroup::"
+
+          echo "::group::Check image and container"
+          cd ${GITHUB_WORKSPACE}/tests
+          echo "Check docker image (dockle)"
+          .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
+          echo "Check docker container"
+          .bats-battery/bats-core/bin/bats 04.container_check.bats
+          echo "::endgroup::"

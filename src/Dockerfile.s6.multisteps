@@ -29,7 +29,8 @@ COPY builds /builds
 RUN  /bin/bash /builds/all-build.sh
 
 # * From
-FROM ubuntu:20.04
+ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
+  FROM oupfiz5/ubuntu-s6:20.04-3.0.0.2
 
 # ** Arguments
 ARG BUILD_DATE \
@@ -61,8 +62,8 @@ LABEL \
     org.opencontainers.image.vendor="" \
     org.opencontainers.image.licenses="" \
     org.opencontainers.image.ref.name="" \
-    org.opencontainers.image.title="NaviServer on ubuntu base docker image" \
-    org.opencontainers.image.description="NaviServer on ubuntu base docker image" \
+    org.opencontainers.image.title="NaviServer on ubuntu base docker image using s6-overlay" \
+    org.opencontainers.image.description="NaviServer on ubuntu base docker image using s6-overlay" \
     custom.package.version.naviserver="${NS_VERSION}" \
     custom.package.version.naviserver_modules="${NS_MODULES_VERSION}" \
     custom.package.version.rl_json_version="${RL_JSON_VERSION}" \
@@ -89,7 +90,8 @@ RUN export LANG="en_US.UTF-8" \
     && useradd -g nsadmin nsadmin \
     && chown -R  nsadmin:nsadmin /usr/local/ns
 
-# ** Copy naviserver configurations
+# ** Copy s6 and naviserver configurations
+COPY rootfs/etc /etc/
 COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
 
 # ** Expose
@@ -102,7 +104,7 @@ Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
 WORKDIR /usr/local/ns
 
 # ** Entrypoint
-ENTRYPOINT ["/usr/local/ns/bin/nsd"]
+ENTRYPOINT ["/init"]
 
 # ** Cmd
-CMD [ "-f", "-u","nsadmin","-g","nsadmin","-t", "/usr/local/ns/conf/nsd-config.tcl"]
+CMD []
