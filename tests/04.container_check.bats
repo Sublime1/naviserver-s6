@@ -9,7 +9,6 @@ setup() {
     run docker run -itd \
      --restart always \
      --name="${CONTAINER_NAME}" \
-     --name=naviserver-s6 \
      -p 127.0.0.1:8090:8080 \
      "${IMAGE}"
     assert_success
