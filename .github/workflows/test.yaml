@@ -41,7 +41,7 @@ env:
 # * Jobs
 jobs:
   checks:
-    name: Checks
+    name: Tests and Checks
     runs-on: ubuntu-20.04
     steps:
       - name: Repo checkout
@@ -61,13 +61,13 @@ jobs:
 
       - name: Naviserver+S6. Build. Check image and container.
         run: |
+          echo "::group::Build image"
           export CONTAINER_NAME="naviserver-s6"
           export DOCKERFILE="Dockerfile.s6.multisteps"
           export IMAGE_NAME="naviserver-s6"
           export IMAGE_TAG="${{ github.sha }}"
           export REPOSITORY="oupfiz5"
           export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-          echo "::group::Build image"
           cd ${GITHUB_WORKSPACE}/src/hook
           ./build.sh
           echo "::endgroup::"
@@ -82,6 +82,7 @@ jobs:
 
       - name: Naviserver. Build. Check image and container.
         run: |
+          echo "::group::Build image"
           export CONTAINER_NAME="naviserver"
           export DOCKERFILE="Dockerfile.multisteps"
           export IMAGE_NAME="naviserver"
@@ -89,7 +90,6 @@ jobs:
           export REPOSITORY="oupfiz5"
           export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
 
-          echo "::group::Build image"
           echo "Build image"
           cd ${GITHUB_WORKSPACE}/src/hook
           ./build.sh

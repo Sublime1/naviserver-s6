@@ -425,7 +425,7 @@ docker exec -it naviserver-s6 /bin/bash
   # * Jobs
   jobs:
     checks:
-      name: Checks
+      name: Tests and Checks
       runs-on: ubuntu-20.04
       steps:
         - name: Repo checkout
@@ -445,13 +445,13 @@ docker exec -it naviserver-s6 /bin/bash
 
         - name: Naviserver+S6. Build. Check image and container.
           run: |
+            echo "::group::Build image"
             export CONTAINER_NAME="naviserver-s6"
             export DOCKERFILE="Dockerfile.s6.multisteps"
             export IMAGE_NAME="naviserver-s6"
             export IMAGE_TAG="${{ github.sha }}"
             export REPOSITORY="oupfiz5"
             export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-            echo "::group::Build image"
             cd ${GITHUB_WORKSPACE}/src/hook
             ./build.sh
             echo "::endgroup::"
@@ -466,6 +466,7 @@ docker exec -it naviserver-s6 /bin/bash
 
         - name: Naviserver. Build. Check image and container.
           run: |
+            echo "::group::Build image"
             export CONTAINER_NAME="naviserver"
             export DOCKERFILE="Dockerfile.multisteps"
             export IMAGE_NAME="naviserver"
@@ -473,7 +474,6 @@ docker exec -it naviserver-s6 /bin/bash
             export REPOSITORY="oupfiz5"
             export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
 
-            echo "::group::Build image"
             echo "Build image"
             cd ${GITHUB_WORKSPACE}/src/hook
             ./build.sh
@@ -605,16 +605,6 @@ docker exec -it naviserver-s6 /bin/bash
 :CUSTOM_ID: dockerfile-s6-multisteps
 :END:
 #+begin_src sh :shebang ""
-  # * Arg
-  # ARG BUILD_DATE \
-  #    VERSION
-  #     NS_VERSION=4.99.23 \
-  #     NS_MODULES_VERSION=4.99.23 \
-  #     TCLLIB_VERSION=1.20 \
-  #     TCL_VERSION=8.6.11 \
-  #     TDOM_VERSION=0.9.1 \
-  #     XOTCL_VERSION=2.3.0
-
   # * Build Naviserver
   ARG TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
     FROM oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG} as build
@@ -721,10 +711,10 @@ docker exec -it naviserver-s6 /bin/bash
   WORKDIR /usr/local/ns
 
   # ** Entrypoint
-  ENTRYPOINT ["/usr/local/ns/bin/nsd"]
+  ENTRYPOINT ["/init"]
 
   # ** Cmd
-  CMD [ "-f", "-u","nsadmin","-g","nsadmin","-t", "/usr/local/ns/conf/nsd-config.tcl"]
+  CMD []
 #+end_src
 ** Dockerfile.multisteps :code:
 :PROPERTIES:
