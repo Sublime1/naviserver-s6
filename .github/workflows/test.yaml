@@ -76,20 +76,20 @@ jobs:
           echo "Check docker container"
           .bats-battery/bats-core/bin/bats 04.container_check.bats
 
-        - name: Naviserver. Build. Check image and container.
-          run: |
-            export CONTAINER_NAME="naviserver"
-            export DOCKERFILE="Dockerfile.multisteps"
-            export IMAGE_NAME="naviserver"
-            export IMAGE_TAG="${{ github.sha }}"
-            export REPOSITORY="oupfiz5"
+      - name: Naviserver. Build. Check image and container.
+        run: |
+          export CONTAINER_NAME="naviserver"
+          export DOCKERFILE="Dockerfile.multisteps"
+          export IMAGE_NAME="naviserver"
+          export IMAGE_TAG="${{ github.sha }}"
+          export REPOSITORY="oupfiz5"
 
-            echo "Build image"
-            cd ${GITHUB_WORKSPACE}/src/hook
-            ./build.sh
+          echo "Build image"
+          cd ${GITHUB_WORKSPACE}/src/hook
+          ./build.sh
 
-            cd ${GITHUB_WORKSPACE}/tests
-            echo "Check docker image (dockle)"
-            .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-            echo "Check docker container"
-            .bats-battery/bats-core/bin/bats 04.container_check.bats
+          cd ${GITHUB_WORKSPACE}/tests
+          echo "Check docker image (dockle)"
+          .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
+          echo "Check docker container"
+          .bats-battery/bats-core/bin/bats 04.container_check.bats
