@@ -39,12 +39,38 @@ jobs:
         run: |
           echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-      - name: Build images
+      - name: Naviserver+S6. Build and push image.
         run: |
+          echo "::group::Prepare environment"
+          set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
+          export DOCKERFILE="Dockerfile.s6.multisteps"
+          export IMAGE_NAME="naviserver-s6"
+          export IMAGE_TAG="${NS_IMAGE_TAG}"
+          export REPOSITORY="oupfiz5"
+          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
           cd ${GITHUB_WORKSPACE}/src/hook
-          ./build-msteps.sh
-
-      - name: Push images
-        run: |
-          cd ${GITHUB_WORKSPACE}/src/hook
+          echo "::endgroup::"
+          echo "::group::Build image"
+          ./build.sh
+          echo "::endgroup::"
+          echo "::group::Push image"
           ./push.sh
+          echo "::endgroup::"
+
+      - name: Naviserver. Build and push image.
+        run: |
+          echo "::group::Prepare environment"
+          set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
+          export DOCKERFILE="Dockerfile.multisteps"
+          export IMAGE_NAME="naviserver"
+          export IMAGE_TAG="${NS_IMAGE_TAG}"
+          export REPOSITORY="oupfiz5"
+          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          cd ${GITHUB_WORKSPACE}/src/hook
+          echo "::endgroup::"
+          echo "::group::Build image"
+          ./build.sh
+          echo "::endgroup::"
+          echo "::group::Push image"
+          ./push.sh
+          echo "::endgroup::"
