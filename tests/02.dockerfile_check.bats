@@ -10,3 +10,8 @@ load './helpers.bash'
       run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile.multisteps
       assert_success
 }
+
+@test "Check Dockerfile.s6.multisteps" {
+      run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile.s6.multisteps
+      assert_success
+}

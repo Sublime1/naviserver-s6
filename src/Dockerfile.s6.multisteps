@@ -1,3 +1,13 @@
+# * Arg
+# ARG BUILD_DATE \
+#    VERSION
+#     NS_VERSION=4.99.23 \
+#     NS_MODULES_VERSION=4.99.23 \
+#     TCLLIB_VERSION=1.20 \
+#     TCL_VERSION=8.6.11 \
+#     TDOM_VERSION=0.9.1 \
+#     XOTCL_VERSION=2.3.0
+
 # * Build Naviserver
 ARG TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
   FROM oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG} as build
@@ -29,7 +39,8 @@ COPY builds /builds
 RUN  /bin/bash /builds/all-build.sh
 
 # * From
-FROM ubuntu:20.04
+ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
+  FROM oupfiz5/ubuntu-s6:20.04-3.0.0.2
 
 # ** Arguments
 ARG BUILD_DATE \
@@ -61,8 +72,8 @@ LABEL \
     org.opencontainers.image.vendor="" \
     org.opencontainers.image.licenses="" \
     org.opencontainers.image.ref.name="" \
-    org.opencontainers.image.title="NaviServer on ubuntu base docker image" \
-    org.opencontainers.image.description="NaviServer on ubuntu base docker image" \
+    org.opencontainers.image.title="NaviServer on ubuntu base docker image using s6-overlay" \
+    org.opencontainers.image.description="NaviServer on ubuntu base docker image using s6-overlay" \
     custom.package.version.naviserver="${NS_VERSION}" \
     custom.package.version.naviserver_modules="${NS_MODULES_VERSION}" \
     custom.package.version.rl_json_version="${RL_JSON_VERSION}" \
@@ -89,7 +100,8 @@ RUN export LANG="en_US.UTF-8" \
     && useradd -g nsadmin nsadmin \
     && chown -R  nsadmin:nsadmin /usr/local/ns
 
-# ** Copy naviserver configurations
+# ** Copy s6 and naviserver configurations
+COPY rootfs/etc /etc/
 COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
 
 # ** Expose
