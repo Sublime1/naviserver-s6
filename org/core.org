@@ -450,6 +450,7 @@ docker exec -it naviserver-s6 /bin/bash
             export IMAGE_NAME="naviserver-s6"
             export IMAGE_TAG="${{ github.sha }}"
             export REPOSITORY="oupfiz5"
+            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
             echo "Build image"
             cd ${GITHUB_WORKSPACE}/src/hook
             ./build.sh
@@ -467,6 +468,7 @@ docker exec -it naviserver-s6 /bin/bash
             export IMAGE_NAME="naviserver"
             export IMAGE_TAG="${{ github.sha }}"
             export REPOSITORY="oupfiz5"
+            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
 
             echo "Build image"
             cd ${GITHUB_WORKSPACE}/src/hook
@@ -2123,7 +2125,7 @@ load '.bats-battery/bats-support/load.bash'
         assert_success
   }
 
-  @test "Check VERSION file" {
+  @test "Check VERSIONS file" {
         run export LC_ALL=C.UTF-8; shellcheck --shell=sh --exclude=SC2034 ../src/VERSIONS
         assert_success
   }
