@@ -3,7 +3,7 @@
 set -a; source ../VERSIONS ; set +a;
 source ../builds/env-vars.sh
 
-IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
+IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
 DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
 docker build --no-cache \

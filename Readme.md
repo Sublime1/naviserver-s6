@@ -80,20 +80,14 @@ They are using for testing and scanning:
 
 ## Build from chiselapp (fossil)
 
-    fossil clone https://chiselapp.com/user/oupfiz5/repository/naviserver-s6 naviserver-s6.fossil
+    fossil clone https://chiselapp.com/user/oupfiz5/repository/naviserver-s6   naviserver-s6.fossil
     mkdir naviserver-s6
     cd naviserver-s6
     fossil open ../naviserver-s6.fossil
 
-Build image using one step (install-ns.sh from Gustaf Neumann):
+Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](https://hub.docker.com/repository/docker/oupfiz5/tcl-build)):
 
-    docker build -t oupfiz5/naviserver-s6 -f ./Dockerfile .
-
-Build image using multi steps  (by means of docker oupfiz5/tcl-build):
-
-    docker build -t oupfiz5/naviserver-s6 -f ./Dockerfile.multisteps .
-
-In both cases will get naviserver docker image. But mulit steps image will have smaller size.
+    docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
 
 
 <a id="build-from-github"></a>
@@ -104,15 +98,9 @@ In both cases will get naviserver docker image. But mulit steps image will have 
     cd naviserver-s6
     docker build -t oupfiz5/naviserver-s6 .
 
-One step build image  (using install-ns.sh from Gustaf Neumann):
+Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](https://hub.docker.com/repository/docker/oupfiz5/tcl-build)):
 
-    docker build -t oupfiz5/naviserver-s6 -f ./Dockerfile .
-
-Multi steps build image (using build docker oupfiz5/tcl-build):
-
-    docker build -t oupfiz5/naviserver-s6 -f ./Dockerfile.multisteps .
-
-In both cases will get naviserver docker image. But mulit steps image will have smaller size.
+    docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
 
 
 <a id="configuration"></a>
@@ -154,7 +142,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 <tr>
 <td class="org-left">NS_VERSION</td>
 <td class="org-right">4.99.23</td>
-<td class="org-left">Define version for Naviserver</td>
+<td class="org-left">Define version for Naviserver-S6</td>
 </tr>
 </tbody>
 
@@ -162,7 +150,7 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 <tr>
 <td class="org-left">NS_MODULE_VERSION</td>
 <td class="org-right">4.99.23</td>
-<td class="org-left">Define version for Naviserver  modules</td>
+<td class="org-left">Define version for Naviserver-S6  modules</td>
 </tr>
 </tbody>
 
@@ -192,6 +180,14 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 
 <tbody>
 <tr>
+<td class="org-left">RL_JSON_VERSION=</td>
+<td class="org-right">0.11.1</td>
+<td class="org-left">Define version for rl_json</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
 <td class="org-left">XOTCL_VERSION</td>
 <td class="org-right">2.3.0</td>
 <td class="org-left">Define version for xotcl</td>
@@ -206,10 +202,10 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 
     docker build --no-cache \
             --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-            --build-arg NS_VERSION=4.99.23 \
-            --build-arg TCL_VERSION=8.6.11 \
+            --build-arg NS_VERSION='4.99.23' \
+            --build-arg TCL_VERSION='8.6.11' \
             -t oupfiz5/naviserver-s6:4.99.23 \
-            -f ../Dockerfile.multisteps \
+            -f ../Dockerfile \
              ../.
 
 
@@ -274,7 +270,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
 
     docker run -itd \
            --restart always \
-           --name=naviserver-s6 \
+           --name=naviserver-s6-s6 \
            --env 'TZ=Europe/Moscow' \
            -p 127.0.0.1:8090:8080 \
            oupfiz5/naviserver-s6:4.99.23
@@ -284,7 +280,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
 
 ## HTTP listen port
 
-Set the http listen port for the container `-p 127.0.0.1:18090:8080`.  In this case the Naviserver is accessible by URL [http://localhost:18090](http://localhost:8090).
+Set the http listen port for the container `-p 127.0.0.1:18090:8080`.  In this case the Naviserver-S6 is accessible by URL [http://localhost:18090](http://localhost:8090).
 
     docker run -itd \
            --restart always \
@@ -305,10 +301,10 @@ The default configuration file is `rootfs/usr/local/ns/conf/nsd-config.tcl`.  Fo
 
         docker run -itd \
                --restart always \
-               --name=naviserver-s6  \
+               --name=naviserver  \
                -p 127.0.0.1:8090:8080 \
                --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf/test,destination=/usr/local/ns/conf \
-               oupfiz5/naviserver-s6:4.99.23
+               oupfiz5/naviserver:4.99.23
 
 
 <a id="quickstart"></a>
@@ -334,7 +330,7 @@ After start open the naviserver will be accessible by url `http://localhost:8090
 
 # Continues integration
 
-For  build and push docker images using  [Github Actions workflow](https://github.com/oupfiz5/build-tcl/blob/master/.github/workflows/on-push.yaml). Flow process is [GitHub flow](https://guides.github.com/introduction/flow/).
+For  build and push docker images using  [Github Actions workflow](https://github.com/oupfiz5/naviserver-s6/blob/master/.github/workflows/on-push.yaml). Flow process is [GitHub flow](https://guides.github.com/introduction/flow/).
 
 
 <a id="troubleshooting"></a>
