@@ -1029,18 +1029,6 @@ load '.bats-battery/bats-file/load.bash'
 load '.bats-battery/bats-support/load.bash'
 #+end_src
 
-** common_conf.bash :test:
-:PROPERTIES:
-:CUSTOM_ID: common-conf-bash
-:END:
-#+begin_src sh :shebang "" :results output pp :noweb strip-export :tangle-mode (identity #o644)
-  # * Common variables
-  IMG='naviserver-s6'
-  export IMAGE="${IMAGE:-oupfiz5/$IMG:4.99.23}"
-  export CONTAINER_NAME="${CONTAINER_NAME:-$IMG}"
-  export IMAGE="${IMAGE:-oupfiz5/$IMG:4.99.23}"
-#+end_src
-
 ** 01.shellchecks.bats :test:
 :PROPERTIES:
 :CUSTOM_ID: 01-shellchecks-bats
@@ -1105,7 +1093,7 @@ load '.bats-battery/bats-support/load.bash'
 #+begin_src bats :results output pp :noweb strip-export
 
   setup() {
-        . ./common_conf.bash
+        . ../src/VERSIONS
 
         VERSION=$(
         curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
@@ -1126,10 +1114,6 @@ load '.bats-battery/bats-support/load.bash'
     }
 #+end_src
 
-#+RESULTS:
-: 1..1
-: ok 1 Check docker image
-
 ** 04.container_check.bats :test:
 :PROPERTIES:
 :CUSTOM_ID: 04-container-check-bats
@@ -1137,7 +1121,7 @@ load '.bats-battery/bats-support/load.bash'
 #+begin_src bats :results output pp :noweb strip-export
 
   setup() {
-      . ./common_conf.bash
+      . ../src/VERSIONS
   }
 
   @test "Verify container run" {
