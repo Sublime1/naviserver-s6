@@ -2,7 +2,7 @@
 load './helpers.bash'
 
 setup() {
-      . ./common_conf.bash
+      . ../src/VERSIONS
 
       VERSION=$(
       curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \

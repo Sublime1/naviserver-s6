@@ -77,54 +77,39 @@ They are using for testing and scanning:
 :PROPERTIES:
 :CUSTOM_ID: download-from-dockerhub
 :END:
- #+begin_example
- docker pull oupfiz5/naviserver-s6:4.99.23
- #+end_example
-
+#+begin_src sh :tangle no :noweb yes
+   docker pull oupfiz5/naviserver-s6:4.99.23
+#+end_src
 ** Build from chiselapp (fossil)
 :PROPERTIES:
 :CUSTOM_ID: build-from-chiselapp--fossil-
 :END:
-#+begin_example
-fossil clone https://chiselapp.com/user/oupfiz5/repository/naviserver-s6 naviserver-s6.fossil
+#+begin_src sh :tangle no :noweb yes
+fossil clone https://chiselapp.com/user/oupfiz5/repository/naviserver-s6   naviserver-s6.fossil
 mkdir naviserver-s6
 cd naviserver-s6
 fossil open ../naviserver-s6.fossil
-#+end_example
+#+END_SRC
 
-Build image using one step (install-ns.sh from Gustaf Neumann):
-#+begin_example
-docker build -t oupfiz5/naviserver-s6 -f ./Dockerfile .
-#+end_example
-
-Build image using multi steps  (by means of docker oupfiz5/tcl-build):
-#+begin_example
-docker build -t oupfiz5/naviserver-s6 -f ./Dockerfile.multisteps .
-#+end_example
-
-In both cases will get naviserver docker image. But mulit steps image will have smaller size.
-
+Build image using multi steps  (by means of docker from [[https://hub.docker.com/repository/docker/oupfiz5/tcl-build][oupfiz5/tcl-build]]):
+#+begin_src sh :tangle no :noweb yes
+docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
+#+end_src
 ** Build from github
 :PROPERTIES:
 :CUSTOM_ID: build-from-github
 :END:
- #+begin_example
+ #+begin_src sh :tangle no :noweb yes
  git clone https://github.com/oupfiz5/naviserver-s6.git
  cd naviserver-s6
  docker build -t oupfiz5/naviserver-s6 .
- #+end_example
+ #+end_src
 
-One step build image  (using install-ns.sh from Gustaf Neumann):
-#+begin_example
-docker build -t oupfiz5/naviserver-s6 -f ./Dockerfile .
-#+end_example
 
-Multi steps build image (using build docker oupfiz5/tcl-build):
-#+begin_example
-docker build -t oupfiz5/naviserver-s6 -f ./Dockerfile.multisteps .
-#+end_example
-
-In both cases will get naviserver docker image. But mulit steps image will have smaller size.
+Build image using multi steps  (by means of docker from [[https://hub.docker.com/repository/docker/oupfiz5/tcl-build][oupfiz5/tcl-build]]):
+#+begin_src sh :tangle no :noweb yes
+docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
+#+end_src
 ** Configuration
 :PROPERTIES:
 :CUSTOM_ID: configuration
@@ -138,9 +123,9 @@ In both cases will get naviserver docker image. But mulit steps image will have 
  |-------------------+---------+----------------------------------------|
  | BUILD_DATE        |    none | Set build date for label               |
  |-------------------+---------+----------------------------------------|
- | NS_VERSION        | 4.99.23 | Define version for Naviserver          |
+ | NS_VERSION        | 4.99.23 | Define version for Naviserver-S6          |
  |-------------------+---------+----------------------------------------|
- | NS_MODULE_VERSION | 4.99.23 | Define version for Naviserver  modules |
+ | NS_MODULE_VERSION | 4.99.23 | Define version for Naviserver-S6  modules |
  |-------------------+---------+----------------------------------------|
  | TCL_VERSION       |  8.6.11 | Define version for  tcl                |
  |-------------------+---------+----------------------------------------|
@@ -148,22 +133,23 @@ In both cases will get naviserver docker image. But mulit steps image will have 
  |-------------------+---------+----------------------------------------|
  | TDOM_VERSION      |   0.9.1 | Define version for tdom                |
  |-------------------+---------+----------------------------------------|
+ | RL_JSON_VERSION=  |  0.11.1 | Define version for rl_json             |
+ |-------------------+---------+----------------------------------------|
  | XOTCL_VERSION     |   2.3.0 | Define version for xotcl               |
  |-------------------+---------+----------------------------------------|
 *** Example of build
 :PROPERTIES:
 :CUSTOM_ID: example-of-build
 :END:
-#+begin_example
+#+begin_src sh :tangle no :noweb yes
  docker build --no-cache \
          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-         --build-arg NS_VERSION=4.99.23 \
-         --build-arg TCL_VERSION=8.6.11 \
+         --build-arg NS_VERSION='4.99.23' \
+         --build-arg TCL_VERSION='8.6.11' \
          -t oupfiz5/naviserver-s6:4.99.23 \
-         -f ../Dockerfile.multisteps \
+         -f ../Dockerfile \
           ../.
-#+end_example
-
+#+END_SRC
 * Configuration options
 :PROPERTIES:
 :CUSTOM_ID: configuration-options
@@ -187,28 +173,28 @@ In both cases will get naviserver docker image. But mulit steps image will have 
 :CUSTOM_ID: timezone
 :END:
 Set the timezone for the container, defaults to UTC. To set the timezone set the desired timezone with the variable TZ.
-#+begin_example
+#+begin_src sh :tangle no :noweb yes
 docker run -itd \
        --restart always \
-       --name=naviserver-s6 \
+       --name=naviserver-s6-s6 \
        --env 'TZ=Europe/Moscow' \
        -p 127.0.0.1:8090:8080 \
        oupfiz5/naviserver-s6:4.99.23
-#+end_example
+#+END_SRC
 
 ** HTTP listen port
 :PROPERTIES:
 :CUSTOM_ID: http-listen-port
 :END:
 
-Set the http listen port for the container =-p 127.0.0.1:18090:8080=.  In this case the Naviserver is accessible by URL [[http://localhost:8090][http://localhost:18090]].
-#+begin_example
+Set the http listen port for the container =-p 127.0.0.1:18090:8080=.  In this case the Naviserver-S6 is accessible by URL [[http://localhost:8090][http://localhost:18090]].
+#+begin_src sh :tangle no :noweb yes
 docker run -itd \
        --restart always \
        --name=naviserver-s6 \
        -p 127.0.0.1:18090:8080 \
        oupfiz5/naviserver-s6:4.99.23
-#+end_example
+#+END_SRC
 ** Configuration file
 :PROPERTIES:
 :CUSTOM_ID: configuration-file
@@ -217,15 +203,14 @@ The default configuration file is =rootfs/usr/local/ns/conf/nsd-config.tcl=.  Fo
 1. Create own configuration file with name =nsd-config.tcl=
 2. Put it to some directory (for example =rootfs/usr/local/ns/conf/test=)
 3. Mount the the directory from item 2 as =/usr/local/ns/conf=
-  #+begin_example
+  #+begin_src sh :tangle no :noweb yes
 docker run -itd \
        --restart always \
-       --name=naviserver-s6  \
+       --name=naviserver  \
        -p 127.0.0.1:8090:8080 \
        --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf/test,destination=/usr/local/ns/conf \
-       oupfiz5/naviserver-s6:4.99.23
-#+end_example
-
+       oupfiz5/naviserver:4.99.23
+  #+END_SRC
 * Quickstart
 :PROPERTIES:
 :CUSTOM_ID: quickstart
@@ -248,7 +233,7 @@ After start open the naviserver will be accessible by url =http://localhost:8090
 :PROPERTIES:
 :CUSTOM_ID: continues-integration
 :END:
-For  build and push docker images using  [[https://github.com/oupfiz5/build-tcl/blob/master/.github/workflows/on-push.yaml][Github Actions workflow]]. Flow process is [[https://guides.github.com/introduction/flow/][GitHub flow]].
+For  build and push docker images using  [[https://github.com/oupfiz5/naviserver-s6/blob/master/.github/workflows/on-push.yaml][Github Actions workflow]]. Flow process is [[https://guides.github.com/introduction/flow/][GitHub flow]].
 * Troubleshooting
 :PROPERTIES:
 :CUSTOM_ID: troubleshooting
@@ -259,22 +244,20 @@ For  build and push docker images using  [[https://github.com/oupfiz5/build-tcl/
 :END:
 For debugging and maintenance purposes you may want access the output log. If you are using Docker version 1.3.0 or higher you can access a running containers shell by starting bash using docker interactive:
 
-#+begin_example
+#+begin_src sh :tangle no :noweb yes
 docker run -it --rm \
        --name=naviserver-s6 \
        -p 127.0.0.1:8090:8080 \
        oupfiz5/naviserver-s6:latest
-#+end_example
-
+#+END_SRC
 ** Shell access
 :PROPERTIES:
 :CUSTOM_ID: shell-access
 :END:
 For debugging and maintenance purposes you may want access the containers shell. If you are using Docker version 1.3.0 or higher you can access a running containers shell by starting bash using docker exec:
-#+begin_example
+#+begin_src sh :tangle no :noweb yes
 docker exec -it naviserver-s6 /bin/bash
-#+end_example
-
+#+END_SRC
 * Code :code:noexport:
 :PROPERTIES:
 :CUSTOM_ID: code
@@ -284,9 +267,13 @@ docker exec -it naviserver-s6 /bin/bash
 :CUSTOM_ID: versions
 :END:
 #+begin_src sh :shebang ""
+  CONTAINER_NAME='naviserver-s6'
   NS_IMAGE_TAG='4.99.23'
-  S6_UBUNTU_TAG='20.04-3.0.0.2'
+  IMAGE_NAME='naviserver-s6'
+  IMAGE_REPOSITORY='oupfiz5'
+  IMAGE_TAG="${NS_IMAGE_TAG}"
   TCL_BUILD_IMAGE_TAG='22.01'
+  UBUNTU_TAG='20.04'
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
@@ -367,33 +354,10 @@ docker exec -it naviserver-s6 /bin/bash
           run: |
             echo  ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-        - name: Naviserver+S6. Build and push image.
-          run: |
-            echo "::group::Prepare environment"
-            set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
-            export DOCKERFILE="Dockerfile.s6.multisteps"
-            export IMAGE_NAME="naviserver-s6"
-            export IMAGE_TAG="${NS_IMAGE_TAG}"
-            export REPOSITORY="oupfiz5"
-            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-            cd ${GITHUB_WORKSPACE}/src/hook
-            echo "::endgroup::"
-            echo "::group::Build image"
-            ./build.sh
-            echo "::endgroup::"
-            echo "::group::Push image"
-            ./push.sh
-            echo "::endgroup::"
-
         - name: Naviserver. Build and push image.
           run: |
             echo "::group::Prepare environment"
             set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
-            export DOCKERFILE="Dockerfile.multisteps"
-            export IMAGE_NAME="naviserver"
-            export IMAGE_TAG="${NS_IMAGE_TAG}"
-            export REPOSITORY="oupfiz5"
-            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
             cd ${GITHUB_WORKSPACE}/src/hook
             echo "::endgroup::"
             echo "::group::Build image"
@@ -443,10 +407,7 @@ docker exec -it naviserver-s6 /bin/bash
 
   # * Environments
   env:
-    CONTAINER_NAME: "naviserver-s6"
-    IMAGE_NAME: "naviserver-s6"
     IMAGE_TAG: "${{ github.sha }}"
-    REPOSITORY: "oupfiz5"
 
   # * Jobs
   jobs:
@@ -469,37 +430,11 @@ docker exec -it naviserver-s6 /bin/bash
             cd ${GITHUB_WORKSPACE}/tests
             .bats-battery/bats-core/bin/bats 02.dockerfile_check.bats
 
-        - name: Naviserver+S6. Build. Check image and container.
-          run: |
-            echo "::group::Build image"
-            export CONTAINER_NAME="naviserver-s6"
-            export DOCKERFILE="Dockerfile.s6.multisteps"
-            export IMAGE_NAME="naviserver-s6"
-            export IMAGE_TAG="${{ github.sha }}"
-            export REPOSITORY="oupfiz5"
-            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-            cd ${GITHUB_WORKSPACE}/src/hook
-            ./build.sh
-            echo "::endgroup::"
-
-            echo "::group::Check image and container"
-            cd ${GITHUB_WORKSPACE}/tests
-            echo "Check docker image (dockle)"
-            .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-            echo "Check docker container"
-            .bats-battery/bats-core/bin/bats 04.container_check.bats
-            echo "::endgroup::"
-
         - name: Naviserver. Build. Check image and container.
           run: |
             echo "::group::Build image"
-            export CONTAINER_NAME="naviserver"
-            export DOCKERFILE="Dockerfile.multisteps"
-            export IMAGE_NAME="naviserver"
-            export IMAGE_TAG="${{ github.sha }}"
-            export REPOSITORY="oupfiz5"
-            export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-
+            set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
+            export IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
             echo "Build image"
             cd ${GITHUB_WORKSPACE}/src/hook
             ./build.sh
@@ -532,103 +467,6 @@ docker exec -it naviserver-s6 /bin/bash
 ** Dockerfile :code:
 :PROPERTIES:
 :CUSTOM_ID: dockerfile
-:END:
-#+begin_src sh :shebang ""
-  # * From
-  ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
-  FROM oupfiz5/ubuntu-s6:${S6_UBUNTU_TAG}
-
-  # * Arg
-  ARG BUILD_DATE \
-      NS_VERSION=4.99.23 \
-      NS_MODULES_VERSION=4.99.23 \
-      TCLLIB_VERSION=1.20 \
-      TCL_VERSION=8.6.11 \
-      TDOM_VERSION=0.9.1 \
-      THREAD_VERSION=2.8.6 \
-      XOTCL_VERSION=2.3.0
-
-  # * Env
-  ENV version_ns=${NS_VERSION} \
-      version_modules=${NS_VERSION_MODULES} \
-      version_thread=${THREAD_VERSION} \
-      version_tcl=${TCL_VERSION} \
-      version_tcllib=${TCLLIB_VERSION} \
-      version_xotcl=${XOTCL_VERSION} \
-      version_tdom=${TDOM_VERSION}
-
-  # * Labels
-  # hadolint ignore=DL3048
-  LABEL \
-      maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
-      org.opencontainers.image.created=${BUILD_DATE} \
-      org.opencontainers.image.authors="Oupfiz V (Five)" \
-      org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/home" \
-      org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/wiki" \
-      org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/brlist" \
-      org.opencontainers.image.version="0.0.2d" \
-      org.opencontainers.image.revision="" \
-      org.opencontainers.image.vendor="" \
-      org.opencontainers.image.licenses="" \
-      org.opencontainers.image.ref.name="" \
-      org.opencontainers.image.title="NaviServer on ubuntu base docker image using s6-overlay" \
-      org.opencontainers.image.description="NaviServer on ubuntu base docker image using s6-overlay" \
-      custom.package.version.naviserver=${NS_VERSION} \
-      custom.package.version.naviserver_modules=${NS_MODULES_VERSION} \
-      custom.package.version.thread=${THREAD_VERSION} \
-      custom.package.version.tcl=${TCL_VERSION} \
-      custom.package.version.tcllib=${TCLLIB_VERSION} \
-      custom.package.version.tdom=${VERSION_TDOM} \
-      custom.package.version.xotcl=${XOTCL_VERSION}
-
-  # * Copy install scripts
-  COPY rootfs/usr/local/src/scripts /usr/local/src/scripts
-
-  # * Workdir for build
-  WORKDIR /usr/local/src
-
-  # * Run
-  # hadolint ignore=DL3003,DL3008,DL4006
-  RUN export LANG=en_US.UTF-8 && export LC_ALL=en_US.UTF-8 \
-      && apt-get update && apt-get --no-install-recommends install curl wget gnupg apt-utils tzdata bash -y \
-      && apt-get --no-install-recommends install make gcc zlib1g-dev zip unzip openssl libssl-dev libpq-dev postgresql-client locales -y \
-      && locale-gen en_US.UTF-8 && update-locale LANG="en_US.UTF-8" && update-locale LC_ALL=en_US.UTF-8 \
-      && apt-get clean \
-      && scripts/install-ns.sh build \
-      && cd /usr/local/src/modules/nsstats \
-      && make NAVISERVER=/usr/local/ns \
-      && make NAVISERVER=/usr/local/ns install \
-      && cd /usr/local/src/modules/nsconf \
-      && make NAVISERVER=/usr/local/ns \
-      && make NAVISERVER=/usr/local/ns install \
-      && rm -rf /usr/local/src/* \
-      && env | grep version_ > /usr/local/ns/versions.txt \
-      && apt-get remove make gcc libssl-dev gnupg apt-utils -y && apt-get auto-remove -y \
-      && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/*
-
-  # * Copy s6 and naviserver configurations
-  COPY rootfs/etc /etc/
-  COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
-
-  # * Expose
-  EXPOSE 8080
-
-  # * Environment
-  Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
-
-  # * Workdir
-  WORKDIR /usr/local/ns
-
-  # * Entrypoint
-  ENTRYPOINT ["/usr/local/ns/bin/nsd"]
-
-  # * Cmd
-  CMD ["-f", "-u","nsadmin","-g","nsadmin","-t", "${NS_CONF}"]
-#+end_src
-
-** Dockerfile.s6.multisteps :code:
-:PROPERTIES:
-:CUSTOM_ID: dockerfile-s6-multisteps
 :END:
 #+begin_src sh :shebang ""
   # * Build Naviserver
@@ -742,146 +580,32 @@ docker exec -it naviserver-s6 /bin/bash
   # ** Cmd
   CMD []
 #+end_src
-** Dockerfile.multisteps :code:
-:PROPERTIES:
-:CUSTOM_ID: dockerfile-multisteps
-:END:
-#+begin_src sh :shebang ""
-  # * Build Naviserver
-  ARG TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
-    FROM oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG} as build
-
-  # ** Args
-  ARG NS_VERSION \
-      NS_MODULES_VERSION \
-      RL_JSON_VERSION \
-      TCLLIB_VERSION \
-      TCL_VERSION \
-      TDOM_VERSION \
-      THREAD_VERSION \
-      XOTCL_VERSION
-
-  # ** Environments
-  ENV NS_VERSION="${NS_VERSION}" \
-      NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
-      RL_JSON_VERSION_VERSION="${RL_JSON_VERSION_VERSION}" \
-      TCLLIB_VERSION="${TCLLIB_VERSION}" \
-      TCL_VERSION="${TCL_VERSION}" \
-      TDOM_VERSION="${TDOM_VERSION}" \
-      THREAD_VERSION="${THREAD_VERSION}" \
-      XOTCL_VERSION="${XOTCL_VERSION}"
-
-  # ** Build
-  WORKDIR /
-  RUN mkdir /workspaces
-  COPY builds /builds
-  RUN  /bin/bash /builds/all-build.sh
-
-  # * From
-  FROM ubuntu:20.04
-
-  # ** Arguments
-  ARG BUILD_DATE \
-      VERSION \
-      NS_VERSION \
-      NS_MODULES_VERSION \
-      RL_JSON_VERSION \
-      TCLLIB_VERSION \
-      TCL_VERSION \
-      TDOM_VERSION \
-      THREAD_VERSION \
-      XOTCL_VERSION
-
-  # ** Copy Naviserver
-  WORKDIR /
-  COPY --from=build /usr/local/ns /usr/local/ns/
-
-  # ** Labels
-  # hadolint ignore=DL3048
-  LABEL \
-      maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
-      org.opencontainers.image.created="${BUILD_DATE}" \
-      org.opencontainers.image.authors="Oupfiz V (Five)" \
-      org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/home" \
-      org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/wiki" \
-      org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/brlist" \
-      org.opencontainers.image.version="0.0.1d" \
-      org.opencontainers.image.revision="" \
-      org.opencontainers.image.vendor="" \
-      org.opencontainers.image.licenses="" \
-      org.opencontainers.image.ref.name="" \
-      org.opencontainers.image.title="NaviServer on ubuntu base docker image" \
-      org.opencontainers.image.description="NaviServer on ubuntu base docker image" \
-      custom.package.version.naviserver="${NS_VERSION}" \
-      custom.package.version.naviserver_modules="${NS_MODULES_VERSION}" \
-      custom.package.version.rl_json_version="${RL_JSON_VERSION}" \
-      custom.package.version.tcl="${TCL_VERSION}" \
-      custom.package.version.tcllib="${TCLLIB_VERSION}" \
-      custom.package.version.tdom="${TDOM_VERSION}" \
-      custom.package.version.thread="${THREAD_VERSION}" \
-      custom.package.version.xotcl="${XOTCL_VERSION}"
-
-  # ** Run
-  # hadolint ignore=DL3008
-  RUN export LANG="en_US.UTF-8" \
-      && export LC_ALL="en_US.UTF-8" \
-      && apt-get update \
-      && export DEBIAN_FRONTEND=noninteractive \
-      && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev postgresql-client wget \
-      && locale-gen en_US.UTF-8 \
-      && update-locale LANG="en_US.UTF-8" \
-      && update-locale LC_ALL="en_US.UTF-8" \
-      && apt-get clean \
-      && apt-get auto-remove -y \
-      && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
-      && groupadd nsadmin \
-      && useradd -g nsadmin nsadmin \
-      && chown -R  nsadmin:nsadmin /usr/local/ns
-
-  # ** Copy naviserver configurations
-  COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
-
-  # ** Expose
-  EXPOSE 8080
-
-  # ** Environment
-  Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
-
-  # ** Workdir
-  WORKDIR /usr/local/ns
-
-  # ** Entrypoint
-  ENTRYPOINT ["/usr/local/ns/bin/nsd"]
-
-  # ** Cmd
-  CMD [ "-f", "-u","nsadmin","-g","nsadmin","-t", "/usr/local/ns/conf/nsd-config.tcl"]
-#+end_src
 ** hook/build.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: hook-build-sh
 :END:
 #+begin_src sh
-  # shellcheck disable=SC1091
-  set -a; source ../VERSIONS ; set +a;
-  source ../builds/env-vars.sh
+    # shellcheck disable=SC1091
+    set -a; source ../VERSIONS ; set +a;
+    source ../builds/env-vars.sh
 
-  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
-  DOCKERFILE="${DOCKERFILE:-Dockerfile}"
+    IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+    DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
-  docker build --no-cache \
-         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-         --build-arg VERSION="${NS_IMAGE_TAG}" \
-         --build-arg NS_VERSION="${NS_VERSION}" \
-         --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
-         --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
-         --build-arg TCLLIB_VERSION="${TCLLIB_VERSION}" \
-         --build-arg TCL_VERSION="${TCL_VERSION}" \
-         --build-arg TDOM_VERSION="${TDOM_VERSION}" \
-         --build-arg THREAD_VERSION="${THREAD_VERSION}" \
-         --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
-         -t "${IMAGE}" \
-         -f ../"${DOCKERFILE}" \
-         ../.
+    docker build --no-cache \
+           --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+           --build-arg VERSION="${NS_IMAGE_TAG}" \
+           --build-arg NS_VERSION="${NS_VERSION}" \
+           --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+           --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
+           --build-arg TCLLIB_VERSION="${TCLLIB_VERSION}" \
+           --build-arg TCL_VERSION="${TCL_VERSION}" \
+           --build-arg TDOM_VERSION="${TDOM_VERSION}" \
+           --build-arg THREAD_VERSION="${THREAD_VERSION}" \
+           --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
+           -t "${IMAGE}" \
+           -f ../"${DOCKERFILE}" \
+           ../.
 #+end_src
 ** hook/push.sh :code:
 :PROPERTIES:
@@ -891,31 +615,9 @@ docker exec -it naviserver-s6 /bin/bash
   # shellcheck disable=SC1091
   set -a; source ../VERSIONS ; set +a;
 
-  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
+  IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
 
   docker push "${IMAGE}"
-#+end_src
-
-** rootfs/etc/cont-init.d/00-map-uid-gid :code:tangleno:
-:PROPERTIES:
-:header-args:sh: :tangle no
-:CUSTOM_ID: rootfs-etc-cont-init-d-00-map-uid-gid
-:END:
-#+begin_src sh :shebang ""
-  #!/usr/bin/with-contenv bash
-
-  # Load functions
-  source /etc/naviserver/functions
-
-  chown -R $(get_usermap_uid):$(get_usermap_gid) /usr/local/ns/*
-#+end_src
-** rootfs/etc/fix-attrs.d/01-ns-dir :code:tangleno:
-:PROPERTIES:
-:header-args:sh: :tangle no
-:CUSTOM_ID: rootfs-etc-fix-attrs-d-01-ns-dir
-:END:
-#+begin_src sh :shebang ""
-/usr/local/ns true nsadmin:nsadmin 0755 2755
 #+end_src
 
 ** rootfs/etc/services.d/naviserver/finish :code:tangleno:
@@ -1248,790 +950,6 @@ set ::env(LANG) en_US.UTF-8
       fi
   }
 #+end_src
-** rootfs/usr/local/src/scripts/install-ns.sh :code:
-:PROPERTIES:
-:CUSTOM_ID: rootfs-usr-local-src-scripts-install-ns-sh
-:END:
-#+begin_src sh
-
-  do_clean=0
-  clean_only=0
-  build=0
-  while [ x"$1" != x ] ; do
-      case $1 in
-          clean) clean_only=1
-              do_clean=1
-              shift
-              continue;;
-          build) build=1
-              shift
-              continue;;
-          ,*)  echo "argument '$1' ignored"
-              shift
-              continue;;
-      esac
-  done
-
-
-  echo "------------------------ Settings ---------------------------------------"
-  # Installation directory and software versions to be installed
-
-  build_dir=/usr/local/src
-  #build_dir=/usr/local/src/oo2
-  ns_install_dir=/usr/local/ns
-  #ns_install_dir=/usr/local/oo2
-  version_ns=${version_ns:-4.99.23}
-  #version_ns=HEAD
-  version_modules=${version_modules:-4.99.23}
-  #version_modules=HEAD
-  #version_tcl=8.5.19
-  version_tcl=${version_tcl:-8.6.11}
-  version_tcllib=${version_tcllib:-1.20}
-  tcllib_dirname=tcllib
-  version_thread=${version_thread:-2.8.6}
-  version_xotcl=${version_xotcl:-2.3.0}
-  #version_xotcl=HEAD
-  #version_tdom=GIT
-  version_tdom=${version_tdom:-0.9.2}
-  version_tdom_git="master@{2014-11-01 00:00:00}"
-  tdom_base=tdom-${version_tdom}
-  tdom_tar=${tdom_base}-src.tgz
-  ns_user=nsadmin
-  ns_group=nsadmin
-  with_mongo=0
-  with_system_malloc=0
-
-
-  #
-  # The setting "with_postgres=1" means that we want to install a fresh
-  # packaged PostgeSQL.
-  #
-  # The setting "with_postgres_driver=1" means that we want to install
-  # NaviServer with the nsdbpg driver (this requires that a at least a
-  # postgres client library is installed).
-  #
-  with_postgres=1
-  with_postgres_driver=1
-
-  #
-  # some old versions of wget (e.g. inn CentOS 5.11) need the no-check flag
-  wget_options=""
-  #wget_options="--no-check-certificate"
-
-  #
-  # the pg_* variables should be the path leading to the include and
-  # library file of postgres to be used in this build.  In particular,
-  # "libpq-fe.h" and "libpq.so" are typically needed.
-  pg_incl=/usr/include/postgresql
-  pg_lib=/usr/lib
-  pg_user=postgres
-
-  export LANG=en_US.UTF-8
-  export LC_ALL=en_US.UTF-8
-
-  echo "------------------------ Check System ----------------------------"
-  debian=0
-  redhat=0
-  macosx=0
-  sunos=0
-  freebsd=0
-
-  make="make"
-  type="type -a"
-  tar="tar"
-
-  pg_packages=
-
-  uname=$(uname)
-  if [ $uname = "Darwin" ] ; then
-      macosx=1
-      group_listcmd="dscl . list /Groups | grep ${ns_group}"
-      group_addcmd="dscl . create /Groups/${ns_group} PrimaryGroupID $((`dscl . -list /Groups PrimaryGroupID | awk '{print $2}' | sort -rn|head -1` + 1))"
-      ns_user_addcmd="dscl . create /Users/${ns_user};dseditgroup -o edit -a ${ns_user} -t user ${ns_group}"
-      ns_user_addgroup_hint="dseditgroup -o edit -a YOUR_USERID -t user ${ns_group}"
-
-      osxversion=$(sw_vers -productVersion | awk -F '.' '{print $2}')
-      maxid=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1)
-      newid=$((maxid+1))
-
-      #
-      # In OS X Yosemite (macOS 10.10.*) sysadminctl was added for creating users
-      #
-      if [ ${osxversion} -ge 10 ]; then
-          ns_user_addcmd="sysadminctl -addUser ${ns_user} -UID ${newid}; dseditgroup -o edit -a ${ns_user} -t user ${ns_group}"
-      else
-          ns_user_addcmd="dscl . create /Users/${ns_user}; dscl . -create /Users/${ns_user} UniqueID ${newid}; dseditgroup -o edit -a ${ns_user} -t user ${ns_group}"
-      fi
-
-      ns_user_addgroup_hint="dseditgroup -o edit -a YOUR_USERID -t user ${ns_group}"
-
-      if [ $with_postgres = "1" ] ; then
-          # Preconfigured for PostgreSQL 12 installed via MacPorts
-          pg_incl=/opt/local/include/postgresql12/
-          pg_lib=/opt/local/lib/postgresql12/
-          pg_packages="postgresql12 postgresql12-server"
-      fi
-  else
-      #
-      # Not Darwin
-      #
-      if [ -f "/etc/debian_version" ] ; then
-          debian=1
-          if [ $with_postgres = "1" ] ; then
-              pg_packages="postgresql libpq-dev"
-          fi
-      elif [ -f "/etc/redhat-release" ] ; then
-          redhat=1
-          if [ $with_postgres = "1" ] ; then
-              pg_packages="postgresql postgresql-devel"
-          fi
-      elif [ $uname = 'SunOS' ] ; then
-          sunos=1
-          make="gmake"
-          export CC="gcc -m64"
-          if [ $with_postgres = "1" ] ; then
-              pg_packages="postgresql-960"
-              pg_incl=/opt/pgsql960/include
-              pg_lib=/opt/pgsql960/lib
-          fi
-      elif [ $uname = "FreeBSD" ] ; then
-          freebsd=1
-          make="gmake"
-          type="type"
-          # adjust following to local gcc version:
-          setenv CC=clang
-          if [ $with_postgres = "1" ] ; then
-              # for freebsd10, file is: /usr/local/include/postgresql/internal/postgres_fe.h so:
-              #pg_incl=/usr/local/include/postgresql/internal
-              pg_packages="postgresql96-client"
-              pg_incl=/usr/local/include
-              pg_lib=/usr/local/lib
-          fi
-          # make sure that bash is installed here, such that the recommendation for bash works below
-          pkg install bash
-      elif [ $uname = "OpenBSD" ] ; then
-          make="gmake"
-          pg_incl=/usr/local/include/postgresql
-          pg_lib=/usr/local/lib
-          openbsd=1
-      fi
-      if [ $uname = "FreeBSD" ] ; then
-          group_addcmd="pw groupadd ${ns_group}"
-          ns_user_addcmd="pw useradd ${ns_user} -G ${ns_group} "
-      else
-          group_addcmd="groupadd ${ns_group}"
-          ns_user_addcmd="useradd -g ${ns_group} ${ns_user}"
-      fi
-      group_listcmd="grep ${ns_group} /etc/group"
-      ns_user_addgroup_hint="sudo usermod -G ${ns_group} YOUR_USERID"
-  fi
-
-  echo "
-  Installation Script for NaviServer
-
-  This script installs Tcl, NaviServer, the essential
-  NaviServer modules, tcllib, libthread, XOTcl and tDOM
-  from scratch by obtaining the sources from the actual
-  releases and compiling it.
-
-  The script has a long heritage:
-  (c) 2008      Malte Sussdorff, Nima Mazloumi
-  (c) 2012-2020 Gustaf Neumann
-
-  Tested under macOS, Ubuntu 12.04, 13.04, 14.04, 16.04, 18.04, Raspbian 9.4,
-  OmniOS r151014, OpenBSD 6.1, 6.3, 6.6, Fedora Core 18, and CentOS 7 (pg 9.4.5)
-
-  LICENSE    This program comes with ABSOLUTELY NO WARRANTY;
-             This is free software, and you are welcome to redistribute it under certain conditions;
-             For details see http://www.gnu.org/licenses.
-
-  SETTINGS   Build-Dir              ${build_dir}
-             Install-Dir            ${ns_install_dir}
-             NaviServer             ${version_ns}
-             NaviServer Modules     ${version_modules}
-             Tcllib                 ${version_tcllib}
-             Thread                 ${version_thread}
-             NSF/NX/XOTcl           ${version_xotcl}
-             Tcl                    ${version_tcl}
-             tDOM                   ${version_tdom}
-             NaviServer user        ${ns_user}
-             NaviServer group       ${ns_group}
-             Make command           ${make}
-             Type command           ${type}
-             With MongoDB           ${with_mongo}
-             Install PostgreSQL DB  ${with_postgres}
-             With PostgreSQL driver ${with_postgres_driver}
-             Tcl with system malloc ${with_system_malloc}"
-
-  if [ $with_postgres = "1" ] ; then
-      echo "
-             PostgreSQL user       ${pg_user}
-             postgres/include      ${pg_incl}
-             postgres/lib          ${pg_lib}
-             PostgreSQL Packages   ${pg_packages}
-  "
-  fi
-
-
-  if [ $build = "0" ] && [ ! $clean_only = "1" ] ; then
-      echo "
-  WARNING    Check Settings AND Cleanup section before running this script!
-             If you know what you're doing then call the call the script as
-
-                sudo bash $0 build
-  "
-      exit
-  fi
-
-  echo "------------------------ Cleanup -----------------------------------------"
-
-  # The cleanup on the installation dir is optional, since it might
-  # delete something else not from our installation.
-  #rm -rf ${ns_install_dir}
-
-  mkdir -p ${build_dir}
-  cd ${build_dir}
-
-  if [ $do_clean = 1 ] ; then
-      #rm    tcl${version_tcl}-src.tar.gz
-      rm -r tcl${version_tcl}
-      #rm    ${tcllib_dirname}-${version_tcllib}.tar.bz2
-      rm -r ${tcllib_dirname}-${version_tcllib}
-      #rm    naviserver-${version_ns}.tar.gz
-      rm -rf naviserver-${version_ns}
-      #rm    naviserver-${version_ns}-modules.tar.gz
-      rm -r modules
-      #rm    thread${version_thread}.tar.gz
-      rm -r thread${version_thread}
-      #rm    nsf${version_xotcl}.tar.gz
-      rm -rf nsf${version_xotcl}
-      rm  -rf ${tdom_base} ${tdom_tar} tdom
-  fi
-
-  # just clean?
-  if [ $clean_only = "1" ] ; then
-    exit
-  fi
-
-  echo "------------------------ Save config variables in ${ns_install_dir}/lib/nsConfig.sh"
-  mkdir -p  ${ns_install_dir}/lib
-  cat << EOF > ${ns_install_dir}/lib/nsConfig.sh
-  build_dir="${build_dir}"
-  ns_install_dir="${ns_install_dir}"
-  version_ns=${version_ns}
-  version_modules=${version_modules}
-  version_tcl=${version_tcl}
-  version_tcllib=${version_tcllib}
-  version_thread=${version_thread}
-  version_xotcl=${version_xotcl}
-  version_tdom=${version_tdom}
-  ns_user=${ns_user}
-  pg_user=${pg_user}
-  ns_group=${ns_group}
-  with_mongo=${with_mongo}
-  with_postgres=${with_postgres}
-  pg_incl="${pg_incl}"
-  pg_lib="${pg_lib}"
-  make="${make}"
-  type="${type}"
-  debian=${debian}
-  redhat=${redhat}
-  macosx=${macosx}
-  sunos=${sunos}
-  freebsd=${freebsd}
-  EOF
-
-  echo "------------------------ Check User and Group --------------------"
-
-  group=$(eval ${group_listcmd})
-  echo "${group_listcmd} => $group"
-  if [ "x$group" = "x" ] ; then
-      echo "creating group ${ns_group} with command ${group_addcmd}"
-      eval ${group_addcmd}
-  fi
-
-  id=$(id -u ${ns_user})
-  if [ $? != "0" ] ; then
-      if  [ $debian = "1" ] || [ $macosx = "1" ] ; then
-          echo "creating user ${ns_user} with command ${ns_user_addcmd}"
-          eval ${ns_user_addcmd}
-      else
-          echo "User ${ns_user} does not exist; you might add it with a command like"
-          echo "     sudo ${ns_user_addcmd}"
-          exit
-      fi
-  fi
-
-  echo "------------------------ System dependencies ---------------------------------"
-  if [ $with_mongo = "1" ] ; then
-      mongodb="mongodb libtool autoconf cmake"
-  else
-      mongodb=
-  fi
-
-  if [ $with_mongo = "1" ] || [ $version_xotcl = "HEAD" ] || [ $version_tdom = "GIT" ] || [ $version_ns = "HEAD" ]; then
-      git=git
-  else
-      git=
-  fi
-
-  if [ $version_ns = "HEAD" ] ; then
-      autoconf=autoconf
-  else
-      autoconf=
-  fi
-  mercurial=
-
-  if [ $debian = "1" ] ; then
-      # On Debian/Ubuntu, make sure we have zlib installed, otherwise
-      # NaviServer can't provide compression support
-      apt-get install make ${autoconf} gcc zlib1g-dev wget curl zip unzip openssl libssl-dev ${pg_packages} ${mercurial} ${git} ${mongodb}
-  fi
-  if [ $redhat = "1" ] ; then
-      # packages for FC/RHL
-
-      if [ -x "/usr/bin/dnf" ] ; then
-          pkgmanager=/usr/bin/dnf
-      else
-          pkgmanager=yum
-      fi
-
-      ${pkgmanager} install make ${autoconf} automake gcc zlib zlib-devel wget curl zip unzip openssl openssl-devel ${pg_packages} ${mercurial} ${git} ${mongodb}
-  fi
-
-  if [ $macosx = "1" ] ; then
-      port install make ${autoconf} zlib wget curl zip unzip openssl ${pg_packages} ${mercurial} ${git} ${mongodb}
-  fi
-
-  if [ $sunos = "1" ] ; then
-      # packages for OpenSolaris/OmniOS
-      pkg install pkg://omnios/developer/versioning/git mercurial ${autoconf} automake /developer/gcc51 zlib wget \
-          curl compress/zip compress/unzip \
-          ${pg_packages} ${mercurial} ${git} ${mongodb}
-      pkg install \
-          developer/object-file \
-          developer/linker \
-          developer/library/lint \
-          developer/build/gnu-make \
-          system/header \
-          system/library/math/header-math \
-          archiver/gnu-tar
-
-      #ln -s /opt/gcc-4.8.1/bin/gcc /bin/gcc
-      tar="gtar"
-  fi
-
-  if [ $freebsd = "1" ] ; then
-       pkg install gmake llvm openssl automake wget curl zip unzip ${pg_packages} ${autoconf} ${mercurial} ${git} ${mongodb}
-  fi
-
-  if [ $openbsd = "1" ] ; then
-      #export PKG_PATH=https://ftp.eu.openbsd.org/pub/OpenBSD/6.3/packages/`machine -a`/
-      export AUTOCONF_VERSION=2.69
-      export AUTOMAKE_VERSION=1.15
-      #
-      # OpenBSD does not require a build with OpenSSL (libreSSL works as
-      # well), but NaviServer gets more functionality by using recent
-      # versions of OpenSSL.
-      #
-      pkg_add gcc openssl wget curl zip unzip bash gmake ${mercurial} ${git} ${mongodb} ${pg_packages} autoconf-2.69p2 automake-1.15.1
-  fi
-
-
-  echo "------------------------ Downloading sources ----------------------------"
-  set -o errexit
-
-  if [ ! -f tcl${version_tcl}-src.tar.gz ] ; then
-      echo wget ${wget_options} https://downloads.sourceforge.net/sourceforge/tcl/tcl${version_tcl}-src.tar.gz
-      wget ${wget_options} https://downloads.sourceforge.net/sourceforge/tcl/tcl${version_tcl}-src.tar.gz
-  fi
-  if [ ! -f ${tcllib_dirname}-${version_tcllib}.tar.bz2 ] ; then
-      wget ${wget_options} https://downloads.sourceforge.net/sourceforge/tcllib/${tcllib_dirname}-${version_tcllib}.tar.bz2
-  fi
-
-  # All versions of tcllib up to 1.15 were named tcllib-*.
-  # tcllib-1.16 was named a while Tcllib-1.16 (capital T), but has been renamed later
-  # to the standard naming conventions. tcllib-1.17 is fine again.
-  if [ ! -f tcllib-${version_tcllib}.tar.bz2 ] ; then
-      wget ${wget_options} https://downloads.sourceforge.net/sourceforge/tcllib/Tcllib-${version_tcllib}.tar.bz2
-      tcllib_dirname=Tcllib
-  fi
-
-  if [ ! $version_ns = "HEAD" ] ; then
-      if [ ! -f naviserver-${version_ns}.tar.gz ] ; then
-          wget ${wget_options} https://downloads.sourceforge.net/sourceforge/naviserver/naviserver-${version_ns}.tar.gz
-      fi
-  else
-      if [ ! -d naviserver ] ; then
-          git clone https://bitbucket.org/naviserver/naviserver
-      else
-          cd naviserver
-          git pull
-          cd ..
-      fi
-  fi
-
-  cd ${build_dir}
-  if [ ! ${version_modules} = "HEAD" ] ; then
-      if [ ! -f naviserver-${version_modules}-modules.tar.gz ] ; then
-          wget ${wget_options} https://downloads.sourceforge.net/sourceforge/naviserver/naviserver-${version_modules}-modules.tar.gz
-      fi
-  else
-      if [ ! -d modules ] ; then
-          mkdir modules
-      fi
-      cd modules
-      for d in nsdbbdb nsdbtds nsdbsqlite nsdbpg nsdbmysql \
-          nsocaml nssmtpd nstk nsdns nsfortune \
-          nssnmp nsicmp nsudp nsaccess nschartdir \
-          nsexample nsgdchart nssavi nssys nszlib nsaspell \
-          nsclamav nsexpat nsimap nssip nstftpd \
-          nssyslogd nsldapd nsradiusd nsphp nsstats nsconf \
-          nsdhcpd nsrtsp nsauthpam nsmemcache \
-          nsvfs nsdbi nsdbipg nsdbilite nsdbimy
-      do
-          if [ ! -d $d ] ; then
-              git clone https://bitbucket.org/naviserver/$d
-          else
-              cd $d
-              git pull
-              cd ..
-          fi
-      done
-  fi
-
-  cd ${build_dir}
-  if [ ! -f thread${version_thread}.tar.gz ] ; then
-      wget ${wget_options} https://downloads.sourceforge.net/sourceforge/tcl/thread${version_thread}.tar.gz
-  fi
-
-  if [ ! ${version_xotcl} = "HEAD" ] ; then
-      if [ ! -f nsf${version_xotcl}.tar.gz ] ; then
-          wget ${wget_options} https://downloads.sourceforge.net/sourceforge/next-scripting/nsf${version_xotcl}.tar.gz
-      fi
-  else
-      if [ ! -d nsf ] ; then
-          git clone git://alice.wu-wien.ac.at/nsf
-      else
-          cd nsf
-          git pull
-          cd ..
-      fi
-  fi
-
-  if [ $with_mongo = "1" ] ; then
-      if [ ! -d mongo-c-driver ] ; then
-          git clone https://github.com/mongodb/mongo-c-driver
-      else
-          cd mongo-c-driver
-          git pull
-          cd ..
-      fi
-  fi
-
-  if [ ! $version_tdom = "GIT" ] ; then
-      if [ ! -f ${tdom_tar} ] ; then
-          #wget --no-check-certificate https://cloud.github.com/downloads/tDOM/tdom/tDOM-${version_tdom}.tgz
-          #curl -L -O  https://github.com/downloads/tDOM/tdom/tDOM-${version_tdom}.tgz
-          #
-          # Get a version of tdom, which is compatible with Tcl
-          # 8.6. Unfortunately, the released version is not.
-          #
-          rm  -rf ${tdom_base} ${tdom_tar}
-          #curl -L -O https://github.com/tDOM/tdom/tarball/4be49b70cabea18c90504d1159fd63994b323234
-          #${tar} zxvf 4be49b70cabea18c90504d1159fd63994b323234
-          #mv tDOM-tdom-4be49b7 tDOM-${version_tdom}
-          curl -L -O http://tdom.org/downloads/${tdom_tar}
-          ${tar} zxvf ${tdom_tar}
-      fi
-  else
-      if [ ! -f "tdom/${version_tdom_git}" ] ; then
-          #
-          # get the newest version of tDOM
-          #
-          rm -rf tdom
-          echo "get  tDOM via: git clone https://github.com/tDOM/tdom.git"
-          git clone https://github.com/tDOM/tdom.git
-          # cd tdom
-          # git checkout 'master@{2012-12-31 00:00:00}'
-          # cd ..
-      fi
-  fi
-
-
-  #exit
-  echo "------------------------ Installing Tcl ---------------------------------"
-  set -o errexit
-
-  ${tar} xfz tcl${version_tcl}-src.tar.gz
-
-  if [ $with_system_malloc = "1" ] ; then
-      cd tcl${version_tcl}
-      cat <<EOF > tcl86-system-malloc.patch
-  Index: generic/tclThreadAlloc.c
-  ==================================================================
-  --- generic/tclThreadAlloc.c
-  +++ generic/tclThreadAlloc.c
-  @@ -305,11 +305,19 @@
-    ,* Side effects:
-    ,*	May allocate more blocks for a bucket.
-    ,*
-    ,*----------------------------------------------------------------------
-    ,*/
-  -
-  +#define SYSTEM_MALLOC 1
-  +#if defined(SYSTEM_MALLOC)
-  +char *
-  +TclpAlloc(
-  +    unsigned int numBytes)     /* Number of bytes to allocate. */
-  +{
-  +    return (char*) malloc(numBytes);
-  +}
-  +#else
-   char *
-   TclpAlloc(
-       unsigned int reqSize)
-   {
-       Cache *cachePtr;
-  @@ -366,10 +374,11 @@
-       if (blockPtr == NULL) {
-          return NULL;
-       }
-       return Block2Ptr(blockPtr, bucket, reqSize);
-   }
-  +#endif
-   /*
-    ,*----------------------------------------------------------------------
-    ,*
-    ,* TclpFree --
-  @@ -382,11 +391,19 @@
-    ,* Side effects:
-    ,*	May move blocks to shared cache.
-    ,*
-    ,*----------------------------------------------------------------------
-    ,*/
-  -
-  +#if defined(SYSTEM_MALLOC)
-  +void
-  +TclpFree(
-  +    char *ptr)         /* Pointer to memory to free. */
-  +{
-  +    free(ptr);
-  +    return;
-  +}
-  +#else
-   void
-   TclpFree(
-       char *ptr)
-   {
-       Cache *cachePtr;
-  @@ -425,10 +442,11 @@
-       if (cachePtr != sharedPtr &&
-              cachePtr->buckets[bucket].numFree > bucketInfo[bucket].maxBlocks) {
-          PutBlocks(cachePtr, bucket, bucketInfo[bucket].numMove);
-       }
-   }
-  +#endif
-   
-   /*
-    ,*----------------------------------------------------------------------
-    ,*
-    ,* TclpRealloc --
-  @@ -441,11 +459,19 @@
-    ,* Side effects:
-    ,*	Previous memory, if any, may be freed.
-    ,*
-    ,*----------------------------------------------------------------------
-    ,*/
-  -
-  +#if defined(SYSTEM_MALLOC)
-  +char *
-  +TclpRealloc(
-  +    char *oldPtr,              /* Pointer to allocated block. */
-  +    unsigned int numBytes)     /* New size of memory. */
-  +{
-  +    return realloc(oldPtr, numBytes);
-  +}
-  +#else
-   char *
-   TclpRealloc(
-       char *ptr,
-       unsigned int reqSize)
-   {
-  @@ -519,10 +545,11 @@
-          memcpy(newPtr, ptr, reqSize);
-          TclpFree(ptr);
-       }
-       return newPtr;
-   }
-  +#endif
-   
-   /*
-    ,*----------------------------------------------------------------------
-    ,*
-    ,* TclThreadAllocObj --
-
-
-  EOF
-      echo "patching Tcl with SYSTEM malloc patch ..."
-      patch -p0 < tcl86-system-malloc.patch
-      echo "patching Tcl with SYSTEM malloc patch DONE"
-      cd ..
-  fi
-
-  cd tcl${version_tcl}/unix
-  ./configure --enable-threads --prefix=${ns_install_dir}
-  #./configure --enable-threads --prefix=${ns_install_dir} --with-naviserver=${ns_install_dir}
-  ${make}
-  ${make} install
-
-  # Make sure, we have a tclsh in ns/bin
-  if [ -f ${ns_install_dir}/bin/tclsh ] ; then
-      rm ${ns_install_dir}/bin/tclsh
-  fi
-  source ${ns_install_dir}/lib/tclConfig.sh
-  ln -sf ${ns_install_dir}/bin/tclsh${TCL_VERSION} ${ns_install_dir}/bin/tclsh
-
-  cd ../..
-
-  echo "------------------------ Installing Tcllib ------------------------------"
-
-  ${tar} xvfj ${tcllib_dirname}-${version_tcllib}.tar.bz2
-  cd ${tcllib_dirname}-${version_tcllib}
-  ./configure --prefix=${ns_install_dir}
-  ${make} install
-  cd ..
-
-  echo "------------------------ Installing NaviServer ---------------------------"
-
-  cd ${build_dir}
-
-  if [ ! ${version_ns} = "HEAD" ] ; then
-      ${tar} zxvf naviserver-${version_ns}.tar.gz
-      cd naviserver-${version_ns}
-      ./configure --with-tcl=${ns_install_dir}/lib --prefix=${ns_install_dir}
-  else
-      cd naviserver
-      if [ ! -f naviserver/configure ] ; then
-          bash autogen.sh --enable-threads --with-tcl=${ns_install_dir}/lib --prefix=${ns_install_dir}
-      else
-          ./configure --enable-threads --with-tcl=${ns_install_dir}/lib --prefix=${ns_install_dir}
-      fi
-  fi
-  ${make}
-
-  if [ ${version_ns} = "HEAD" ] ; then
-      ${make} "DTPLITE=${ns_install_dir}/bin/tclsh $ns_install_dir/bin/dtplite" build-doc
-  fi
-  ${make} install
-  cd ..
-
-  if [ $with_postgres_driver = "1" ] ; then
-
-      echo "------------------------ Installing Modules/nsdbpg ----------------------"
-      cd ${build_dir}
-      if [ ! ${version_modules} = "HEAD" ] ; then
-          ${tar} zxvf naviserver-${version_modules}-modules.tar.gz
-      fi
-      cd modules/nsdbpg
-      ${make} PGLIB=${pg_lib} PGINCLUDE=${pg_incl} NAVISERVER=${ns_install_dir}
-      ${make} NAVISERVER=${ns_install_dir} install
-      cd ../..
-  fi
-
-  echo "------------------------ Installing Tcl Thread library -----------------------"
-
-  ${tar} xfz thread${version_thread}.tar.gz
-  cd thread${version_thread}/unix/
-  ../configure --enable-threads --prefix=${ns_install_dir} --exec-prefix=${ns_install_dir} --with-naviserver=${ns_install_dir} --with-tcl=${ns_install_dir}/lib
-  make
-  ${make} install
-  cd ../..
-
-  if [ $with_mongo = "1" ] ; then
-      echo "------------------------ MongoDB-driver ----------------------------------"
-
-      cd mongo-c-driver
-      cmake .
-      ${make}
-      ${make} install
-      if [ $debian = "1" ] ; then
-          ldconfig -v
-      fi
-      if [ $redhat = "1" ] ; then
-          ldconfig -v
-      fi
-      cd ..
-  fi
-
-  echo "------------------------ Installing XOTcl 2.* (with_mongo $with_mongo) -----------------"
-
-  if [ ! ${version_xotcl} = "HEAD" ] ; then
-      ${tar} xvfz nsf${version_xotcl}.tar.gz
-      cd nsf${version_xotcl}
-  else
-      cd nsf
-  fi
-  #export CC=gcc
-
-  if [ $with_mongo = "1" ] ; then
-      echo "------------------------ WITH MONGO"
-
-      ./configure --enable-threads --enable-symbols \
-                  --prefix=${ns_install_dir} --exec-prefix=${ns_install_dir} --with-tcl=${ns_install_dir}/lib \
-                  --with-nsf=../../ \
-                  --with-mongoc=/usr/local/include/libmongoc-1.0/,/usr/local/lib/ \
-                  --with-bson=/usr/local/include/libbson-1.0,/usr/local/lib/
-  else
-      ./configure --enable-threads --enable-symbols \
-                  --prefix=${ns_install_dir} --exec-prefix=${ns_install_dir} --with-tcl=${ns_install_dir}/lib
-  fi
-
-  ${make}
-  ${make} install
-  cd ..
-
-  echo "------------------------ Installing tDOM --------------------------------"
-
-  if [ $version_tdom = "GIT" ] ; then
-      cd tdom
-      if [ ! -f "${version_tdom_git}" ] ; then
-          git checkout "${version_tdom_git}"
-          echo > "${version_tdom_git}"
-      fi
-      cd unix
-  else
-      #${tar} xfz tDOM-${version_tdom}.tgz
-      # if tdom version 0.9.2
-      if [ -d "${tdom_base}-src" ] ; then
-          cd ${tdom_base}-src/unix
-      else
-          cd ${tdom_base}/unix
-      fi
-  fi
-  ../configure --enable-threads --disable-tdomalloc --prefix=${ns_install_dir} --exec-prefix=${ns_install_dir} --with-tcl=${ns_install_dir}/lib
-  ${make} install
-  cd ../..
-
-  echo "------------------------ Set permissions --------------------------------"
-
-  # set up minimal permissions in ${ns_install_dir}
-  chgrp -R ${ns_group} ${ns_install_dir}
-  chmod -R g+w ${ns_install_dir}
-
-  echo "
-
-  Congratulations, you have installed NaviServer.
-
-  You can now run plain NaviServer by typing the following command:
-
-    sudo ${ns_install_dir}/bin/nsd -f -u ${ns_user} -g ${ns_group} -t ${ns_install_dir}/conf/nsd-config.tcl
-
-  As a next step, you need to configure the server according to your needs,
-  or you might want to use the server with OpenACS (search for /install-oacs.sh).
-  Consult as a reference the alternate configuration files in ${ns_install_dir}/conf/
-  "
-#+end_src
 ** builds/env-vars.sh :code:
 :PROPERTIES:
 :CUSTOM_ID: builds-env-vars-sh
@@ -2086,15 +1004,14 @@ set ::env(LANG) en_US.UTF-8
 #+begin_src sh
   set -a; source ./VERSIONS ; set +a;
 
-  IMAGE="${IMAGE:-oupfiz5/naviserver-s6:${NS_IMAGE_TAG}}"
+  IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
 
   docker run -itd \
          --restart always \
-         --name=naviserver-s6 \
+         --name="${CONTAINER_NAME}" \
          -p 127.0.0.1:8090:8080 \
-         ${IMAGE}
+         "${IMAGE}"
 #+end_src
-       --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf,destination=/usr/local/ns/conf \
 * Tests :test:noexport:
 :PROPERTIES:
 :header-args:bats+:   :tangle (concat (file-name-directory (mapconcat 'identity (split-string  buffer-file-name "org/") "")) "/tests/" (nth 4 (org-heading-components)) )
@@ -2110,18 +1027,6 @@ set ::env(LANG) en_US.UTF-8
 load '.bats-battery/bats-assert/load.bash'
 load '.bats-battery/bats-file/load.bash'
 load '.bats-battery/bats-support/load.bash'
-#+end_src
-
-** common_conf.bash :test:
-:PROPERTIES:
-:CUSTOM_ID: common-conf-bash
-:END:
-#+begin_src sh :shebang "" :results output pp :noweb strip-export :tangle-mode (identity #o644)
-  # * Common variables
-  IMG='naviserver-s6'
-  export IMAGE="${IMAGE:-oupfiz5/$IMG:4.99.23}"
-  export CONTAINER_NAME="${CONTAINER_NAME:-$IMG}"
-  export IMAGE="${IMAGE:-oupfiz5/$IMG:4.99.23}"
 #+end_src
 
 ** 01.shellchecks.bats :test:
@@ -2168,16 +1073,6 @@ load '.bats-battery/bats-support/load.bash'
         assert_success
   }
 
-  @test "Check Dockerfile.multisteps" {
-        run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile.multisteps
-        assert_success
-  }
-
-  @test "Check Dockerfile.s6.multisteps" {
-        run docker run --rm -i -v "${PWD}/../src":/work --workdir=/work  hadolint/hadolint hadolint -f json Dockerfile.s6.multisteps
-        assert_success
-  }
-
 #+end_src
 
 ** 03.docker_image_check.bats :test:
@@ -2188,7 +1083,7 @@ load '.bats-battery/bats-support/load.bash'
 #+begin_src bats :results output pp :noweb strip-export
 
   setup() {
-        . ./common_conf.bash
+        . ../src/VERSIONS
 
         VERSION=$(
         curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
@@ -2209,10 +1104,6 @@ load '.bats-battery/bats-support/load.bash'
     }
 #+end_src
 
-#+RESULTS:
-: 1..1
-: ok 1 Check docker image
-
 ** 04.container_check.bats :test:
 :PROPERTIES:
 :CUSTOM_ID: 04-container-check-bats
@@ -2220,7 +1111,7 @@ load '.bats-battery/bats-support/load.bash'
 #+begin_src bats :results output pp :noweb strip-export
 
   setup() {
-      . ./common_conf.bash
+      . ../src/VERSIONS
   }
 
   @test "Verify container run" {
@@ -2376,12 +1267,3 @@ CIS-DI-0001
 
     exit $?
 #+end_src
-
-* Local hooks :noexport:
-:PROPERTIES:
-:CUSTOM_ID: local-hooks
-:END:
-
-# Local Variables:
-#after-save-hook: (lambda nil (when (org-md-export-to-markdown) (rename-file "core.md" (concat (file-name-directory (mapconcat 'identity (split-string  buffer-file-name "org/") "")) "/" "Readme.md" )  t )))
-# End:

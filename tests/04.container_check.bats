@@ -2,7 +2,7 @@
 load './helpers.bash'
 
 setup() {
-    . ./common_conf.bash
+    . ../src/VERSIONS
 }
 
 @test "Verify container run" {

@@ -33,10 +33,7 @@ on:
 
 # * Environments
 env:
-  CONTAINER_NAME: "naviserver-s6"
-  IMAGE_NAME: "naviserver-s6"
   IMAGE_TAG: "${{ github.sha }}"
-  REPOSITORY: "oupfiz5"
 
 # * Jobs
 jobs:
@@ -59,37 +56,11 @@ jobs:
           cd ${GITHUB_WORKSPACE}/tests
           .bats-battery/bats-core/bin/bats 02.dockerfile_check.bats
 
-      - name: Naviserver+S6. Build. Check image and container.
-        run: |
-          echo "::group::Build image"
-          export CONTAINER_NAME="naviserver-s6"
-          export DOCKERFILE="Dockerfile.s6.multisteps"
-          export IMAGE_NAME="naviserver-s6"
-          export IMAGE_TAG="${{ github.sha }}"
-          export REPOSITORY="oupfiz5"
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-          cd ${GITHUB_WORKSPACE}/src/hook
-          ./build.sh
-          echo "::endgroup::"
-
-          echo "::group::Check image and container"
-          cd ${GITHUB_WORKSPACE}/tests
-          echo "Check docker image (dockle)"
-          .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-          echo "Check docker container"
-          .bats-battery/bats-core/bin/bats 04.container_check.bats
-          echo "::endgroup::"
-
       - name: Naviserver. Build. Check image and container.
         run: |
           echo "::group::Build image"
-          export CONTAINER_NAME="naviserver"
-          export DOCKERFILE="Dockerfile.multisteps"
-          export IMAGE_NAME="naviserver"
-          export IMAGE_TAG="${{ github.sha }}"
-          export REPOSITORY="oupfiz5"
-          export IMAGE="${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
-
+          set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
+          export IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
           echo "Build image"
           cd ${GITHUB_WORKSPACE}/src/hook
           ./build.sh
