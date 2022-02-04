@@ -1,5 +1,9 @@
 #!/bin/bash
 # shellcheck shell=bash
+
+# shellcheck disable=SC1091
+. /VERSIONS
+
 sh /builds/tcl-build.sh
 sh /builds/tcllib-build.sh
 sh /builds/ns-build.sh
