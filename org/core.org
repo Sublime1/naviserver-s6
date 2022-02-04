@@ -267,13 +267,27 @@ docker exec -it naviserver-s6 /bin/bash
 :CUSTOM_ID: versions
 :END:
 #+begin_src sh :shebang ""
-  CONTAINER_NAME='naviserver-s6'
-  NS_IMAGE_TAG='4.99.23'
-  IMAGE_NAME='naviserver-s6'
-  IMAGE_REPOSITORY='oupfiz5'
-  IMAGE_TAG="${NS_IMAGE_TAG}"
-  TCL_BUILD_IMAGE_TAG='22.01'
-  UBUNTU_TAG='20.04'
+  # * Version
+  NS_VERSION="${NS_VERSION:-4.99.23}"
+  NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.23}"
+  RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.1}"
+  TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
+  THREAD_VERSION="${THREAD_VERSION:-2.8.6}"
+  TCL_VERSION="${TCL_VERSION:-8.6.11}"
+  TCLLIB_VERSION="${TCLLIB_VERSION:-1.20}"
+  XOTCL_VERSION="${XOTCL_VERSION:-2.3.0}"
+
+  CONTAINER_NAME="${CONTAINER_NAME:-naviserver-s6}"
+  NS_IMAGE_TAG="${NS_IMAGE_TAG:-4.99.23}"
+  IMAGE_NAME="${IMAGE_NAME:-naviserver-s6}"
+  IMAGE_REPOSITORY="${IMAGE_REPOSITORY:-oupfiz5}"
+  IMAGE_TAG="${IMAGE_TAG:-${NS_IMAGE_TAG}}"
+  TCL_BUILD_IMAGE_REPOSITORY="${TCL_BUILD_IMAGE_REPOSITORY:-oupfiz5}"
+  TCL_BUILD_IMAGE_NAME="${TCL_BUILD_IMAGE_NAME:-tcl-build}"
+  TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
+  UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY:-oupfiz5}"
+  UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME:-ubuntu-s6}"
+  UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG:-20.04-3.0.0.2}"
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
@@ -469,21 +483,27 @@ docker exec -it naviserver-s6 /bin/bash
 :CUSTOM_ID: dockerfile
 :END:
 #+begin_src sh :shebang ""
-  # * Build Naviserver
-  ARG TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
-    FROM oupfiz5/tcl-build:${TCL_BUILD_IMAGE_TAG} as build
+  # * Arguments
+  ARG \
+      NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+      NS_VERSION="${NS_VERSION}" \
+      RL_JSON_VERSION="${RL_JSON_VERSION}" \
+      TCLLIB_VERSION="${TCLLIB_VERSION}" \
+      TCL_BUILD_IMAGE_NAME="${TCL_BUILD_IMAGE_NAME}" \
+      TCL_BUILD_IMAGE_REPOSITORY="${TCL_BUILD_IMAGE_REPOSITORY}" \
+      TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG}" \
+      TCL_VERSION="${TCL_VERSION}" \
+      TDOM_VERSION="${TDOM_VERSION}" \
+      THREAD_VERSION="${THREAD_VERSION}" \
+      UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
+      UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
+      UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
+      XOTCL_VERSION="${XOTCL_VERSION}"
 
-  # ** Args
-  ARG NS_VERSION \
-      NS_MODULES_VERSION \
-      RL_JSON_VERSION \
-      TCLLIB_VERSION \
-      TCL_VERSION \
-      TDOM_VERSION \
-      THREAD_VERSION \
-      XOTCL_VERSION
+  # * Build software
+  FROM ${TCL_BUILD_IMAGE_REPOSITORY}/${TCL_BUILD_IMAGE_NAME}:${TCL_BUILD_IMAGE_TAG} as build
 
-  # ** Environments
+  # ** Environmen
   ENV NS_VERSION="${NS_VERSION}" \
       NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
       RL_JSON_VERSION_VERSION="${RL_JSON_VERSION_VERSION}" \
@@ -500,22 +520,9 @@ docker exec -it naviserver-s6 /bin/bash
   RUN  /bin/bash /builds/all-build.sh
 
   # * From
-  ARG S6_UBUNTU_TAG="${S6_UBUNTU_TAG:-20.04-3.0.0.2}"
-    FROM oupfiz5/ubuntu-s6:20.04-3.0.0.2
+  FROM ${UBUNTU_IMAGE_REPOSITORY}/${UBUNTU_IMAGE_NAME}:${UBUNTU_IMAGE_TAG}
 
-  # ** Arguments
-  ARG BUILD_DATE \
-      VERSION \
-      NS_VERSION \
-      NS_MODULES_VERSION \
-      RL_JSON_VERSION \
-      TCLLIB_VERSION \
-      TCL_VERSION \
-      TDOM_VERSION \
-      THREAD_VERSION \
-      XOTCL_VERSION
-
-  # ** Copy Naviserver
+  # ** Copy naviserver
   WORKDIR /
   COPY --from=build /usr/local/ns /usr/local/ns/
 
@@ -585,27 +592,33 @@ docker exec -it naviserver-s6 /bin/bash
 :CUSTOM_ID: hook-build-sh
 :END:
 #+begin_src sh
-    # shellcheck disable=SC1091
-    set -a; source ../VERSIONS ; set +a;
-    source ../builds/env-vars.sh
+  # shellcheck disable=SC1091
+  set -a; source ../VERSIONS ; set +a;
+  source ../builds/env-vars.sh
 
-    IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
-    DOCKERFILE="${DOCKERFILE:-Dockerfile}"
+  IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+  DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
-    docker build --no-cache \
-           --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-           --build-arg VERSION="${NS_IMAGE_TAG}" \
-           --build-arg NS_VERSION="${NS_VERSION}" \
-           --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
-           --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
-           --build-arg TCLLIB_VERSION="${TCLLIB_VERSION}" \
-           --build-arg TCL_VERSION="${TCL_VERSION}" \
-           --build-arg TDOM_VERSION="${TDOM_VERSION}" \
-           --build-arg THREAD_VERSION="${THREAD_VERSION}" \
-           --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
-           -t "${IMAGE}" \
-           -f ../"${DOCKERFILE}" \
-           ../.
+  docker build --no-cache \
+         --build-arg UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
+         --build-arg UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
+         --build-arg UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
+         --build-arg TCL_BUILD_IMAGE_REPOSITORY="${TCL_BUILD_IMAGE_REPOSITORY}" \
+         --build-arg TCL_BUILD_IMAGE_NAME="${TCL_BUILD_IMAGE_NAME}" \
+         --build-arg TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG}" \
+         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+         --build-arg VERSION="${NS_IMAGE_TAG}" \
+         --build-arg NS_VERSION="${NS_VERSION}" \
+         --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+         --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
+         --build-arg TCLLIB_VERSION="${TCLLIB_VERSION}" \
+         --build-arg TCL_VERSION="${TCL_VERSION}" \
+         --build-arg TDOM_VERSION="${TDOM_VERSION}" \
+         --build-arg THREAD_VERSION="${THREAD_VERSION}" \
+         --build-arg XOTCL_VERSION="${XOTCL_VERSION}" \
+         -t "${IMAGE}" \
+         -f ../"${DOCKERFILE}" \
+         ../.
 #+end_src
 ** hook/push.sh :code:
 :PROPERTIES:
@@ -958,16 +971,6 @@ set ::env(LANG) en_US.UTF-8
   # shellcheck shell=bash
   export PREFIX="${PREFIX:-/usr/local/ns}"
 
-  # * Versions
-  export NS_VERSION="${NS_VERSION:-4.99.23}"
-  export NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.23}"
-  export RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.1}"
-  export TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
-  export THREAD_VERSION="${THREAD_VERSION:-2.8.6}"
-  export TCL_VERSION="${TCL_VERSION:-8.6.11}"
-  export TCLLIB_VERSION="${TCLLIB_VERSION:-1.20}"
-  export XOTCL_VERSION="${XOTCL_VERSION:-2.3.0}"
-
   # * Options
   export WGET_OPTIONS="${WGET_OPTIONS:-""}"
 
@@ -984,17 +987,21 @@ set ::env(LANG) en_US.UTF-8
 :CUSTOM_ID: builds-all-build-sh
 :END:
 #+begin_src sh
-  # shellcheck shell=bash
-  sh /builds/tcl-build.sh
-  sh /builds/tcllib-build.sh
-  sh /builds/ns-build.sh
-  sh /builds/ns-modules-build-nsdbpg.sh
-  sh /builds/ns-modules-build-nsstats.sh
-  sh /builds/ns-modules-build-nsconf.sh
-  sh /builds/thread-build.sh
-  sh /builds/xotcl-build.sh
-  sh /builds/tdom-build.sh
-  sh /builds/rl_json-build.sh
+    # shellcheck shell=bash
+
+    # shellcheck disable=SC1091
+    . /VERSIONS
+
+    sh /builds/tcl-build.sh
+    sh /builds/tcllib-build.sh
+    sh /builds/ns-build.sh
+    sh /builds/ns-modules-build-nsdbpg.sh
+    sh /builds/ns-modules-build-nsstats.sh
+    sh /builds/ns-modules-build-nsconf.sh
+    sh /builds/thread-build.sh
+    sh /builds/xotcl-build.sh
+    sh /builds/tdom-build.sh
+    sh /builds/rl_json-build.sh
 #+end_src
 ** start.sh :code:
 :PROPERTIES:
@@ -1084,6 +1091,7 @@ load '.bats-battery/bats-support/load.bash'
 
   setup() {
         . ../src/VERSIONS
+        IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
 
         VERSION=$(
         curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
@@ -1112,6 +1120,7 @@ load '.bats-battery/bats-support/load.bash'
 
   setup() {
       . ../src/VERSIONS
+        IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
   }
 
   @test "Verify container run" {

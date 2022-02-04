@@ -3,6 +3,7 @@ load './helpers.bash'
 
 setup() {
       . ../src/VERSIONS
+      IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
 
       VERSION=$(
       curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
