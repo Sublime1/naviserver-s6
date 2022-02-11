@@ -14,7 +14,6 @@ docker build --no-cache \
        --build-arg TCL_BUILD_IMAGE_NAME="${TCL_BUILD_IMAGE_NAME}" \
        --build-arg TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG}" \
        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-       --build-arg NS_IMAGE_TAG="${NS_IMAGE_TAG}" \
        --build-arg NS_VERSION="${NS_VERSION}" \
        --build-arg NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
        --build-arg RL_JSON_VERSION="${RL_JSON_VERSION}" \
