@@ -287,7 +287,7 @@ docker exec -it naviserver-s6 /bin/bash
   TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.01}"
   UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY:-oupfiz5}"
   UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME:-ubuntu-s6}"
-  UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG:-20.04-3.0.0.2}"
+  UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG:-20.04-3.0.0.2-2}"
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
@@ -1048,6 +1048,19 @@ set ::env(LANG) en_US.UTF-8
          --name="${CONTAINER_NAME}" \
          -p 127.0.0.1:8090:8080 \
          "${IMAGE}"
+#+end_src
+** stop.sh :code:
+:PROPERTIES:
+:CUSTOM_ID: stop-sh
+:END:
+#+name: stop.sh
+#+begin_src sh
+  set -a; source ./VERSIONS ; set +a;
+
+  IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
+
+  docker container stop "${CONTAINER_NAME}"
+  docker container rm "${CONTAINER_NAME}"
 #+end_src
 * Tests :test:noexport:
 :PROPERTIES:
