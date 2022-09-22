@@ -78,7 +78,7 @@ They are using for testing and scanning:
 :CUSTOM_ID: download-from-dockerhub
 :END:
 #+begin_src sh :tangle no :noweb yes
-   docker pull oupfiz5/naviserver-s6:4.99.23
+   docker pull oupfiz5/naviserver-s6:4.99.24
 #+end_src
 ** Build from chiselapp (fossil)
 :PROPERTIES:
@@ -93,7 +93,7 @@ fossil open ../naviserver-s6.fossil
 
 Build image using multi steps  (by means of docker from [[https://hub.docker.com/repository/docker/oupfiz5/tcl-build][oupfiz5/tcl-build]]):
 #+begin_src sh :tangle no :noweb yes
-docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
+docker build -t oupfiz5/naviserver-s6:4.99.24 -f ./Dockerfile .
 #+end_src
 ** Build from github
 :PROPERTIES:
@@ -108,7 +108,7 @@ docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
 
 Build image using multi steps  (by means of docker from [[https://hub.docker.com/repository/docker/oupfiz5/tcl-build][oupfiz5/tcl-build]]):
 #+begin_src sh :tangle no :noweb yes
-docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
+docker build -t oupfiz5/naviserver-s6:4.99.24 -f ./Dockerfile .
 #+end_src
 ** Configuration
 :PROPERTIES:
@@ -123,19 +123,19 @@ docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
  |-------------------+---------+----------------------------------------|
  | BUILD_DATE        |    none | Set build date for label               |
  |-------------------+---------+----------------------------------------|
- | NS_VERSION        | 4.99.23 | Define version for Naviserver-S6          |
+ | NS_VERSION        | 4.99.24 | Define version for Naviserver-S6          |
  |-------------------+---------+----------------------------------------|
- | NS_MODULE_VERSION | 4.99.23 | Define version for Naviserver-S6  modules |
+ | NS_MODULE_VERSION | 4.99.24 | Define version for Naviserver-S6  modules |
  |-------------------+---------+----------------------------------------|
- | TCL_VERSION       |  8.6.11 | Define version for  tcl                |
+ | TCL_VERSION       |  8.6.12 | Define version for  tcl                |
  |-------------------+---------+----------------------------------------|
- | TCLLIB_VERSION    |  1.1.20 | Define version for  tcllib             |
+ | TCLLIB_VERSION    |  1.1.21 | Define version for  tcllib             |
  |-------------------+---------+----------------------------------------|
  | TDOM_VERSION      |   0.9.1 | Define version for tdom                |
  |-------------------+---------+----------------------------------------|
  | RL_JSON_VERSION=  |  0.11.1 | Define version for rl_json             |
  |-------------------+---------+----------------------------------------|
- | XOTCL_VERSION     |   2.3.0 | Define version for xotcl               |
+ | XOTCL_VERSION     |   2.4.0 | Define version for xotcl               |
  |-------------------+---------+----------------------------------------|
 *** Example of build
 :PROPERTIES:
@@ -144,9 +144,9 @@ docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
 #+begin_src sh :tangle no :noweb yes
  docker build --no-cache \
          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-         --build-arg NS_VERSION='4.99.23' \
-         --build-arg TCL_VERSION='8.6.11' \
-         -t oupfiz5/naviserver-s6:4.99.23 \
+         --build-arg NS_VERSION='4.99.24' \
+         --build-arg TCL_VERSION='8.6.12' \
+         -t oupfiz5/naviserver-s6:4.99.24 \
          -f ../Dockerfile \
           ../.
 #+END_SRC
@@ -179,7 +179,7 @@ docker run -itd \
        --name=naviserver-s6-s6 \
        --env 'TZ=Europe/Moscow' \
        -p 127.0.0.1:8090:8080 \
-       oupfiz5/naviserver-s6:4.99.23
+       oupfiz5/naviserver-s6:4.99.24
 #+END_SRC
 
 ** HTTP listen port
@@ -193,7 +193,7 @@ docker run -itd \
        --restart always \
        --name=naviserver-s6 \
        -p 127.0.0.1:18090:8080 \
-       oupfiz5/naviserver-s6:4.99.23
+       oupfiz5/naviserver-s6:4.99.24
 #+END_SRC
 ** Configuration file
 :PROPERTIES:
@@ -209,7 +209,7 @@ docker run -itd \
        --name=naviserver  \
        -p 127.0.0.1:8090:8080 \
        --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf/test,destination=/usr/local/ns/conf \
-       oupfiz5/naviserver:4.99.23
+       oupfiz5/naviserver:4.99.24
   #+END_SRC
 * Quickstart
 :PROPERTIES:
@@ -221,7 +221,7 @@ docker run -itd \
        --restart always \
        --name=naviserver-s6 \
        -p 127.0.0.1:8090:8080 \
-       oupfiz5/naviserver-s6:4.99.23
+       oupfiz5/naviserver-s6:4.99.24
 #+END_SRC
 
 Start Naviserver using script =start.sh=:
@@ -268,26 +268,26 @@ docker exec -it naviserver-s6 /bin/bash
 :END:
 #+begin_src sh :shebang ""
   # * Version
-  NS_VERSION="${NS_VERSION:-4.99.23}"
-  NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.23}"
-  RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.1}"
+  NS_VERSION="${NS_VERSION:-4.99.24}"
+  NS_MODULES_VERSION="${NS_MODULES_VERSION:-4.99.24}"
+  RL_JSON_VERSION="${RL_JSON_VERSION:-0.11.2}"
   TDOM_VERSION="${TDOM_VERSION:-0.9.1}"
-  THREAD_VERSION="${THREAD_VERSION:-2.8.6}"
-  TCL_VERSION="${TCL_VERSION:-8.6.11}"
-  TCLLIB_VERSION="${TCLLIB_VERSION:-1.20}"
-  XOTCL_VERSION="${XOTCL_VERSION:-2.3.0}"
+  THREAD_VERSION="${THREAD_VERSION:-2.8.7}"
+  TCL_VERSION="${TCL_VERSION:-8.6.12}"
+  TCLLIB_VERSION="${TCLLIB_VERSION:-1.21}"
+  XOTCL_VERSION="${XOTCL_VERSION:-2.4.0}"
 
   CONTAINER_NAME="${CONTAINER_NAME:-naviserver-s6}"
-  NS_IMAGE_TAG="${NS_IMAGE_TAG:-4.99.23}"
+  NS_IMAGE_TAG="${NS_IMAGE_TAG:-4.99.24}"
   IMAGE_NAME="${IMAGE_NAME:-naviserver-s6}"
   IMAGE_REPOSITORY="${IMAGE_REPOSITORY:-oupfiz5}"
   IMAGE_TAG="${IMAGE_TAG:-${NS_IMAGE_TAG}}"
   TCL_BUILD_IMAGE_REPOSITORY="${TCL_BUILD_IMAGE_REPOSITORY:-oupfiz5}"
   TCL_BUILD_IMAGE_NAME="${TCL_BUILD_IMAGE_NAME:-tcl-build}"
-  TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.03}"
+  TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG:-22.08}"
   UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY:-oupfiz5}"
   UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME:-ubuntu-s6}"
-  UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG:-20.04-3.1.0.1}"
+  UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG:-22.04-3.1.2.1}"
 #+end_src
 ** ../.fossil-settings/crlf-glob
 :PROPERTIES:
@@ -382,20 +382,6 @@ docker exec -it naviserver-s6 /bin/bash
             ./push.sh
             echo "::endgroup::"
 
-        - name: s6v2. Naviserver. Build and push image.
-          run: |
-            echo "::group::Prepare environment"
-            set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
-            export UBUNTU_IMAGE_TAG='20.04-2.2.0.3'
-            export IMAGE_TAG="${UBUNTU_IMAGE_TAG}-${NS_IMAGE_TAG}"
-            cd ${GITHUB_WORKSPACE}/src/hook
-            echo "::endgroup::"
-            echo "::group::Build image"
-            ./build.sh
-            echo "::endgroup::"
-            echo "::group::Push image"
-            ./push.sh
-            echo "::endgroup::"
 #+end_src
 ** ../.github/workflows/test.yaml :code:
 :PROPERTIES:
@@ -473,24 +459,6 @@ docker exec -it naviserver-s6 /bin/bash
             .bats-battery/bats-core/bin/bats 04.container_check.bats
             echo "::endgroup::"
 
-        - name: s6v2. Naviserver. Build. Check image and container.
-          run: |
-            echo "::group::Build image"
-            set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
-            export UBUNTU_IMAGE_TAG='20.04-2.2.0.3'
-            export IMAGE_TAG="${UBUNTU_IMAGE_TAG}-${NS_IMAGE_TAG}"
-            echo "Build image"
-            cd ${GITHUB_WORKSPACE}/src/hook
-            ./build.sh
-            echo "::endgroup::"
-
-            echo "::group::Check image and container"
-            cd ${GITHUB_WORKSPACE}/tests
-            echo "Check docker image (dockle)"
-            .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-            echo "Check docker container"
-            .bats-battery/bats-core/bin/bats 04.container_check.bats
-            echo "::endgroup::"
 #+end_src
 ** ../.github/.trigger_on_push :code:
 :PROPERTIES:
@@ -513,110 +481,112 @@ docker exec -it naviserver-s6 /bin/bash
 :CUSTOM_ID: dockerfile
 :END:
 #+begin_src sh :shebang ""
+  # syntax=docker/dockerfile:1.4
+
   # * Arguments
-  ARG \
-      NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
-      NS_VERSION="${NS_VERSION}" \
-      RL_JSON_VERSION="${RL_JSON_VERSION}" \
-      TCLLIB_VERSION="${TCLLIB_VERSION}" \
-      TCL_BUILD_IMAGE_NAME="${TCL_BUILD_IMAGE_NAME}" \
-      TCL_BUILD_IMAGE_REPOSITORY="${TCL_BUILD_IMAGE_REPOSITORY}" \
-      TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG}" \
-      TCL_VERSION="${TCL_VERSION}" \
-      TDOM_VERSION="${TDOM_VERSION}" \
-      THREAD_VERSION="${THREAD_VERSION}" \
-      UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
-      UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
-      UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
-      XOTCL_VERSION="${XOTCL_VERSION}" \
-      BUILD_DATE="${BUILD_DATE}"
+    ARG \
+        NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+        NS_VERSION="${NS_VERSION}" \
+        RL_JSON_VERSION="${RL_JSON_VERSION}" \
+        TCLLIB_VERSION="${TCLLIB_VERSION}" \
+        TCL_BUILD_IMAGE_NAME="${TCL_BUILD_IMAGE_NAME}" \
+        TCL_BUILD_IMAGE_REPOSITORY="${TCL_BUILD_IMAGE_REPOSITORY}" \
+        TCL_BUILD_IMAGE_TAG="${TCL_BUILD_IMAGE_TAG}" \
+        TCL_VERSION="${TCL_VERSION}" \
+        TDOM_VERSION="${TDOM_VERSION}" \
+        THREAD_VERSION="${THREAD_VERSION}" \
+        UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
+        UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
+        UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
+        XOTCL_VERSION="${XOTCL_VERSION}" \
+        BUILD_DATE="${BUILD_DATE}"
 
-  # * Build software
-  FROM ${TCL_BUILD_IMAGE_REPOSITORY}/${TCL_BUILD_IMAGE_NAME}:${TCL_BUILD_IMAGE_TAG} as build
+    # * Build software
+    FROM ${TCL_BUILD_IMAGE_REPOSITORY}/${TCL_BUILD_IMAGE_NAME}:${TCL_BUILD_IMAGE_TAG} as build
 
-  # ** Environmen
-  ENV NS_VERSION="${NS_VERSION}" \
-      NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
-      RL_JSON_VERSION_VERSION="${RL_JSON_VERSION_VERSION}" \
-      TCLLIB_VERSION="${TCLLIB_VERSION}" \
-      TCL_VERSION="${TCL_VERSION}" \
-      TDOM_VERSION="${TDOM_VERSION}" \
-      THREAD_VERSION="${THREAD_VERSION}" \
-      XOTCL_VERSION="${XOTCL_VERSION}"
+    # ** Environmen
+    ENV NS_VERSION="${NS_VERSION}" \
+        NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
+        RL_JSON_VERSION_VERSION="${RL_JSON_VERSION_VERSION}" \
+        TCLLIB_VERSION="${TCLLIB_VERSION}" \
+        TCL_VERSION="${TCL_VERSION}" \
+        TDOM_VERSION="${TDOM_VERSION}" \
+        THREAD_VERSION="${THREAD_VERSION}" \
+        XOTCL_VERSION="${XOTCL_VERSION}"
 
-  # ** Build
-  WORKDIR /
-  RUN mkdir /workspaces
-  COPY builds /builds
-  RUN  /bin/bash /builds/all-build.sh
+    # ** Build
+    WORKDIR /
+    RUN mkdir /workspaces
+    COPY builds /builds
+    RUN  /bin/bash /builds/all-build.sh
 
-  # * From
-  FROM ${UBUNTU_IMAGE_REPOSITORY}/${UBUNTU_IMAGE_NAME}:${UBUNTU_IMAGE_TAG}
+    # * From
+    FROM ${UBUNTU_IMAGE_REPOSITORY}/${UBUNTU_IMAGE_NAME}:${UBUNTU_IMAGE_TAG}
 
-  # ** Copy naviserver
-  WORKDIR /
-  COPY --from=build /usr/local/ns /usr/local/ns/
+    # ** Copy naviserver
+    WORKDIR /
+    COPY --from=build /usr/local/ns /usr/local/ns/
 
-  # ** Labels
-  # hadolint ignore=DL3048
-  LABEL \
-      maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
-      org.opencontainers.image.created="${BUILD_DATE}" \
-      org.opencontainers.image.authors="Oupfiz V (Five)" \
-      org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/home" \
-      org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/wiki" \
-      org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/brlist" \
-      org.opencontainers.image.version="0.0.1d" \
-      org.opencontainers.image.revision="" \
-      org.opencontainers.image.vendor="" \
-      org.opencontainers.image.licenses="" \
-      org.opencontainers.image.ref.name="" \
-      org.opencontainers.image.title="NaviServer on ubuntu base docker image using s6-overlay" \
-      org.opencontainers.image.description="NaviServer on ubuntu base docker image using s6-overlay" \
-      custom.package.version.naviserver="${NS_VERSION}" \
-      custom.package.version.naviserver_modules="${NS_MODULES_VERSION}" \
-      custom.package.version.rl_json_version="${RL_JSON_VERSION}" \
-      custom.package.version.tcl="${TCL_VERSION}" \
-      custom.package.version.tcllib="${TCLLIB_VERSION}" \
-      custom.package.version.tdom="${TDOM_VERSION}" \
-      custom.package.version.thread="${THREAD_VERSION}" \
-      custom.package.version.xotcl="${XOTCL_VERSION}"
+    # ** Labels
+    # hadolint ignore=DL3048
+    LABEL \
+        maintainer="Oupfiz V <oupfiz5@yandex.ru>" \
+        org.opencontainers.image.created="${BUILD_DATE}" \
+        org.opencontainers.image.authors="Oupfiz V (Five)" \
+        org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/home" \
+        org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/wiki" \
+        org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/brlist" \
+        org.opencontainers.image.version="0.0.2d" \
+        org.opencontainers.image.revision="" \
+        org.opencontainers.image.vendor="" \
+        org.opencontainers.image.licenses="" \
+        org.opencontainers.image.ref.name="" \
+        org.opencontainers.image.title="NaviServer on ubuntu base docker image using s6-overlay" \
+        org.opencontainers.image.description="NaviServer on ubuntu base docker image using s6-overlay" \
+        custom.package.version.naviserver="${NS_VERSION}" \
+        custom.package.version.naviserver_modules="${NS_MODULES_VERSION}" \
+        custom.package.version.rl_json_version="${RL_JSON_VERSION}" \
+        custom.package.version.tcl="${TCL_VERSION}" \
+        custom.package.version.tcllib="${TCLLIB_VERSION}" \
+        custom.package.version.tdom="${TDOM_VERSION}" \
+        custom.package.version.thread="${THREAD_VERSION}" \
+        custom.package.version.xotcl="${XOTCL_VERSION}"
 
-  # ** Run
-  # hadolint ignore=DL3008
-  RUN export LANG="en_US.UTF-8" \
-      && export LC_ALL="en_US.UTF-8" \
-      && apt-get update \
-      && export DEBIAN_FRONTEND=noninteractive \
-      && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev postgresql-client wget \
-      && locale-gen en_US.UTF-8 \
-      && update-locale LANG="en_US.UTF-8" \
-      && update-locale LC_ALL="en_US.UTF-8" \
-      && apt-get clean \
-      && apt-get auto-remove -y \
-      && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
-      && groupadd nsadmin \
-      && useradd -g nsadmin nsadmin \
-      && chown -R  nsadmin:nsadmin /usr/local/ns
+    # ** Run
+    # hadolint ignore=DL3008
+    RUN export LANG="en_US.UTF-8" \
+        && export LC_ALL="en_US.UTF-8" \
+        && apt-get update \
+        && export DEBIAN_FRONTEND=noninteractive \
+        && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev postgresql-client wget \
+        && locale-gen en_US.UTF-8 \
+        && update-locale LANG="en_US.UTF-8" \
+        && update-locale LC_ALL="en_US.UTF-8" \
+        && apt-get clean \
+        && apt-get auto-remove -y \
+        && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
+        && groupadd nsadmin \
+        && useradd -g nsadmin nsadmin \
+        && chown -R  nsadmin:nsadmin /usr/local/ns
 
-  # ** Copy s6 and naviserver configurations
-  COPY rootfs/etc /etc/
-  COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
+    # ** Copy s6 and naviserver configurations
+    COPY rootfs/etc /etc/
+    COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
 
-  # ** Expose
-  EXPOSE 8080
+    # ** Expose
+    EXPOSE 8080
 
-  # ** Environment
-  Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
+    # ** Environment
+    Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
 
-  # ** Workdir
-  WORKDIR /usr/local/ns
+    # ** Workdir
+    WORKDIR /usr/local/ns
 
-  # ** Entrypoint
-  ENTRYPOINT ["/init"]
+    # ** Entrypoint
+    ENTRYPOINT ["/init"]
 
-  # ** Cmd
-  CMD []
+    # ** Cmd
+    CMD []
 #+end_src
 ** hook/build.sh :code:
 :PROPERTIES:
@@ -630,7 +600,7 @@ docker exec -it naviserver-s6 /bin/bash
   IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
   DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
-  docker build --no-cache \
+  docker buildx build --no-cache \
          --build-arg UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
          --build-arg UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
          --build-arg UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
@@ -701,261 +671,291 @@ docker exec -it naviserver-s6 /bin/bash
 :END:
 #+name: rootfs/usr/local/ns/conf/ns-config.tcl
 #+begin_src tcl :shebang ""
-########################################################################
-# Sample config file for NaviServer
-########################################################################
+  ########################################################################
+  # Sample configuration file for NaviServer
+  ########################################################################
 
-#
-# Set the IP-address and port, on which the server listens:
-#
-set port 8080
-set address "0.0.0.0"  ;# one might use as well for IPv6: set address ::
+  #
+  # Set the IP-address and port, on which the server listens:
+  #
+  set port 8080
+  set address "0.0.0.0"  ;# one might use as well for IPv6: set address ::
 
-#
-# Get the "home" directory from the currently executing binary.
-# We could do alternatively:
-#    set home /usr/local/ns
-#
-set home [file dirname [file dirname [info nameofexecutable]]]
+  #
+  # Get the "home" directory from the currently executing binary.
+  # We could do alternatively:
+  #    set home /usr/local/ns
+  #
+  set home [file dirname [file dirname [info nameofexecutable]]]
 
 
-########################################################################
-# Global settings (for all servers)
-########################################################################
+  ########################################################################
+  # Global settings (for all servers)
+  ########################################################################
 
-ns_section "ns/parameters" {
-    ns_param    home                $home
-    ns_param    tcllibrary          tcl
-    #ns_param   tclinitlock         true     ;# default: false
-    ns_param    serverlog           error.log
-    #ns_param   pidfile             ${home}/logs/nsd.pid
-    #ns_param   logdebug            true     ;# default: false
-    #ns_param   logroll             false    ;# default: true
-    #ns_param	logrollfmt	    %Y-%m-%d ;# format appended to log file name
-    #ns_param   logusec             true     ;# add timestamps in microsecond (usec) resolution (default: false)
-    #ns_param   logusecdiff         true     ;# add timestamp diffs since in microsecond (usec) resolution (default: false)
-    #ns_param   sanitizelogfiles    2        ;# default: 2; 0: none, 1: full, 2: human-friendly
+  ns_section ns/parameters {
 
-    #ns_param   dbcloseonexit       off      ;# default: off; from nsdb
-    ns_param    jobsperthread       1000     ;# default: 0
-    #ns_param   jobtimeout          0s       ;# default: 5m
-    ns_param	joblogminduration   100s       ;# default: 1s
-    ns_param    schedsperthread     10       ;# default: 0
-    #ns_param	schedlogminduration 2s       ;# print warnings when scheduled job takes longer than that
-    ns_param    progressminsize     1MB      ;# default: 0
-    #ns_param   concurrentinterpcreate true  ;# default: false
-    #ns_param   listenbacklog       256      ;# default: 32; backlog for ns_socket commands
-    #ns_param   mutexlocktrace      true     ;# default false; print durations of long mutex calls to stderr
+      #
+      # General server settings
+      #
+      ns_param    home                $home
+      ns_param    tcllibrary          tcl
+      #ns_param   pidfile             ${home}/logs/nsd.pid
 
-    # Reject output operations on already closed connections (e.g. subsequent ns_return statements)
-    #ns_param   rejectalreadyclosedconn false ;# default: true
+      #ns_param   progressminsize     1MB      ;# default: 0
+      #ns_param   listenbacklog       256      ;# default: 32; backlog for ns_socket commands
 
-    # configure SMTP module
-    ns_param    smtphost            "localhost"
-    ns_param    smtpport            25
-    ns_param    smtptimeout         60
-    ns_param    smtplogmode         false
-    ns_param    smtpmsgid           false
-    ns_param    smtpmsgidhostname   ""
-    ns_param    smtpencodingmode    false
-    ns_param    smtpencoding        "utf-8"
-    ns_param    smtpauthmode        ""
-    ns_param    smtpauthuser        ""
-    ns_param    smtpauthpassword    ""
-}
+      # Reject output operations on already closed connections (e.g. subsequent ns_return statements)
+      #ns_param   rejectalreadyclosedconn false;# default: true
+      #ns_param   reverseproxymode    true     ;# running behind a reverse proxy server? (default: false
 
-ns_section "ns/threads" {
-    ns_param    stacksize           512kB
-}
+      #
+      # Tcl settings
+      #
+      #ns_param   tclinitlock         true     ;# default: false
+      #ns_param   concurrentinterpcreate false ;# default: true
+      #ns_param   mutexlocktrace      true     ;# default false; print durations of long mutex calls to stderr
 
-ns_section "ns/mimetypes" {
-    ns_param    default             text/plain
-    ns_param    noextension         text/plain
-}
+      #
+      # Log settings (systemlog aka error.log)
+      #
+      ns_param    serverlog           error.log
+      #ns_param   logdebug            true     ;# default: false
+      #ns_param   logroll             false    ;# default: true
+      #ns_param	logrollfmt          %Y-%m-%d ;# format appended to log filename
+      #ns_param   logsec              false    ;# add timestamps in second resolution (default: true)
+      #ns_param   logusec             true     ;# add timestamps in microsecond (usec) resolution (default: false)
+      #ns_param   logusecdiff         true     ;# add timestamp diffs since in microsecond (usec) resolution (default: false)
+      #ns_param   logthread           false    ;# add thread-info the log file lines (default: true)
+      #ns_param   sanitizelogfiles    1        ;# default: 2; 0: none, 1: full, 2: human-friendly
 
-ns_section "ns/fastpath" {
-    ns_param    cache               false      ;# default: false
-    ns_param    cachemaxsize        10MB       ;# default: 10MB
-    ns_param    cachemaxentry       8kB        ;# default: 8kB
-    ns_param    mmap                false      ;# default: false
-    ns_param    gzip_static         true       ;# check for static gzip; default: false
-    ns_param    gzip_refresh        true       ;# refresh stale .gz files on the fly using ::ns_gzipfile
-    ns_param    gzip_cmd            "/usr/bin/gzip -9"  ;# use for re-compressing
-    ns_param    brotli_static       true       ;# check for static brotli files; default: false
-    ns_param    brotli_refresh      true       ;# refresh stale .br files on the fly using ::ns_brotlifile
-    ns_param    brotli_cmd          "/usr/bin/brotli -f -Z"  ;# use for re-compressing
-    #ns_param   brotli_cmd          "/opt/local/bin/brotli -f -Z"  ;# use for re-compressing (macOS + ports)
-}
+      #
+      # Encoding settings
+      #
+      # ns_param	OutputCharset	utf-8
+      # ns_param	URLCharset	utf-8
+      ns_param formfallbackcharset iso8859-1 ;# retry with this charset in case of failures
 
-ns_section ns/servers {
-    ns_param default "My First NaviServer Instance"
-}
+      #
+      # Jobs setting
+      #
+      ns_param    jobsperthread       1000     ;# default: 0
+      #ns_param   jobtimeout          0s       ;# default: 5m
+      ns_param	joblogminduration   100s     ;# default: 1s
+      ns_param    schedsperthread     10       ;# default: 0
+      #ns_param	schedlogminduration 2s       ;# print warnings when scheduled job takes longer than that
 
-#
-# Global modules (for all servers)
-#
-ns_section "ns/modules" {
-    ns_param    nssock              nssock
-}
+      #ns_param   dbcloseonexit       off      ;# default: off; from nsdb
 
-ns_section "ns/module/nssock" {
-    ns_param    defaultserver            default
-    ns_param    port                     $port
-    ns_param    address                  $address     ;# Space separated list of IP addresses
-    #ns_param    hostname                [ns_info hostname]
-    ns_param    maxinput                 10MB         ;# default: 1MB, maximum size for inputs (uploads)
-    #ns_param   readahead                1MB          ;# default: 16384; size of readahead for requests
-    ns_param    backlog                  1024         ;# default: 256; backlog for listen operations
-    ns_param    acceptsize               10           ;# default: value of "backlog"; max number of accepted (but unqueued) requests
-    ns_param    closewait                0s           ;# default: 2s; timeout for close on socket
-    ns_param    maxqueuesize             1024         ;# default: 1024; maximum size of the queue
-    ns_param    keepwait		 5s	      ;# 5s, timeout for keep-alive
-    ns_param    keepalivemaxuploadsize	 0.5MB	      ;# 0, don't allow keep-alive for upload content larger than this
-    ns_param    keepalivemaxdownloadsize 1MB          ;# 0, don't allow keep-alive for download content larger than this
-    #
-    # TCP tuning
-    #
-    #ns_param  nodelay         false   ;# true; deactivate TCP_NODELAY if Nagle algorithm is wanted
-    #
-    # Spooling Threads
-    #
-    #ns_param   spoolerthreads		1	;# default: 0; number of upload spooler threads
-    ns_param    maxupload		1MB     ;# default: 0, when specified, spool uploads larger than this value to a temp file
-    ns_param    writerthreads		1	;# default: 0, number of writer threads
-    #ns_param   writersize		1MB	;# default: 1MB, use writer threads for files larger than this value
-    #ns_param   writerbufsize		8kB	;# default: 8kB, buffer size for writer threads
-    #ns_param   driverthreads           2	;# default: 1, number of driver threads (requires support of SO_REUSEPORT)
+      # configure SMTP module
+      ns_param    smtphost            "localhost"
+      ns_param    smtpport            25
+      ns_param    smtptimeout         60
+      ns_param    smtplogmode         false
+      ns_param    smtpmsgid           false
+      ns_param    smtpmsgidhostname   ""
+      ns_param    smtpencodingmode    false
+      ns_param    smtpencoding        "utf-8"
+      ns_param    smtpauthmode        ""
+      ns_param    smtpauthuser        ""
+      ns_param    smtpauthpassword    ""
+  }
 
-    # Extra driver-specific response header fields (probably for nsssl)
-    #ns_param   extraheaders  {Strict-Transport-Security "max-age=31536000; includeSubDomains"}
-}
+  ns_section ns/threads {
+      ns_param    stacksize           512kB
+  }
 
-#
-# The following section defines, which host names map to which
-# server. In our case for example, the host "localhost" is mapped to
-# the nsd server named "default".
-#
-ns_section ns/module/nssock/servers {
-    ns_param default    localhost
-    ns_param default    [ns_info hostname]
-}
+  ns_section ns/mimetypes {
+      ns_param    default             text/plain
+      ns_param    noextension         text/plain
+  }
 
-########################################################################
-#  Settings for the "default" server
-########################################################################
+  ns_section ns/fastpath {
+      #ns_param   cache               false      ;# default: false
+      #ns_param   cachemaxsize        10MB       ;# default: 10MB
+      #ns_param   cachemaxentry       8kB        ;# default: 8kB
+      #ns_param   mmap                false      ;# default: false
+      ns_param    gzip_static         true       ;# check for static gzip; default: false
+      ns_param    gzip_refresh        true       ;# refresh stale .gz files on the fly using ::ns_gzipfile
+      ns_param    gzip_cmd            "/usr/bin/gzip -9"  ;# use for re-compressing
+      ns_param    brotli_static       true       ;# check for static brotli files; default: false
+      ns_param    brotli_refresh      true       ;# refresh stale .br files on the fly using ::ns_brotlifile
+      ns_param    brotli_cmd          "/usr/bin/brotli -f -Z"  ;# use for re-compressing
+      #ns_param   brotli_cmd          "/opt/local/bin/brotli -f -Z"  ;# use for re-compressing (macOS + ports)
+  }
 
-ns_section "ns/server/default" {
-    ns_param    enabletclpages      true  ;# default: false
-    ns_param    checkmodifiedsince  false ;# default: true, check modified-since before returning files from cache. Disable for speedup
-    ns_param    connsperthread      1000  ;# default: 0; number of connections (requests) handled per thread
-    ns_param    minthreads          5     ;# default: 1; minimal number of connection threads
-    ns_param    maxthreads          100   ;# default: 10; maximal number of connection threads
-    ns_param    maxconnections      100   ;# default: 100; number of allocated connection structures
-    ns_param    rejectoverrun       true  ;# default: false; send 503 when thread pool queue overruns
-    ns_param    threadtimeout       2m    ;# default: 2m; timeout for idle threads
-    #ns_param   concurrentcreatethreshold 100 ;# default: 80; perform concurrent creates when queue is fully beyond this percentage
-    ;# 100 is a conservative value, disabling concurrent creates
-    #ns_param    connectionratelimit 200  ;# 0; limit rate per connection to this amount (KB/s); 0 means unlimited
-    #ns_param    poolratelimit       200  ;# 0; limit rate for pool to this amount (KB/s); 0 means unlimited
+  ns_section ns/servers {
+      ns_param default "My First NaviServer Instance"
+  }
 
-    # Extra server-specific response header fields
-    #ns_param   extraheaders  {Referrer-Policy "strict-origin"}
-}
+  #
+  # Global modules (for all servers)
+  #
+  ns_section ns/modules {
+      ns_param    nssock              nssock
+  }
 
-ns_section "ns/server/default/modules" {
-    ns_param    nscp                nscp
-    ns_param    nslog               nslog
-    ns_param    nscgi               nscgi
-}
+  ns_section ns/module/nssock {
+      ns_param    defaultserver            default
+      ns_param    port                     $port
+      ns_param    address                  $address     ;# Space separated list of IP addresses
+      #ns_param    hostname                [ns_info hostname]
+      ns_param    maxinput                 10MB         ;# default: 1MB, maximum size for inputs (uploads)
+      #ns_param   readahead                1MB          ;# default: 16384; size of readahead for requests
+      ns_param    backlog                  1024         ;# default: 256; backlog for listen operations
+      ns_param    acceptsize               10           ;# default: value of "backlog"; max number of accepted (but unqueued) requests
+      ns_param    closewait                0s           ;# default: 2s; timeout for close on socket
+      #ns_param   maxqueuesize             1024         ;# default: 1024; maximum size of the queue
+      #ns_param   keepwait                 5s           ;# 5s, timeout for keep-alive
+      ns_param    keepalivemaxuploadsize   0.5MB        ;# 0, don't allow keep-alive for upload content larger than this
+      ns_param    keepalivemaxdownloadsize 1MB          ;# 0, don't allow keep-alive for download content larger than this
+      #
+      # TCP tuning
+      #
+      #ns_param  nodelay         false   ;# true; deactivate TCP_NODELAY if Nagle algorithm is wanted
+      #
+      # Spooling Threads
+      #
+      #ns_param   spoolerthreads		1	;# default: 0; number of upload spooler threads
+      ns_param    maxupload		1MB     ;# default: 0, when specified, spool uploads larger than this value to a temp file
+      ns_param    writerthreads		1	;# default: 0, number of writer threads
+      #ns_param   writersize		1MB	;# default: 1MB, use writer threads for files larger than this value
+      #ns_param   writerbufsize		8kB	;# default: 8kB, buffer size for writer threads
+      #ns_param   driverthreads           2	;# default: 1, number of driver threads (requires support of SO_REUSEPORT)
 
-ns_section "ns/server/default/fastpath" {
-    ns_param    pagedir             pages
-    #ns_param   serverdir           ""
-    ns_param    directoryfile       "index.adp index.tcl index.html index.htm"
-    ns_param    directoryproc       _ns_dirlist
-    ns_param    directorylisting    fancy    ;# default: simple
-    #ns_param   directoryadp       dir.adp
-}
+      # Extra driver-specific response header fields (probably for nsssl)
+      #ns_param   extraheaders  {Strict-Transport-Security "max-age=31536000; includeSubDomains"}
+  }
 
-ns_section "ns/server/default/vhost" {
-    ns_param    enabled             false
-    ns_param    hostprefix          ""
-    ns_param    hosthashlevel       0
-    ns_param    stripport           true
-    ns_param    stripwww            true
-}
+  #
+  # The following section defines, which hostnames map to which
+  # server. In our case for example, the host "localhost" is mapped to
+  # the nsd server named "default".
+  #
+  ns_section ns/module/nssock/servers {
+      ns_param default    localhost
+      ns_param default    [ns_info hostname]
+  }
 
-ns_section "ns/server/default/adp" {
-    ns_param    map                 "/*.adp"
-    ns_param    enableexpire        false    ;# default: false; set "Expires: now" on all ADP's
-    #ns_param   enabledebug         true     ;# default: false
-    #ns_param   enabletclpages      true     ;# default: false
-    ns_param    singlescript        false    ;# default: false; collapse Tcl blocks to a single Tcl script
-    ns_param    cache               false    ;# default: false; enable ADP caching
-    #ns_param    cachesize           5MB
-    #ns_param    bufsize             1MB
-}
+  ########################################################################
+  #  Settings for the "default" server
+  ########################################################################
 
-ns_section "ns/server/default/tcl" {
-    ns_param    nsvbuckets          16       ;# default: 8
-    ns_param    library             modules/tcl
-    #
-    # Example for initcmds (to be executed, when this server is fully initialized).
-    #
-    #ns_param    initcmds {
-    #    ns_log notice "=== Hello World === server: [ns_info server] running"
-    #}
-}
+  ns_section ns/server/default {
+      ns_param    enabletclpages      true  ;# default: false
+      #ns_param   filterrwlocks       false ;# default: true
+      ns_param    checkmodifiedsince  false ;# default: true, check modified-since before returning files from cache. Disable for speedup
+      ns_param    connsperthread      1000  ;# default: 0; number of connections (requests) handled per thread
+      ns_param    minthreads          5     ;# default: 1; minimal number of connection threads
+      ns_param    maxthreads          100   ;# default: 10; maximal number of connection threads
+      #ns_param    maxconnections     100   ;# default: 100; number of allocated connection structures
+      ns_param    rejectoverrun       true  ;# default: false; send 503 when thread pool queue overruns
+      #ns_param   threadtimeout       2m    ;# default: 2m; timeout for idle connection threads
+      #ns_param   concurrentcreatethreshold 100 ;# default: 80; perform concurrent creates when queue is fully beyond this percentage
+      ;# 100 is a conservative value, disabling concurrent creates
+      #ns_param    connectionratelimit 200  ;# 0; limit rate per connection to this amount (KB/s); 0 means unlimited
+      #ns_param    poolratelimit       200  ;# 0; limit rate for pool to this amount (KB/s); 0 means unlimited
 
-ns_section "ns/server/default/module/nscgi" {
-    ns_param    map                 "GET  /cgi-bin $home/cgi-bin"
-    ns_param    map                 "POST /cgi-bin $home/cgi-bin"
-    ns_param    interps              CGIinterps
-    #ns_param   allowstaticresources true    ;# default false; serve static resources from cgi directories
-}
+      # Extra server-specific response header fields
+      #ns_param   extraheaders  {Referrer-Policy "strict-origin"}
+  }
 
-ns_section "ns/interps/CGIinterps" {
-    ns_param	.pl		    "/opt/local/bin/perl"
-    ns_param	.sh		    "/bin/bash"
-}
+  ns_section ns/server/default/modules {
+  #    ns_param    nscp                nscp
+      ns_param    nslog               nslog
+      ns_param    nscgi               nscgi
+  }
 
-ns_section "ns/server/default/module/nslog" {
-    #ns_param   file                access.log
-    #ns_param   rolllog             true     ;# default: true; should server log files automatically
-    #ns_param   rollonsignal        false    ;# default: false; perform roll on a sighup
-    #ns_param   rollhour            0        ;# default: 0; specify at which hour to roll
-    ns_param    maxbackup           7        ;# default: 10; max number of backup log files
-    #ns_param   rollfmt		    %Y-%m-%d-%H:%M	;# format appended to log file name
-    #ns_param   logpartialtimes     true     ;# default: false
-    #ns_param   logreqtime	    true     ;# default: false; include time to service the request
-    ns_param    logthreadname       true     ;# default: false; include thread name for linking with error.log
+  ns_section ns/server/default/fastpath {
+      #ns_param    pagedir             pages
+      #ns_param   serverdir           ""
+      #ns_param   directoryfile       "index.adp index.tcl index.html index.htm"
+      #ns_param   directoryproc       _ns_dirlist
+      ns_param    directorylisting    fancy    ;# default: simple
+      #ns_param   directoryadp       dir.adp
+  }
 
-    ns_param	masklogaddr         true    ;# false, mask IP address in log file for GDPR (like anonip IP anonymizer)
-    ns_param	maskipv4            255.255.255.0  ;# mask for IPv4 addresses
-    ns_param	maskipv6            ff:ff:ff:ff::  ;# mask for IPv6 addresses
-}
+  ns_section ns/server/default/vhost {
+      #ns_param    enabled             false
+      #ns_param    hostprefix          ""
+      #ns_param    hosthashlevel       0
+      #ns_param    stripport           true
+      #ns_param    stripwww            true
+  }
 
-ns_section "ns/server/default/module/nscp" {
-    ns_param   port     4080
-    ns_param   address  $address
-}
+  ns_section ns/server/default/adp {
+      ns_param    map                 "/*.adp"
+      #ns_param   enableexpire        false    ;# default: false; set "Expires: now" on all ADP's
+      #ns_param   enabledebug         true     ;# default: false
+      #ns_param   enabletclpages      true     ;# default: false
+      #ns_param   singlescript        false    ;# default: false; collapse Tcl blocks to a single Tcl script
+      #ns_param   cache               false    ;# default: false; enable ADP caching
+      #ns_param   cachesize           5MB
+      #ns_param   bufsize             1MB
+  }
 
-ns_section "ns/server/default/module/nscp/users" {
-    ns_param user "::"
-    # ns_param user "nsadmin:t2GqvvaiIUbF2:" ;# sample user="nsadmin", pw="x".
-}
+  ns_section ns/server/default/tcl {
+      ns_param    nsvbuckets          16       ;# default: 8
+      ns_param    nsvrwlocks          false    ;# default: true
+      ns_param    library             modules/tcl
+      #
+      # Example for initcmds (to be executed, when this server is fully initialized).
+      #
+      #ns_param    initcmds {
+      #    ns_log notice "=== Hello World === server: [ns_info server] running"
+      #}
+  }
 
-set ::env(RANDFILE) $home/.rnd
-set ::env(HOME) $home
-set ::env(LANG) en_US.UTF-8
-#
-# For debugging, you might activate one of the following flags
-#
-#ns_logctl severity Debug(ns:driver) on
-#ns_logctl severity Debug(request) on
-#ns_logctl severity Debug(task) on
-#ns_logctl severity Debug(sql) on
-#ns_logctl severity Debug on
+  ns_section ns/server/default/module/nscgi {
+      ns_param    map                 "GET  /cgi-bin $home/cgi-bin"
+      ns_param    map                 "POST /cgi-bin $home/cgi-bin"
+      ns_param    interps              CGIinterps
+      #ns_param   allowstaticresources true    ;# default false; serve static resources from cgi directories
+  }
+
+  ns_section ns/interps/CGIinterps {
+      ns_param	.pl                 "/opt/local/bin/perl"
+      ns_param	.sh                 "/bin/bash"
+  }
+
+  ns_section ns/server/default/module/nslog {
+      #ns_param   file                access.log
+      #ns_param   rolllog             true     ;# default: true; should server log files automatically
+      #ns_param   rollonsignal        false    ;# default: false; perform roll on a sighup
+      #ns_param   rollhour            0        ;# default: 0; specify at which hour to roll
+      ns_param    maxbackup           7        ;# default: 10; max number of backup log files
+      #ns_param   rollfmt             %Y-%m-%d-%H:%M	;# format appended to log filename
+      #ns_param   logpartialtimes     true     ;# default: false
+      #ns_param   logreqtime          true     ;# default: false; include time to service the request
+      ns_param    logthreadname       true     ;# default: false; include thread name for linking with error.log
+
+      ns_param	masklogaddr         true    ;# false, mask IP address in log file for GDPR (like anonip IP anonymizer)
+      ns_param	maskipv4            255.255.255.0  ;# mask for IPv4 addresses
+      ns_param	maskipv6            ff:ff:ff:ff::  ;# mask for IPv6 addresses
+  }
+
+  # ns_section ns/server/default/module/nscp {
+  #     ns_param   port     4080
+  #     ns_param   address  $address
+  # }
+
+  # ns_section ns/server/default/module/nscp/users {
+  #     ns_param user "::"
+  #     # ns_param user "nsadmin:t2GqvvaiIUbF2:" ;# sample user="nsadmin", pw="x".
+  # }
+
+  set ::env(RANDFILE) $home/.rnd
+  set ::env(HOME) $home
+  set ::env(LANG) en_US.UTF-8
+
+  #
+  # For debugging, you might activate one of the following flags
+  #
+  #ns_logctl severity Debug(ns:driver) on
+  #ns_logctl severity Debug(request) on
+  #ns_logctl severity Debug(task) on
+  #ns_logctl severity Debug(sql) on
+  #ns_logctl severity Debug(nsset) on
 #+end_src
 ** rootfs/etc/naviserver/env-defaults :code:
 :PROPERTIES:

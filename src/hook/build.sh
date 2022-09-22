@@ -6,7 +6,7 @@ source ../builds/env-vars.sh
 IMAGE="${IMAGE:-${IMAGE_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}}"
 DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
-docker build --no-cache \
+docker buildx build --no-cache \
        --build-arg UBUNTU_IMAGE_REPOSITORY="${UBUNTU_IMAGE_REPOSITORY}" \
        --build-arg UBUNTU_IMAGE_NAME="${UBUNTU_IMAGE_NAME}" \
        --build-arg UBUNTU_IMAGE_TAG="${UBUNTU_IMAGE_TAG}" \
