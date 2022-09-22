@@ -68,22 +68,3 @@ jobs:
           echo "Check docker container"
           .bats-battery/bats-core/bin/bats 04.container_check.bats
           echo "::endgroup::"
-
-      - name: s6v2. Naviserver. Build. Check image and container.
-        run: |
-          echo "::group::Build image"
-          set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
-          export UBUNTU_IMAGE_TAG='20.04-2.2.0.3'
-          export IMAGE_TAG="${UBUNTU_IMAGE_TAG}-${NS_IMAGE_TAG}"
-          echo "Build image"
-          cd ${GITHUB_WORKSPACE}/src/hook
-          ./build.sh
-          echo "::endgroup::"
-
-          echo "::group::Check image and container"
-          cd ${GITHUB_WORKSPACE}/tests
-          echo "Check docker image (dockle)"
-          .bats-battery/bats-core/bin/bats 03.docker_image_check.bats
-          echo "Check docker container"
-          .bats-battery/bats-core/bin/bats 04.container_check.bats
-          echo "::endgroup::"
