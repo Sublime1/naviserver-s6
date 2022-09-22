@@ -382,20 +382,6 @@ docker exec -it naviserver-s6 /bin/bash
             ./push.sh
             echo "::endgroup::"
 
-        - name: s6v2. Naviserver. Build and push image.
-          run: |
-            echo "::group::Prepare environment"
-            set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
-            export UBUNTU_IMAGE_TAG='20.04-2.2.0.3'
-            export IMAGE_TAG="${UBUNTU_IMAGE_TAG}-${NS_IMAGE_TAG}"
-            cd ${GITHUB_WORKSPACE}/src/hook
-            echo "::endgroup::"
-            echo "::group::Build image"
-            ./build.sh
-            echo "::endgroup::"
-            echo "::group::Push image"
-            ./push.sh
-            echo "::endgroup::"
 #+end_src
 ** ../.github/workflows/test.yaml :code:
 :PROPERTIES:
