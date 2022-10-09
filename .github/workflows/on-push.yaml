@@ -43,7 +43,6 @@ jobs:
         run: |
           echo "::group::Prepare environment"
           set -a; source ${GITHUB_WORKSPACE}/src/VERSIONS ; set +a;
-          export IMAGE_TAG="${UBUNTU_IMAGE_TAG}-${NS_IMAGE_TAG}"
           cd ${GITHUB_WORKSPACE}/src/hook
           echo "::endgroup::"
           echo "::group::Build image"
