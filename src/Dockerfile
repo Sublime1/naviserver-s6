@@ -62,12 +62,14 @@
       org.opencontainers.image.description="NaviServer on ubuntu base docker image using s6-overlay" \
       custom.package.version.naviserver="${NS_VERSION}" \
       custom.package.version.naviserver_modules="${NS_MODULES_VERSION}" \
-      custom.package.version.rl_json_version="${RL_JSON_VERSION}" \
+      custom.package.version.rl_json="${RL_JSON_VERSION}" \
       custom.package.version.tcl="${TCL_VERSION}" \
       custom.package.version.tcllib="${TCLLIB_VERSION}" \
       custom.package.version.tdom="${TDOM_VERSION}" \
       custom.package.version.thread="${THREAD_VERSION}" \
-      custom.package.version.xotcl="${XOTCL_VERSION}"
+      custom.package.version.xotcl="${XOTCL_VERSION}" \
+      custom.package.base_image="${UBUNTU_IMAGE_REPOSITORY}/${UBUNTU_IMAGE_NAME}:{UBUNTU_IMAGE_TAG}"
+
 
   # ** Run
   # hadolint ignore=DL3008
