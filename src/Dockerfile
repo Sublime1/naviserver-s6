@@ -52,7 +52,8 @@
       org.opencontainers.image.authors="Oupfiz V (Five)" \
       org.opencontainers.image.url="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/home" \
       org.opencontainers.image.documentation="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/wiki" \
-      org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/brlist" \        org.opencontainers.image.version="0.0.2d" \
+      org.opencontainers.image.source="https://chiselapp.com/user/oupfiz5/repository/naviserver-s6/brlist" \
+      org.opencontainers.image.version="0.0.2d" \
       org.opencontainers.image.revision="" \
       org.opencontainers.image.vendor="" \
       org.opencontainers.image.licenses="" \
@@ -66,7 +67,8 @@
       custom.package.version.tcllib="${TCLLIB_VERSION}" \
       custom.package.version.tdom="${TDOM_VERSION}" \
       custom.package.version.thread="${THREAD_VERSION}" \
-      custom.package.version.xotcl="${XOTCL_VERSION}" \ custom.package.base_image="${UBUNTU_IMAGE_REPOSITORY}/${UBUNTU_IMAGE_NAME}:${UBUNTU_IMAGE_TAG}"
+      custom.package.version.xotcl="${XOTCL_VERSION}" \
+      custom.package.base_image="${UBUNTU_IMAGE_REPOSITORY}/${UBUNTU_IMAGE_NAME}:{UBUNTU_IMAGE_TAG}"
 
 
   # ** Run
