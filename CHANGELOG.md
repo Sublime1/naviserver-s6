@@ -1,5 +1,5 @@
 # Changelog
-## 23.05 - 2023-05-03
+## 4.99.24 - 2023-05-03
 
 ### Added
 - `hook/build.sh` image tag `latest` for docker image
