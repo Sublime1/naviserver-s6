@@ -1,3 +1,4 @@
+
 # Table of Contents
 
 -   [About](#about)
@@ -28,7 +29,7 @@
 
 # About
 
-This is [NaviServer](https://wiki.tcl-lang.org/page/NaviServer) on [ubuntu base docker image](https://hub.docker.com/_/ubuntu) (version 20.04) using [s6-overlay](https://github.com/just-containers/s6-overlay).  To install the NaviServer I used code from  [Gustaf Neumann](https://github.com/gustafn/install-ns) script [install-ns.sh](https://github.com/gustafn/install-ns/blob/master/install-oacs.sh).   The base image is [oupfiz5/ubuntu-s6](https://hub.docker.com/r/oupfiz5/ubuntu-s6).
+This is [NaviServer](https://wiki.tcl-lang.org/page/NaviServer) on [ubuntu base docker image](https://hub.docker.com/_/ubuntu) (version 22.04) using [s6-overlay](https://github.com/just-containers/s6-overlay).  To install the NaviServer I used code from  [Gustaf Neumann](https://github.com/gustafn/install-ns) script [install-ns.sh](https://github.com/gustafn/install-ns/blob/master/install-oacs.sh).   The base image is [oupfiz5/ubuntu-s6](https://hub.docker.com/r/oupfiz5/ubuntu-s6).
 
 Naviserver-S6 is self-hosting at <https://chiselapp.com/user/oupfiz5/repository/naviserver-s6>.
 
@@ -73,7 +74,7 @@ They are using for testing and scanning:
 
 ## Download from dockerhub
 
-    docker pull oupfiz5/naviserver-s6:4.99.23
+    docker pull oupfiz5/naviserver-s6:4.99.24
 
 
 <a id="build-from-chiselapp--fossil-"></a>
@@ -87,7 +88,7 @@ They are using for testing and scanning:
 
 Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](https://hub.docker.com/repository/docker/oupfiz5/tcl-build)):
 
-    docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
+    docker build -t oupfiz5/naviserver-s6:4.99.24 -f ./Dockerfile .
 
 
 <a id="build-from-github"></a>
@@ -100,7 +101,7 @@ Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](http
 
 Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](https://hub.docker.com/repository/docker/oupfiz5/tcl-build)):
 
-    docker build -t oupfiz5/naviserver-s6:4.99.23 -f ./Dockerfile .
+    docker build -t oupfiz5/naviserver-s6:4.99.24 -f ./Dockerfile .
 
 
 <a id="configuration"></a>
@@ -141,7 +142,7 @@ Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](http
 <tbody>
 <tr>
 <td class="org-left">NS_VERSION</td>
-<td class="org-right">4.99.23</td>
+<td class="org-right">4.99.24</td>
 <td class="org-left">Define version for Naviserver-S6</td>
 </tr>
 </tbody>
@@ -149,7 +150,7 @@ Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](http
 <tbody>
 <tr>
 <td class="org-left">NS_MODULE_VERSION</td>
-<td class="org-right">4.99.23</td>
+<td class="org-right">4.99.24</td>
 <td class="org-left">Define version for Naviserver-S6  modules</td>
 </tr>
 </tbody>
@@ -157,7 +158,7 @@ Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](http
 <tbody>
 <tr>
 <td class="org-left">TCL_VERSION</td>
-<td class="org-right">8.6.11</td>
+<td class="org-right">8.6.13</td>
 <td class="org-left">Define version for  tcl</td>
 </tr>
 </tbody>
@@ -181,7 +182,7 @@ Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](http
 <tbody>
 <tr>
 <td class="org-left">RL_JSON_VERSION=</td>
-<td class="org-right">0.11.1</td>
+<td class="org-right">0.12.2</td>
 <td class="org-left">Define version for rl_json</td>
 </tr>
 </tbody>
@@ -189,7 +190,7 @@ Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](http
 <tbody>
 <tr>
 <td class="org-left">XOTCL_VERSION</td>
-<td class="org-right">2.3.0</td>
+<td class="org-right">2.4.0</td>
 <td class="org-left">Define version for xotcl</td>
 </tr>
 </tbody>
@@ -202,9 +203,9 @@ Build image using multi steps  (by means of docker from [oupfiz5/tcl-build](http
 
     docker build --no-cache \
             --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-            --build-arg NS_VERSION='4.99.23' \
-            --build-arg TCL_VERSION='8.6.11' \
-            -t oupfiz5/naviserver-s6:4.99.23 \
+            --build-arg NS_VERSION='4.99.24' \
+            --build-arg TCL_VERSION='8.6.13' \
+            -t oupfiz5/naviserver-s6:4.99.24 \
             -f ../Dockerfile \
              ../.
 
@@ -273,7 +274,7 @@ Set the timezone for the container, defaults to UTC. To set the timezone set the
            --name=naviserver-s6-s6 \
            --env 'TZ=Europe/Moscow' \
            -p 127.0.0.1:8090:8080 \
-           oupfiz5/naviserver-s6:4.99.23
+           oupfiz5/naviserver-s6:4.99.24
 
 
 <a id="http-listen-port"></a>
@@ -286,7 +287,7 @@ Set the http listen port for the container `-p 127.0.0.1:18090:8080`.  In this c
            --restart always \
            --name=naviserver-s6 \
            -p 127.0.0.1:18090:8080 \
-           oupfiz5/naviserver-s6:4.99.23
+           oupfiz5/naviserver-s6:4.99.24
 
 
 <a id="configuration-file"></a>
@@ -298,13 +299,13 @@ The default configuration file is `rootfs/usr/local/ns/conf/nsd-config.tcl`.  Fo
 1.  Create own configuration file with name `nsd-config.tcl`
 2.  Put it to some directory (for example `rootfs/usr/local/ns/conf/test`)
 3.  Mount the the directory from item 2 as `/usr/local/ns/conf`
-
+    
         docker run -itd \
                --restart always \
                --name=naviserver  \
                -p 127.0.0.1:8090:8080 \
                --mount type=bind,src=$(pwd)/rootfs/usr/local/ns/conf/test,destination=/usr/local/ns/conf \
-               oupfiz5/naviserver:4.99.23
+               oupfiz5/naviserver:4.99.24
 
 
 <a id="quickstart"></a>
@@ -317,7 +318,7 @@ Start Naviserver using CLI:
            --restart always \
            --name=naviserver-s6 \
            -p 127.0.0.1:8090:8080 \
-           oupfiz5/naviserver-s6:4.99.23
+           oupfiz5/naviserver-s6:4.99.24
 
 Start Naviserver using script `start.sh`:
 
@@ -357,3 +358,4 @@ For debugging and maintenance purposes you may want access the output log. If yo
 For debugging and maintenance purposes you may want access the containers shell. If you are using Docker version 1.3.0 or higher you can access a running containers shell by starting bash using docker exec:
 
     docker exec -it naviserver-s6 /bin/bash
+
