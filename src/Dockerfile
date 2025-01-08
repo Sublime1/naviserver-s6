@@ -100,6 +100,7 @@ RUN export LANG="en_US.UTF-8" \
     && apt-get clean \
     && apt-get auto-remove -y \
     && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
+    && touch /var/mail/ubuntu && chown ubuntu /var/mail/ubuntu && userdel -r ubuntu \
     && groupadd nsadmin \
     && useradd -g nsadmin nsadmin \
     && chown -R  nsadmin:nsadmin /usr/local/ns
