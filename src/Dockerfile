@@ -21,7 +21,7 @@ ARG \
 # * Build software
 FROM ${TCL_BUILD_IMAGE_REPOSITORY}/${TCL_BUILD_IMAGE_NAME}:${TCL_BUILD_IMAGE_TAG} as build
 
-# ** Environmen
+# ** Environment
 ENV NS_VERSION="${NS_VERSION}" \
     NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
     RL_JSON_VERSION_VERSION="${RL_JSON_VERSION_VERSION}" \
@@ -29,7 +29,8 @@ ENV NS_VERSION="${NS_VERSION}" \
     TCL_VERSION="${TCL_VERSION}" \
     TDOM_VERSION="${TDOM_VERSION}" \
     THREAD_VERSION="${THREAD_VERSION}" \
-    XOTCL_VERSION="${XOTCL_VERSION}"
+    XOTCL_VERSION="${XOTCL_VERSION}" \
+    PREFIX=/usr/local/ns
 
 # ** Build
 WORKDIR /
@@ -93,13 +94,12 @@ RUN export LANG="en_US.UTF-8" \
     && export LC_ALL="en_US.UTF-8" \
     && apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev postgresql-client wget \
+    && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev wget \
     && locale-gen en_US.UTF-8 \
     && update-locale LANG="en_US.UTF-8" \
     && update-locale LC_ALL="en_US.UTF-8" \
     && apt-get clean \
-    && apt-get auto-remove -y \
-    && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apt/* \
+    && rm -rf /tmp/* /var/lib/apt/lists/* \
     && touch /var/mail/ubuntu && chown ubuntu /var/mail/ubuntu && userdel -r ubuntu \
     && groupadd nsadmin \
     && useradd -g nsadmin nsadmin \
