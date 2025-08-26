@@ -101,9 +101,9 @@ RUN export LANG="en_US.UTF-8" \
     && apt-get clean \
     && rm -rf /tmp/* /var/lib/apt/lists/* \
     && touch /var/mail/ubuntu && chown ubuntu /var/mail/ubuntu && userdel -r ubuntu \
-    && groupadd nsadmin \
-    && useradd -g nsadmin nsadmin \
-    && chown -R  nsadmin:nsadmin /usr/local/ns
+    # Create the nsadmin user and group with a fixed temporary ID of 1000 - this will get over-ridden at runtime
+    && groupadd --gid 1000 nsadmin \
+    && useradd --shell /bin/false --uid 1000 --gid 1000 -m nsadmin
 
 # ** Copy s6 and naviserver configurations
 COPY rootfs/etc /etc/
