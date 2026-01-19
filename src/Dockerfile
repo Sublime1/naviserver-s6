@@ -21,6 +21,9 @@ ARG \
 # * Build software
 FROM ${TCL_BUILD_IMAGE_REPOSITORY}/${TCL_BUILD_IMAGE_NAME}:${TCL_BUILD_IMAGE_TAG} as build
 
+RUN ls -l /bin/bash && /bin/bash --version
+SHELL ["/bin/bash", "-c"]
+
 # ** Environment
 ENV NS_VERSION="${NS_VERSION}" \
     NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
