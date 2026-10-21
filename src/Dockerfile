@@ -21,13 +21,22 @@ ARG \
 # * Build software
 FROM ${TCL_BUILD_IMAGE_REPOSITORY}/${TCL_BUILD_IMAGE_NAME}:${TCL_BUILD_IMAGE_TAG} as build
 
+ARG NS_VERSION
+ARG NS_MODULES_VERSION
+ARG RL_JSON_VERSION
+ARG TCLLIB_VERSION
+ARG TCL_VERSION
+ARG TDOM_VERSION
+ARG THREAD_VERSION
+ARG XOTCL_VERSION
+
 RUN ls -l /bin/bash && /bin/bash --version
 SHELL ["/bin/bash", "-c"]
 
 # ** Environment
 ENV NS_VERSION="${NS_VERSION}" \
     NS_MODULES_VERSION="${NS_MODULES_VERSION}" \
-    RL_JSON_VERSION_VERSION="${RL_JSON_VERSION_VERSION}" \
+    RL_JSON_VERSION="${RL_JSON_VERSION}" \
     TCLLIB_VERSION="${TCLLIB_VERSION}" \
     TCL_VERSION="${TCL_VERSION}" \
     TDOM_VERSION="${TDOM_VERSION}" \
@@ -93,17 +102,19 @@ LABEL \
 
 # ** Run
 # hadolint ignore=DL3008
-RUN export LANG="en_US.UTF-8" \
-    && export LC_ALL="en_US.UTF-8" \
-    && apt-get update \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    export LANG="C.UTF-8" \
+    && export LC_ALL="C.UTF-8" \
+    && apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 update \
     && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y --no-install-recommends install libssl-dev locales libpq-dev wget \
-    && locale-gen en_US.UTF-8 \
-    && update-locale LANG="en_US.UTF-8" \
-    && update-locale LC_ALL="en_US.UTF-8" \
+    && apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 -y --no-install-recommends install libssl-dev locales libpq-dev wget \
+    && sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen \
+    && printf 'LANG=en_US.UTF-8\nLC_ALL=en_US.UTF-8\n' > /etc/default/locale \
     && apt-get clean \
-    && rm -rf /tmp/* /var/lib/apt/lists/* \
-    && touch /var/mail/ubuntu && chown ubuntu /var/mail/ubuntu && userdel -r ubuntu \
+    && rm -rf /tmp/* \
+    && if id ubuntu >/dev/null 2>&1; then touch /var/mail/ubuntu && chown ubuntu /var/mail/ubuntu && userdel -r ubuntu; fi \
     # Create the nsadmin user and group with a fixed temporary ID of 1000 - this will get over-ridden at runtime
     && groupadd --gid 1000 nsadmin \
     && useradd --shell /bin/false --uid 1000 --gid 1000 -m nsadmin
@@ -116,7 +127,7 @@ COPY rootfs/usr/local/ns/conf /usr/local/ns/conf
 EXPOSE 8080
 
 # ** Environment
-Env NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
+ENV NS_CONF="/usr/local/ns/conf/nsd-config.tcl"
 
 # ** Workdir
 WORKDIR /usr/local/ns
