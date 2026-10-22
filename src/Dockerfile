@@ -113,6 +113,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && locale-gen \
     && printf 'LANG=en_US.UTF-8\nLC_ALL=en_US.UTF-8\n' > /etc/default/locale \
     && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && if id ubuntu >/dev/null 2>&1; then touch /var/mail/ubuntu && chown ubuntu /var/mail/ubuntu && userdel -r ubuntu; fi \
     # Create the nsadmin user and group with a fixed temporary ID of 1000 - this will get over-ridden at runtime
